@@ -11,13 +11,25 @@ import {
   SlidersHorizontal,
   Edit3,
   LogOut,
+  Dumbbell,
+  ChevronDown,
 } from 'lucide-react';
+
+type NavbarSport = {
+  id: string;
+  name: string;
+  text: string;
+  accent: string;
+};
 
 interface NavbarProps {
   onOpenAdmin: () => void;
+  onNavigateHome?: () => void;
   onNavigateToLogin?: () => void;
   onNavigateToProfile?: () => void;
   onNavigateToAdmin?: () => void;
+  onNavigateToSport?: (sportId: string) => void;
+  sports?: NavbarSport[];
   publicMode?: boolean;
   showUserProfile?: boolean;
   showSimulator?: boolean;
@@ -25,9 +37,12 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({
   onOpenAdmin,
+  onNavigateHome,
   onNavigateToLogin,
   onNavigateToProfile,
   onNavigateToAdmin,
+  onNavigateToSport,
+  sports = [],
   publicMode = false,
   showUserProfile = true,
   showSimulator = true,
@@ -46,6 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   } = useTournament();
 
   const [showSimMenu, setShowSimMenu] = useState(false);
+  const [sportsMenuOpen, setSportsMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
@@ -53,7 +69,12 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-40 bg-[#140b16]/95 backdrop-blur-md border-b border-[#3c313e]/60 px-4 py-3">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         {/* Left: Logo */}
-        <div className="flex items-center gap-2.5">
+        <button
+          type="button"
+          onClick={onNavigateHome}
+          className="flex items-center gap-2.5 rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EA7301]"
+          aria-label="Ir a la pagina principal"
+        >
           <img
             src="/logos/kas-logo.png"
             alt="King Arthur Sports"
@@ -67,15 +88,53 @@ export const Navbar: React.FC<NavbarProps> = ({
               KING ARTHUR SPORTS
             </span>
           </div>
-        </div>
+        </button>
 
         {publicMode ? (
-          <button
-            onClick={onNavigateToLogin}
-            className="rounded-xl bg-[#EA7301] px-4 py-2.5 text-sm font-heading font-black uppercase tracking-wide text-black hover:bg-orange-400 transition-colors"
-          >
-            Login
-          </button>
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setSportsMenuOpen((open) => !open)}
+                className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-heading font-bold text-white hover:border-[#EA7301]/60 hover:bg-white/10 transition-colors"
+              >
+                <Dumbbell className="w-4 h-4 text-[#EA7301]" />
+                <span>Deportes</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${sportsMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {sportsMenuOpen && (
+                <div className="absolute right-0 mt-2 w-72 rounded-2xl border border-[#EA7301]/40 bg-[#140b16]/95 p-2 shadow-2xl backdrop-blur z-50">
+                  {sports.map((sport) => (
+                    <button
+                      type="button"
+                      key={sport.id}
+                      onClick={() => {
+                        setSportsMenuOpen(false);
+                        onNavigateToSport?.(sport.id);
+                      }}
+                      className="w-full rounded-xl px-3 py-3 text-left hover:bg-white/10 transition-colors"
+                    >
+                      <span className="flex items-center justify-between gap-3">
+                        <span>
+                          <span className="block font-heading text-lg font-black text-white">{sport.name}</span>
+                          <span className="block text-xs text-white/55">{sport.text}</span>
+                        </span>
+                        <span className="h-3 w-3 rounded-full" style={{ backgroundColor: sport.accent }} />
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={onNavigateToLogin}
+              className="rounded-xl bg-[#EA7301] px-4 py-2.5 text-sm font-heading font-black uppercase tracking-wide text-black hover:bg-orange-400 transition-colors"
+            >
+              Login
+            </button>
+          </div>
         ) : (
         /* Right Actions */
         <div className="flex items-center gap-2">

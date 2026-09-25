@@ -16,7 +16,6 @@ import {
   CalendarDays,
   ChevronLeft,
   ChevronRight,
-  Dumbbell,
   Lock,
   Mail,
   Shield,
@@ -193,7 +192,7 @@ function KasShell() {
   const favoriteTeam = getTeamById(themeTeamId);
   const loginThemeTeam = themeTeamId === 'csh' ? getTeamById('esc') : favoriteTeam;
   const activeThemeTeam = themeTeamId === 'csh' ? getTeamById('esc') : favoriteTeam;
-  const usesTeamTheme = isLoggedIn && location.pathname.includes('/tournaments/cr-apertura-2026');
+  const usesTeamTheme = isLoggedIn && (location.pathname.includes('/tournaments/cr-apertura-2026') || location.pathname === '/profile');
   const usesLoginTeamTheme = !isLoggedIn && location.pathname === '/login';
   const isAdmin = isLoggedIn && (currentUser.role === 'admin' || currentUser.isAdmin === true);
   const activeTab = getActiveTab(location.pathname);
@@ -212,9 +211,12 @@ function KasShell() {
     >
       <Navbar
         onOpenAdmin={() => setAdminModalOpen(true)}
+        onNavigateHome={() => navigate('/')}
         onNavigateToLogin={() => navigate('/login')}
         onNavigateToProfile={() => navigate('/profile')}
         onNavigateToAdmin={() => navigate('/admin')}
+        onNavigateToSport={(sportId) => navigate(`/sports/${sportId}`)}
+        sports={sports}
         publicMode={isKasPublic}
         showUserProfile={location.pathname !== '/login'}
         showSimulator={isLoggedIn && !isAdmin && location.pathname.includes('/tournaments/cr-apertura-2026')}
@@ -236,7 +238,7 @@ function KasShell() {
           <Route path="/tournaments/:tournamentId/ranking" element={<CostaRicaOnly><RankingView /></CostaRicaOnly>} />
           <Route path="/tournaments/:tournamentId/playoffs" element={<CostaRicaOnly><PlayoffsView onOpenScorerModal={(id) => setActiveScorerMatchId(id)} /></CostaRicaOnly>} />
           <Route path="/tournaments/:tournamentId/forum" element={<CostaRicaOnly><SocialView /></CostaRicaOnly>} />
-          <Route path="/profile" element={<ProfileView onOpenLogin={() => navigate('/login')} />} />
+          <Route path="/profile" element={<ProfileView onOpenLogin={() => navigate('/sports/football')} />} />
           <Route path="/admin/*" element={isAdmin ? <AdminView /> : <Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
@@ -268,18 +270,10 @@ function getActiveTab(pathname: string): NavTab {
 }
 
 function HomePage() {
-  const [active, setActive] = useState(0);
-  const slide = sports[active];
-
-  useEffect(() => {
-    const timer = window.setInterval(() => setActive((current) => (current + 1) % sports.length), 5500);
-    return () => window.clearInterval(timer);
-  }, []);
-
   return (
     <div className="pb-16">
-      <section className="min-h-[78vh] px-4 py-8 sm:py-12 flex items-center kas-sport-hero" style={{ '--sport-accent': slide.accent } as React.CSSProperties}>
-        <div className="max-w-6xl mx-auto w-full grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-center">
+      <section className="min-h-[62vh] px-4 py-8 sm:py-12 flex items-center kas-sport-hero" style={{ '--sport-accent': '#EA7301' } as React.CSSProperties}>
+        <div className="max-w-6xl mx-auto w-full">
           <div className="space-y-6">
             <div>
               <p className="text-sm font-mono tracking-[0.35em] text-[#EA7301]">SPORTTECH ECOSYSTEM</p>
@@ -295,30 +289,42 @@ function HomePage() {
               </Link>
             </div>
           </div>
-
-          <div className="rounded-2xl border border-white/15 bg-black/35 p-4 shadow-2xl">
-            <div className="min-h-[360px] rounded-xl p-6 flex flex-col justify-end kas-slide-visual" style={{ '--sport-accent': slide.accent } as React.CSSProperties}>
-              <p className="text-sm font-mono text-white/70">DEPORTE DESTACADO</p>
-              <h2 className="text-5xl font-heading font-black text-white">{slide.name}</h2>
-              <p className="mt-2 text-white/80">{slide.text}</p>
-              <Link to={`/sports/${slide.id}`} className="mt-5 inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold text-black">
-                Explorar deporte <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <div className="mt-4 flex items-center justify-between">
-              <button aria-label="Anterior" onClick={() => setActive((active - 1 + sports.length) % sports.length)} className="p-2 rounded-full bg-white/10 hover:bg-white/20"><ChevronLeft /></button>
-              <div className="flex gap-2">
-                {sports.map((item, index) => (
-                  <button key={item.id} aria-label={item.name} onClick={() => setActive(index)} className={`h-2 rounded-full transition-all ${index === active ? 'w-8 bg-[#EA7301]' : 'w-2 bg-white/30'}`} />
-                ))}
-              </div>
-              <button aria-label="Siguiente" onClick={() => setActive((active + 1) % sports.length)} className="p-2 rounded-full bg-white/10 hover:bg-white/20"><ChevronRight /></button>
-            </div>
-          </div>
         </div>
       </section>
 
       <SectionGrid />
+    </div>
+  );
+}
+
+function SportsCarousel() {
+  const [active, setActive] = useState(0);
+  const slide = sports[active];
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setActive((current) => (current + 1) % sports.length), 5500);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="max-w-xl mx-auto rounded-2xl border border-white/15 bg-black/35 p-4 shadow-2xl">
+      <div className="min-h-[360px] rounded-xl p-6 flex flex-col justify-end kas-slide-visual" style={{ '--sport-accent': slide.accent } as React.CSSProperties}>
+        <p className="text-sm font-mono text-white/70">DEPORTE DESTACADO</p>
+        <h2 className="text-5xl font-heading font-black text-white">{slide.name}</h2>
+        <p className="mt-2 text-white/80">{slide.text}</p>
+        <Link to={`/sports/${slide.id}`} className="mt-5 inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold text-black">
+          Explorar deporte <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+      <div className="mt-4 flex items-center justify-between">
+        <button aria-label="Anterior" onClick={() => setActive((active - 1 + sports.length) % sports.length)} className="p-2 rounded-full bg-white/10 hover:bg-white/20"><ChevronLeft /></button>
+        <div className="flex gap-2">
+          {sports.map((item, index) => (
+            <button key={item.id} aria-label={item.name} onClick={() => setActive(index)} className={`h-2 rounded-full transition-all ${index === active ? 'w-8 bg-[#EA7301]' : 'w-2 bg-white/30'}`} />
+          ))}
+        </div>
+        <button aria-label="Siguiente" onClick={() => setActive((active + 1) % sports.length)} className="p-2 rounded-full bg-white/10 hover:bg-white/20"><ChevronRight /></button>
+      </div>
     </div>
   );
 }
@@ -331,18 +337,7 @@ function SectionGrid() {
         <InfoCard icon={<BadgeDollarSign />} title="Pay-Per-Tournament" text="Compra acceso por torneo, sin forzar paquetes globales." />
         <InfoCard icon={<Users />} title="Comunidad" text="Foro, ranking y prestigio por competicion." />
       </div>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {sports.map((sport) => (
-          <Link key={sport.id} to={`/sports/${sport.id}`} className="rounded-xl border border-white/10 bg-[#19101c] p-5 hover:border-[#EA7301]/70 transition-colors">
-            <div className="flex items-center justify-between">
-              <Dumbbell className="w-7 h-7" style={{ color: sport.accent }} />
-              <span className="text-xs font-mono text-white/60">{sport.tournaments} torneos</span>
-            </div>
-            <h3 className="mt-5 text-2xl font-heading font-black text-white">{sport.name}</h3>
-            <p className="mt-1 text-sm text-white/65">{sport.text}</p>
-          </Link>
-        ))}
-      </div>
+      <SportsCarousel />
     </section>
   );
 }

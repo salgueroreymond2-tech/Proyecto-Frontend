@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
-import { TEAMS } from '../data/teams';
+import { TEAMS, getTeamById } from '../data/teams';
 import { TeamBadge } from './TeamBadge';
 import { PasionLogo } from './PasionLogo';
 import { Mail, Lock, ArrowRight, X, User, Camera, Eye, EyeOff } from 'lucide-react';
@@ -14,6 +14,8 @@ export const AuthModal: React.FC = () => {
   const [favoriteTeamId, setFavoriteTeamId] = useState(currentUser.favoriteTeamId);
   const [avatar, setAvatar] = useState(currentUser.avatar);
   const [showPassword, setShowPassword] = useState(false);
+  const selectedTeam = getTeamById(favoriteTeamId);
+  const selectedThemeTeam = favoriteTeamId === 'csh' ? getTeamById('esc') : selectedTeam;
 
   if (!showAuthModal) return null;
 
@@ -24,7 +26,14 @@ export const AuthModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div
+      data-login-theme={favoriteTeamId}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
+      style={{
+        '--theme-primary': selectedThemeTeam?.primaryColor || '#bf00ff',
+        '--theme-secondary': selectedThemeTeam?.accentColor || selectedThemeTeam?.secondaryColor || '#00f0ff',
+      } as React.CSSProperties}
+    >
       <div className="relative w-full max-w-sm rounded-3xl bg-[#19101c] border-2 border-[#bf00ff]/80 p-6 space-y-5 glow-purple shadow-2xl">
         <button
           onClick={() => setShowAuthModal(false)}
@@ -51,7 +60,7 @@ export const AuthModal: React.FC = () => {
                 onClick={() => setFavoriteTeamId(team.id)}
                 className={`p-2 rounded-xl flex items-center justify-center transition-all ${
                   favoriteTeamId === team.id
-                    ? 'bg-[#bf00ff] ring-2 ring-white scale-110 glow-purple-sm'
+                    ? 'bg-[#bf00ff] ring-2 ring-white scale-110 glow-purple-sm team-themed-button'
                     : 'hover:bg-[#261c28]'
                 }`}
                 title={team.name}
@@ -91,7 +100,14 @@ export const AuthModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div
+      data-login-theme={favoriteTeamId}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
+      style={{
+        '--theme-primary': selectedThemeTeam?.primaryColor || '#bf00ff',
+        '--theme-secondary': selectedThemeTeam?.accentColor || selectedThemeTeam?.secondaryColor || '#00f0ff',
+      } as React.CSSProperties}
+    >
       <div className="relative w-full max-w-sm rounded-3xl bg-[#19101c] border-2 border-[#bf00ff]/80 p-6 space-y-4 glow-purple shadow-2xl">
         <button
           onClick={() => setShowAuthModal(false)}
@@ -207,7 +223,7 @@ export const AuthModal: React.FC = () => {
                   onClick={() => setFavoriteTeamId(t.id)}
                   className={`p-1.5 rounded-lg flex flex-col items-center justify-center transition-all ${
                     favoriteTeamId === t.id
-                      ? 'bg-[#bf00ff] text-black ring-2 ring-white scale-110'
+                      ? 'bg-[#bf00ff] text-black ring-2 ring-white scale-110 team-themed-button'
                       : 'hover:bg-[#261c28]'
                   }`}
                   title={t.name}

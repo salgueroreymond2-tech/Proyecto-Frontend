@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
-import { PasionLogo } from './PasionLogo';
 import {
   Bell,
   Volume2,
@@ -54,11 +53,18 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Left: Logo */}
         <div className="flex items-center gap-2.5">
           <img
-            src="/logo-pasion-simplificado.png"
-            alt="Quiniela Pasión"
-            className="w-10 h-10 rounded-xl object-cover border border-[#bf00ff] glow-purple-sm shadow-md"
+            src="/logos/kas-logo.png"
+            alt="King Arthur Sports"
+            className="h-14 w-14 rounded-xl object-cover border border-[#EA7301]/60 shadow-md"
           />
-          <PasionLogo size="sm" />
+          <div className="hidden sm:block leading-none">
+            <span className="block text-xl font-heading font-black tracking-wide text-[#EA7301]">
+              KAS
+            </span>
+            <span className="block text-[10px] font-mono tracking-[0.24em] text-white/70">
+              KING ARTHUR SPORTS
+            </span>
+          </div>
         </div>
 
         {/* Right Actions */}

@@ -69,6 +69,86 @@ const footballTournaments = [
   { id: 'europa-league', name: 'UEFA Europa League', season: '2026-2027', status: 'Preparacion', price: '$10.99', enabled: false },
 ];
 
+const sportDashboards = {
+  tennis: {
+    eyebrow: 'TENIS',
+    title: 'Circuito de tenis',
+    description: 'Predice ganadores, sets y resultados por ronda en torneos individuales.',
+    prediction: 'Ganador, sets y marcador de sets',
+    featured: 'Wimbledon',
+    events: ['Carlos Alcaraz vs Jannik Sinner', 'Iga Swiatek vs Aryna Sabalenka', 'Coco Gauff vs Elena Rybakina'],
+    tournaments: [
+      { name: 'Australian Open', season: '2027', status: 'Preparacion', price: '$9.99' },
+      { name: 'Roland Garros', season: '2027', status: 'Preparacion', price: '$9.99' },
+      { name: 'Wimbledon', season: '2027', status: 'Preparacion', price: '$12.99' },
+      { name: 'US Open', season: '2027', status: 'Preparacion', price: '$11.99' },
+      { name: 'ATP Masters', season: '2027', status: 'Activo', price: '$8.99' },
+      { name: 'WTA Masters', season: '2027', status: 'Activo', price: '$8.99' },
+      { name: 'Copa del Cafe de Costa Rica', season: '2027', status: 'Local', price: '$4.99' },
+    ],
+  },
+  basketball: {
+    eyebrow: 'BALONCESTO',
+    title: 'Dashboard NBA',
+    description: 'Quinielas de temporada regular, playoffs y finales con marcador y diferencia.',
+    prediction: 'Ganador, marcador y diferencia',
+    featured: 'NBA 2026-2027',
+    events: ['Boston Celtics vs Los Angeles Lakers', 'Denver Nuggets vs Dallas Mavericks', 'Golden State Warriors vs Phoenix Suns'],
+    tournaments: [
+      { name: 'NBA Temporada Regular', season: '2026-2027', status: 'Activo', price: '$12.99' },
+      { name: 'NBA Playoffs', season: '2027', status: 'Preparacion', price: '$14.99' },
+      { name: 'NBA Finals', season: '2027', status: 'Premium', price: '$9.99' },
+    ],
+  },
+  baseball: {
+    eyebrow: 'BEISBOL',
+    title: 'Dashboard MLB',
+    description: 'Pronostica carreras, ganador y series completas de MLB.',
+    prediction: 'Carreras y ganador',
+    featured: 'MLB 2027',
+    events: ['New York Yankees vs Boston Red Sox', 'Los Angeles Dodgers vs San Diego Padres', 'Houston Astros vs Texas Rangers'],
+    tournaments: [
+      { name: 'MLB Temporada Regular', season: '2027', status: 'Activo', price: '$11.99' },
+      { name: 'MLB Postseason', season: '2027', status: 'Preparacion', price: '$13.99' },
+      { name: 'World Series', season: '2027', status: 'Premium', price: '$9.99' },
+    ],
+  },
+  'american-football': {
+    eyebrow: 'FUTBOL AMERICANO',
+    title: 'Dashboard NFL',
+    description: 'Picks por semana, marcadores proyectados, playoffs y Super Bowl.',
+    prediction: 'Puntuacion y ganador',
+    featured: 'NFL 2026-2027',
+    events: ['Kansas City Chiefs vs Buffalo Bills', 'Dallas Cowboys vs Philadelphia Eagles', 'San Francisco 49ers vs Seattle Seahawks'],
+    tournaments: [
+      { name: 'NFL Temporada Regular', season: '2026-2027', status: 'Activo', price: '$12.99' },
+      { name: 'NFL Playoffs', season: '2027', status: 'Preparacion', price: '$14.99' },
+      { name: 'Super Bowl', season: '2027', status: 'Premium', price: '$9.99' },
+    ],
+  },
+  mma: {
+    eyebrow: 'UFC / MMA',
+    title: 'Dashboard UFC',
+    description: 'Carteleras por evento con ganador, metodo de victoria y round.',
+    prediction: 'Ganador, metodo y round',
+    featured: 'UFC Fight Night',
+    events: ['Main Event: Fighter A vs Fighter B', 'Co-Main: Contender A vs Contender B', 'Title Bout: Champion vs Challenger'],
+    tournaments: [
+      { name: 'UFC Fight Night', season: '2027', status: 'Activo', price: '$7.99' },
+      { name: 'UFC PPV Series', season: '2027', status: 'Activo', price: '$12.99' },
+      { name: 'UFC Championship Events', season: '2027', status: 'Premium', price: '$14.99' },
+    ],
+  },
+} satisfies Record<string, {
+  eyebrow: string;
+  title: string;
+  description: string;
+  prediction: string;
+  featured: string;
+  events: string[];
+  tournaments: { name: string; season: string; status: string; price: string }[];
+}>;
+
 const navPathByTab: Record<NavTab, string> = {
   dashboard: '/tournaments/cr-apertura-2026/predictions',
   ranking: '/tournaments/cr-apertura-2026/ranking',
@@ -93,7 +173,7 @@ function KasShell() {
   const usesLoginTeamTheme = !isLoggedIn && location.pathname === '/login';
   const isAdmin = isLoggedIn && (currentUser.role === 'admin' || currentUser.isAdmin === true);
   const activeTab = getActiveTab(location.pathname);
-  const isKasPublic = ['/', '/sports', '/sports/football'].includes(location.pathname);
+  const isKasPublic = location.pathname === '/' || location.pathname === '/dashboard' || location.pathname.startsWith('/sports');
   const showBottomNav = location.pathname.includes('/tournaments/cr-apertura-2026') || location.pathname === '/profile' || location.pathname.startsWith('/admin');
 
   return (
@@ -464,19 +544,75 @@ function TournamentDashboard() {
 function SportPlaceholder() {
   const { sportId } = useParams();
   const sport = sports.find((item) => item.id === sportId);
+  const dashboard = sportId ? sportDashboards[sportId] : undefined;
 
   if (!sport) return <Navigate to="/sports" replace />;
+  if (!dashboard) return <Navigate to="/sports" replace />;
 
   return (
-    <div className="space-y-5 pb-24 px-4 pt-4">
-      <p className="text-sm font-mono text-[#EA7301]">DEPORTE</p>
-      <h1 className="text-4xl font-heading font-black text-white">{sport.name}</h1>
-      <p className="text-[#d5c0d7] max-w-2xl">
-        {sport.name} queda conectado a la navegacion KAS. La logica de quiniela adaptada por deporte se implementara despues de validar la migracion completa de Costa Rica.
-      </p>
-      <Link to="/sports" className="inline-flex items-center gap-2 rounded-xl bg-[#EA7301] px-5 py-3 font-heading font-bold text-black">
-        Volver al dashboard <ArrowRight className="w-4 h-4" />
-      </Link>
+    <div className="space-y-6 pb-24 px-4 pt-4 max-w-6xl mx-auto">
+      <section className="rounded-2xl border border-[#EA7301]/35 bg-[#19101c]/90 p-5 sm:p-7">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+          <div>
+            <p className="text-sm font-mono text-[#EA7301]">{dashboard.eyebrow}</p>
+            <h1 className="text-4xl sm:text-5xl font-heading font-black text-white">{dashboard.title}</h1>
+            <p className="mt-3 max-w-2xl text-[#d5c0d7]">{dashboard.description}</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 min-w-[280px]">
+            <Metric label="Eventos activos" value={String(sport.activeEvents)} />
+            <Metric label="Torneos" value={String(dashboard.tournaments.length)} />
+          </div>
+        </div>
+      </section>
+
+      <section className="grid lg:grid-cols-[0.9fr_1.1fr] gap-4">
+        <div className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
+          <p className="text-xs font-mono text-[#EA7301]">FORMATO DE PRONOSTICO</p>
+          <h2 className="mt-2 text-2xl font-heading font-black text-white">{dashboard.prediction}</h2>
+          <p className="mt-3 text-sm text-[#d5c0d7]">
+            La quiniela de {sport.name} usa la identidad KAS, pero adapta el tipo de pick al deporte.
+          </p>
+          <div className="mt-5 rounded-xl bg-black/30 border border-white/10 p-4">
+            <p className="text-xs font-mono text-white/50">DESTACADO</p>
+            <p className="font-heading text-2xl font-black text-white">{dashboard.featured}</p>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
+          <p className="text-xs font-mono text-[#EA7301]">PROXIMOS EVENTOS</p>
+          <div className="mt-4 space-y-3">
+            {dashboard.events.map((event) => (
+              <div key={event} className="flex items-center justify-between rounded-xl bg-black/25 border border-white/10 px-4 py-3">
+                <span className="font-heading text-lg font-bold text-white">{event}</span>
+                <span className="text-xs font-mono text-[#EA7301]">Picks</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <div>
+          <p className="text-sm font-mono text-[#EA7301]">TORNEOS</p>
+          <h2 className="text-3xl font-heading font-black text-white">Competiciones de {sport.name}</h2>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          {dashboard.tournaments.map((tournament) => (
+            <div key={tournament.name} className="rounded-xl border border-[#3c313e] bg-[#221824]/90 p-5 hover:border-[#EA7301] transition-colors">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="font-heading text-2xl font-black text-white">{tournament.name}</h3>
+                  <p className="text-sm text-[#d5c0d7]">{tournament.season} · {tournament.status}</p>
+                </div>
+                <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{tournament.price}</span>
+              </div>
+              <button className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#EA7301]">
+                Ver torneo <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

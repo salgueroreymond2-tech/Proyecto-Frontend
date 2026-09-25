@@ -43,8 +43,151 @@
 
 .kas-slide-visual {
   background:
-    linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.82) 70%),
-    repeating-linear-gradient(135deg, color-mix(in srgb, var(--sport-accent, #EA7301) 34%, #111) 0 18px, #111 18px 36px);
+    linear-gradient(90deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.54) 46%, rgba(0, 0, 0, 0.16) 100%),
+    linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.88) 82%),
+    radial-gradient(circle at 78% 22%, color-mix(in srgb, var(--sport-accent, #EA7301) 36%, transparent), transparent 32%),
+    var(--sport-image),
+    repeating-linear-gradient(135deg, color-mix(in srgb, var(--sport-accent, #EA7301) 30%, #111) 0 18px, #050505 18px 38px);
+  background-position: center;
+  background-size: cover;
+  animation: kas-slide-in 420ms ease both;
+}
+
+@keyframes kas-slide-in {
+  from {
+    opacity: 0.66;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.kas-carousel-progress {
+  animation: kas-carousel-progress 4.8s linear both;
+}
+
+@keyframes kas-carousel-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+[data-color-mode="light"] {
+  color: #140b16;
+  background:
+    radial-gradient(circle at 76% 12%, rgba(234, 115, 1, 0.14), transparent 24%),
+    linear-gradient(90deg, rgba(251, 250, 248, 0.92), rgba(251, 250, 248, 0.78)),
+    url('/chatgpt_image_sep_21_2026_09_30_38_am.png') center 120px / min(86vw, 980px) auto fixed no-repeat,
+    linear-gradient(180deg, #fbfaf8 0%, #f4f1ee 48%, #ede8e3 100%);
+}
+
+[data-color-mode="light"] header,
+[data-color-mode="light"] footer,
+[data-color-mode="light"] nav {
+  background-color: rgba(255, 255, 255, 0.94) !important;
+  border-color: rgba(20, 11, 22, 0.1) !important;
+  color: #140b16 !important;
+  box-shadow: 0 8px 30px rgba(20, 11, 22, 0.08);
+}
+
+[data-color-mode="light"] main {
+  color: #140b16;
+}
+
+[data-color-mode="light"] [class*="bg-[#050505]"],
+[data-color-mode="light"] [class*="bg-[#140b16]"],
+[data-color-mode="light"] [class*="bg-[#19101c]"],
+[data-color-mode="light"] [class*="bg-[#1e1321]"],
+[data-color-mode="light"] [class*="bg-[#221824]"],
+[data-color-mode="light"] [class*="bg-[#261c28]"],
+[data-color-mode="light"] [class*="bg-[#2a1b2d]"] {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 16px 40px rgba(20, 11, 22, 0.08);
+}
+
+[data-color-mode="light"] [class*="text-white"],
+[data-color-mode="light"] [class*="text-[#eeddee]"],
+[data-color-mode="light"] [class*="text-[#d5c0d7]"] {
+  color: #140b16 !important;
+}
+
+[data-color-mode="light"] [class*="text-white/"],
+[data-color-mode="light"] [class*="text-[#F7F7F7]"] {
+  color: rgba(20, 11, 22, 0.78) !important;
+}
+
+[data-color-mode="light"] [class*="border-[#3c313e]"],
+[data-color-mode="light"] [class*="border-white/10"],
+[data-color-mode="light"] [class*="border-white/15"],
+[data-color-mode="light"] [class*="border-white/20"] {
+  border-color: rgba(20, 11, 22, 0.14) !important;
+}
+
+[data-color-mode="light"] .kas-sport-hero {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.76) 44%, rgba(255, 246, 236, 0.34) 100%),
+    radial-gradient(circle at 18% 34%, rgba(234, 115, 1, 0.12), transparent 28%),
+    url('/chatgpt_image_sep_21_2026_09_30_38_am.png') right center / min(72vw, 920px) auto no-repeat,
+    #fbfaf8;
+}
+
+[data-color-mode="light"] .kas-sport-hero h1,
+[data-color-mode="light"] .kas-sport-hero p {
+  text-shadow: none;
+}
+
+[data-color-mode="light"] .kas-sport-hero [class*="text-[#F7F7F7]"] {
+  color: rgba(20, 11, 22, 0.78) !important;
+}
+
+[data-color-mode="light"] .kas-login-bg::before {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.36), rgba(247, 247, 247, 0.82)),
+    radial-gradient(circle at 50% 50%, transparent 0%, rgba(247, 247, 247, 0.76) 76%);
+}
+
+[data-color-mode="light"] .kas-slide-visual {
+  color: white;
+  box-shadow: none;
+}
+
+[data-color-mode="light"] .kas-slide-visual [class*="text-white"] {
+  color: white !important;
+}
+
+[data-color-mode="light"] .kas-slide-visual + div button {
+  background-color: rgba(20, 11, 22, 0.08) !important;
+  color: #140b16 !important;
+}
+
+[data-color-mode="light"] a[class*="bg-white"],
+[data-color-mode="light"] button[class*="bg-white"] {
+  background-color: #ffffff !important;
+}
+
+[data-color-mode="light"] input {
+  border: 1px solid rgba(52, 20, 57, 0.5) !important;
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  color: #140b16 !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(52, 20, 57, 0.08),
+    0 0 0 3px rgba(52, 20, 57, 0.04);
+}
+
+[data-color-mode="light"] input:focus {
+  border-color: #341439 !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(52, 20, 57, 0.16),
+    0 0 0 4px rgba(52, 20, 57, 0.16);
+}
+
+[data-color-mode="light"] input::placeholder {
+  color: rgba(52, 20, 57, 0.45);
 }
 
 .kas-login-bg {

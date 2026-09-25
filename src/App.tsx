@@ -11,7 +11,6 @@ import {
 } from 'react-router-dom';
 import {
   ArrowRight,
-  BadgeDollarSign,
   BarChart3,
   CalendarDays,
   ChevronLeft,
@@ -19,8 +18,6 @@ import {
   Lock,
   Mail,
   Shield,
-  Trophy,
-  Users,
 } from 'lucide-react';
 import { TournamentProvider, useTournament } from './context/TournamentContext';
 import { Navbar } from './components/Navbar';
@@ -46,15 +43,16 @@ type Sport = {
   tournaments: number;
   activeEvents: number;
   accent: string;
+  image: string;
 };
 
 const sports: Sport[] = [
-  { id: 'football', name: 'Futbol', text: 'Jornadas, marcadores, rankings y finales.', tournaments: 8, activeEvents: 42, accent: '#EA7301' },
-  { id: 'tennis', name: 'Tenis', text: 'Rondas, sets y prestigio por torneo.', tournaments: 7, activeEvents: 18, accent: '#46D369' },
-  { id: 'basketball', name: 'Baloncesto', text: 'NBA con ganador, marcador y diferencia.', tournaments: 1, activeEvents: 14, accent: '#F97316' },
-  { id: 'baseball', name: 'Beisbol', text: 'MLB con carreras y ganador por juego.', tournaments: 1, activeEvents: 12, accent: '#38BDF8' },
-  { id: 'american-football', name: 'Futbol Americano', text: 'NFL con picks por semana y playoffs.', tournaments: 1, activeEvents: 16, accent: '#A78BFA' },
-  { id: 'mma', name: 'UFC / MMA', text: 'Ganador, metodo y round por cartelera.', tournaments: 1, activeEvents: 9, accent: '#EF4444' },
+  { id: 'football', name: 'Futbol', text: 'Jornadas, marcadores, rankings y finales.', tournaments: 8, activeEvents: 42, accent: '#EA7301', image: '/sports/football.jpg' },
+  { id: 'tennis', name: 'Tenis', text: 'Rondas, sets y prestigio por torneo.', tournaments: 7, activeEvents: 18, accent: '#46D369', image: '/sports/tennis.jpg' },
+  { id: 'basketball', name: 'Baloncesto', text: 'NBA con ganador, marcador y diferencia.', tournaments: 1, activeEvents: 14, accent: '#F97316', image: '/sports/basketball.jpg' },
+  { id: 'baseball', name: 'Beisbol', text: 'MLB con carreras y ganador por juego.', tournaments: 1, activeEvents: 12, accent: '#38BDF8', image: '/sports/baseball.jpg' },
+  { id: 'american-football', name: 'Futbol Americano', text: 'NFL con picks por semana y playoffs.', tournaments: 1, activeEvents: 16, accent: '#A78BFA', image: '/sports/american-football.jpg' },
+  { id: 'mma', name: 'UFC / MMA', text: 'Ganador, metodo y round por cartelera.', tournaments: 1, activeEvents: 9, accent: '#EF4444', image: '/sports/mma.jpg' },
 ];
 
 const footballTournaments = [
@@ -184,6 +182,10 @@ function findTournamentSummary(tournamentId: string) {
 
 function KasShell() {
   const [adminModalOpen, setAdminModalOpen] = useState(false);
+  const [colorMode, setColorMode] = useState<'dark' | 'light'>(() => {
+    const saved = localStorage.getItem('kas_color_mode');
+    return saved === 'light' ? 'light' : 'dark';
+  });
   const { setActiveScorerMatchId, currentUser, isLoggedIn } = useTournament();
   const [previewTeamId, setPreviewTeamId] = useState(currentUser.favoriteTeamId);
   const navigate = useNavigate();
@@ -199,10 +201,15 @@ function KasShell() {
   const isKasPublic = location.pathname === '/' || location.pathname === '/dashboard' || location.pathname.startsWith('/sports');
   const showBottomNav = location.pathname.includes('/tournaments/cr-apertura-2026') || location.pathname === '/profile' || location.pathname.startsWith('/admin');
 
+  useEffect(() => {
+    localStorage.setItem('kas_color_mode', colorMode);
+  }, [colorMode]);
+
   return (
     <div
       data-team-theme={usesTeamTheme ? themeTeamId : undefined}
       data-login-theme={usesLoginTeamTheme ? themeTeamId : undefined}
+      data-color-mode={colorMode}
       className="min-h-screen bg-transparent text-[#eeddee] flex flex-col selection:bg-[#EA7301] selection:text-white"
       style={usesTeamTheme || usesLoginTeamTheme ? {
         '--theme-primary': (usesLoginTeamTheme ? loginThemeTeam : activeThemeTeam)?.primaryColor || '#341439',
@@ -216,7 +223,9 @@ function KasShell() {
         onNavigateToProfile={() => navigate('/profile')}
         onNavigateToAdmin={() => navigate('/admin')}
         onNavigateToSport={(sportId) => navigate(`/sports/${sportId}`)}
+        onToggleTheme={() => setColorMode((mode) => mode === 'dark' ? 'light' : 'dark')}
         sports={sports}
+        colorMode={colorMode}
         publicMode={isKasPublic}
         showUserProfile={location.pathname !== '/login'}
         showSimulator={isLoggedIn && !isAdmin && location.pathname.includes('/tournaments/cr-apertura-2026')}
@@ -302,28 +311,45 @@ function SportsCarousel() {
   const slide = sports[active];
 
   useEffect(() => {
-    const timer = window.setInterval(() => setActive((current) => (current + 1) % sports.length), 5500);
+    const timer = window.setInterval(() => setActive((current) => (current + 1) % sports.length), 4800);
     return () => window.clearInterval(timer);
   }, []);
 
   return (
-    <div className="max-w-xl mx-auto rounded-2xl border border-white/15 bg-black/35 p-4 shadow-2xl">
-      <div className="min-h-[360px] rounded-xl p-6 flex flex-col justify-end kas-slide-visual" style={{ '--sport-accent': slide.accent } as React.CSSProperties}>
-        <p className="text-sm font-mono text-white/70">DEPORTE DESTACADO</p>
-        <h2 className="text-5xl font-heading font-black text-white">{slide.name}</h2>
-        <p className="mt-2 text-white/80">{slide.text}</p>
-        <Link to={`/sports/${slide.id}`} className="mt-5 inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold text-black">
-          Explorar deporte <ArrowRight className="w-4 h-4" />
-        </Link>
+    <div className="mx-auto rounded-2xl border border-white/15 bg-[#140b16]/80 p-4 shadow-2xl backdrop-blur max-w-5xl">
+      <div
+        key={slide.id}
+        className="min-h-[420px] rounded-xl p-6 sm:p-8 flex flex-col justify-end kas-slide-visual overflow-hidden"
+        style={{
+          '--sport-accent': slide.accent,
+          '--sport-image': `url(${slide.image})`,
+        } as React.CSSProperties}
+      >
+        <div className="max-w-xl">
+          <p className="text-sm font-mono tracking-[0.28em] text-white/70">DEPORTE DESTACADO</p>
+          <h2 className="mt-2 text-5xl sm:text-7xl font-heading font-black text-white leading-none">{slide.name}</h2>
+          <p className="mt-3 text-lg text-white/82">{slide.text}</p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link to={`/sports/${slide.id}`} className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-black text-black hover:bg-[#EA7301] transition-colors">
+              Explorar deporte <ArrowRight className="w-4 h-4" />
+            </Link>
+            <span className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-xs font-mono text-white/75">
+              {slide.tournaments} torneos · {slide.activeEvents} eventos
+            </span>
+          </div>
+        </div>
       </div>
-      <div className="mt-4 flex items-center justify-between">
+      <div className="mt-4 grid grid-cols-[auto_1fr_auto] items-center gap-4">
         <button aria-label="Anterior" onClick={() => setActive((active - 1 + sports.length) % sports.length)} className="p-2 rounded-full bg-white/10 hover:bg-white/20"><ChevronLeft /></button>
-        <div className="flex gap-2">
+        <div className="flex items-center justify-center gap-2">
           {sports.map((item, index) => (
-            <button key={item.id} aria-label={item.name} onClick={() => setActive(index)} className={`h-2 rounded-full transition-all ${index === active ? 'w-8 bg-[#EA7301]' : 'w-2 bg-white/30'}`} />
+            <button key={item.id} aria-label={item.name} onClick={() => setActive(index)} className={`h-2 rounded-full transition-all ${index === active ? 'w-10 bg-[#EA7301]' : 'w-2 bg-white/30'}`} />
           ))}
         </div>
         <button aria-label="Siguiente" onClick={() => setActive((active + 1) % sports.length)} className="p-2 rounded-full bg-white/10 hover:bg-white/20"><ChevronRight /></button>
+      </div>
+      <div className="mt-4 h-1 overflow-hidden rounded-full bg-white/10">
+        <div key={slide.id} className="h-full bg-[#EA7301] kas-carousel-progress" />
       </div>
     </div>
   );
@@ -332,11 +358,6 @@ function SportsCarousel() {
 function SectionGrid() {
   return (
     <section className="max-w-6xl mx-auto px-4 py-10 space-y-8">
-      <div className="grid sm:grid-cols-3 gap-4">
-        <InfoCard icon={<Trophy />} title="Torneos activos" text="Campeonato Nacional listo como torneo base." />
-        <InfoCard icon={<BadgeDollarSign />} title="Pay-Per-Tournament" text="Compra acceso por torneo, sin forzar paquetes globales." />
-        <InfoCard icon={<Users />} title="Comunidad" text="Foro, ranking y prestigio por competicion." />
-      </div>
       <SportsCarousel />
     </section>
   );

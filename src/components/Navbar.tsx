@@ -11,21 +11,9 @@ import {
   SlidersHorizontal,
   Edit3,
   LogOut,
-  Dumbbell,
-  ChevronDown,
-  Trophy,
-  BadgeDollarSign,
-  Users,
   Sun,
   Moon,
 } from 'lucide-react';
-
-type NavbarSport = {
-  id: string;
-  name: string;
-  text: string;
-  accent: string;
-};
 
 interface NavbarProps {
   onOpenAdmin: () => void;
@@ -33,9 +21,7 @@ interface NavbarProps {
   onNavigateToLogin?: () => void;
   onNavigateToProfile?: () => void;
   onNavigateToAdmin?: () => void;
-  onNavigateToSport?: (sportId: string) => void;
   onToggleTheme?: () => void;
-  sports?: NavbarSport[];
   colorMode?: 'dark' | 'light';
   publicMode?: boolean;
   showUserProfile?: boolean;
@@ -48,9 +34,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onNavigateToLogin,
   onNavigateToProfile,
   onNavigateToAdmin,
-  onNavigateToSport,
   onToggleTheme,
-  sports = [],
   colorMode = 'dark',
   publicMode = false,
   showUserProfile = true,
@@ -70,8 +54,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   } = useTournament();
 
   const [showSimMenu, setShowSimMenu] = useState(false);
-  const [sportsMenuOpen, setSportsMenuOpen] = useState(false);
-  const [kasMenuOpen, setKasMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
@@ -102,84 +84,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {publicMode ? (
           <div className="flex items-center gap-2">
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setKasMenuOpen((open) => !open)}
-                className="hidden sm:inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-heading font-bold text-white hover:border-[#EA7301]/60 hover:bg-white/10 transition-colors"
-              >
-                <span>KAS</span>
-                <ChevronDown className={`w-4 h-4 transition-transform ${kasMenuOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {kasMenuOpen && (
-                <div className="absolute right-0 mt-2 w-80 rounded-2xl border border-[#EA7301]/40 bg-[#140b16]/95 p-2 shadow-2xl backdrop-blur z-50">
-                  {[
-                    { icon: Trophy, title: 'Torneos activos', text: 'Campeonato Nacional listo como torneo base.', path: 'football' },
-                    { icon: BadgeDollarSign, title: 'Pay-Per-Tournament', text: 'Compra acceso por torneo, sin forzar paquetes globales.', path: 'football' },
-                    { icon: Users, title: 'Comunidad', text: 'Foro, ranking y prestigio por competicion.', path: 'football' },
-                  ].map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <button
-                        type="button"
-                        key={item.title}
-                        onClick={() => {
-                          setKasMenuOpen(false);
-                          onNavigateToSport?.(item.path);
-                        }}
-                        className="w-full rounded-xl px-3 py-3 text-left hover:bg-white/10 transition-colors"
-                      >
-                        <span className="flex items-start gap-3">
-                          <Icon className="mt-0.5 w-5 h-5 text-[#EA7301] shrink-0" />
-                          <span>
-                            <span className="block font-heading text-lg font-black text-white">{item.title}</span>
-                            <span className="block text-xs text-white/55">{item.text}</span>
-                          </span>
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setSportsMenuOpen((open) => !open)}
-                className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-heading font-bold text-white hover:border-[#EA7301]/60 hover:bg-white/10 transition-colors"
-              >
-                <Dumbbell className="w-4 h-4 text-[#EA7301]" />
-                <span>Deportes</span>
-                <ChevronDown className={`w-4 h-4 transition-transform ${sportsMenuOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {sportsMenuOpen && (
-                <div className="absolute right-0 mt-2 w-72 rounded-2xl border border-[#EA7301]/40 bg-[#140b16]/95 p-2 shadow-2xl backdrop-blur z-50">
-                  {sports.map((sport) => (
-                    <button
-                      type="button"
-                      key={sport.id}
-                      onClick={() => {
-                        setSportsMenuOpen(false);
-                        onNavigateToSport?.(sport.id);
-                      }}
-                      className="w-full rounded-xl px-3 py-3 text-left hover:bg-white/10 transition-colors"
-                    >
-                      <span className="flex items-center justify-between gap-3">
-                        <span>
-                          <span className="block font-heading text-lg font-black text-white">{sport.name}</span>
-                          <span className="block text-xs text-white/55">{sport.text}</span>
-                        </span>
-                        <span className="h-3 w-3 rounded-full" style={{ backgroundColor: sport.accent }} />
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
             <button
               type="button"
               onClick={onToggleTheme}

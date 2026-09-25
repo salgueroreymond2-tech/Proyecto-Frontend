@@ -11,13 +11,17 @@ import {
 } from 'react-router-dom';
 import {
   ArrowRight,
+  BadgeDollarSign,
   BarChart3,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
+  Dumbbell,
   Lock,
   Mail,
   Shield,
+  Trophy,
+  Users,
 } from 'lucide-react';
 import { TournamentProvider, useTournament } from './context/TournamentContext';
 import { Navbar } from './components/Navbar';
@@ -35,6 +39,7 @@ import { RulesModal } from './components/RulesModal';
 import { AdminMatchModal } from './components/AdminMatchModal';
 import { AdminView } from './components/AdminView';
 import { getTeamById } from './data/teams';
+import { getSportEvents, type NormalizedSportEvent } from './services/sportsApi';
 
 type Sport = {
   id: string;
@@ -169,12 +174,12 @@ function getTournamentAccessPath(id: string) {
 
 function findTournamentSummary(tournamentId: string) {
   const football = footballTournaments.find((item) => item.id === tournamentId);
-  if (football) return { ...football, sportName: 'Futbol' };
+  if (football) return { ...football, sportId: 'football', sportName: 'Futbol' };
 
   for (const sport of sports) {
     const dashboard = sportDashboards[sport.id];
     const tournament = dashboard?.tournaments.find((item) => toTournamentId(item.name) === tournamentId);
-    if (tournament) return { id: tournamentId, ...tournament, enabled: false, sportName: sport.name };
+    if (tournament) return { id: tournamentId, ...tournament, enabled: false, sportId: sport.id, sportName: sport.name };
   }
 
   return undefined;
@@ -222,9 +227,7 @@ function KasShell() {
         onNavigateToLogin={() => navigate('/login')}
         onNavigateToProfile={() => navigate('/profile')}
         onNavigateToAdmin={() => navigate('/admin')}
-        onNavigateToSport={(sportId) => navigate(`/sports/${sportId}`)}
         onToggleTheme={() => setColorMode((mode) => mode === 'dark' ? 'light' : 'dark')}
-        sports={sports}
         colorMode={colorMode}
         publicMode={isKasPublic}
         showUserProfile={location.pathname !== '/login'}
@@ -281,8 +284,8 @@ function getActiveTab(pathname: string): NavTab {
 function HomePage() {
   return (
     <div className="pb-16">
-      <section className="min-h-[62vh] px-4 py-8 sm:py-12 flex items-center kas-sport-hero" style={{ '--sport-accent': '#EA7301' } as React.CSSProperties}>
-        <div className="max-w-6xl mx-auto w-full">
+      <section className="min-h-[78vh] px-4 py-8 sm:py-12 flex items-center kas-sport-hero" style={{ '--sport-accent': '#EA7301' } as React.CSSProperties}>
+        <div className="max-w-6xl mx-auto w-full grid lg:grid-cols-[1.05fr_0.95fr] gap-8 items-center">
           <div className="space-y-6">
             <div>
               <p className="text-sm font-mono tracking-[0.35em] text-[#EA7301]">SPORTTECH ECOSYSTEM</p>
@@ -298,6 +301,7 @@ function HomePage() {
               </Link>
             </div>
           </div>
+          <SportsCarousel />
         </div>
       </section>
 
@@ -316,10 +320,10 @@ function SportsCarousel() {
   }, []);
 
   return (
-    <div className="mx-auto rounded-2xl border border-white/15 bg-[#140b16]/80 p-4 shadow-2xl backdrop-blur max-w-5xl">
+    <div className="mx-auto rounded-2xl border border-white/15 bg-[#140b16]/80 p-4 shadow-2xl backdrop-blur w-full max-w-xl">
       <div
         key={slide.id}
-        className="min-h-[420px] rounded-xl p-6 sm:p-8 flex flex-col justify-end kas-slide-visual overflow-hidden"
+        className="min-h-[360px] rounded-xl p-6 flex flex-col justify-end kas-slide-visual overflow-hidden"
         style={{
           '--sport-accent': slide.accent,
           '--sport-image': `url(${slide.image})`,
@@ -327,8 +331,8 @@ function SportsCarousel() {
       >
         <div className="max-w-xl">
           <p className="text-sm font-mono tracking-[0.28em] text-white/70">DEPORTE DESTACADO</p>
-          <h2 className="mt-2 text-5xl sm:text-7xl font-heading font-black text-white leading-none">{slide.name}</h2>
-          <p className="mt-3 text-lg text-white/82">{slide.text}</p>
+          <h2 className="mt-2 text-5xl font-heading font-black text-white leading-none">{slide.name}</h2>
+          <p className="mt-3 text-base text-white/82">{slide.text}</p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link to={`/sports/${slide.id}`} className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-black text-black hover:bg-[#EA7301] transition-colors">
               Explorar deporte <ArrowRight className="w-4 h-4" />
@@ -358,14 +362,30 @@ function SportsCarousel() {
 function SectionGrid() {
   return (
     <section className="max-w-6xl mx-auto px-4 py-10 space-y-8">
-      <SportsCarousel />
+      <div className="grid sm:grid-cols-3 gap-4">
+        <InfoCard className="kas-dark-card" icon={<Trophy />} title="Torneos activos" text="Campeonato Nacional listo como torneo base." />
+        <InfoCard className="kas-dark-card" icon={<BadgeDollarSign />} title="Pay-Per-Tournament" text="Compra acceso por torneo, sin forzar paquetes globales." />
+        <InfoCard className="kas-dark-card" icon={<Users />} title="Comunidad" text="Foro, ranking y prestigio por competicion." />
+      </div>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {sports.map((sport) => (
+          <Link key={sport.id} to={`/sports/${sport.id}`} className="kas-dark-card rounded-xl border border-white/10 bg-[#19101c] p-5 hover:border-[#EA7301]/70 transition-colors">
+            <div className="flex items-center justify-between">
+              <Dumbbell className="w-7 h-7" style={{ color: sport.accent }} />
+              <span className="text-xs font-mono text-white/60">{sport.tournaments} torneos</span>
+            </div>
+            <h3 className="mt-5 text-2xl font-heading font-black text-white">{sport.name}</h3>
+            <p className="mt-1 text-sm text-white/65">{sport.text}</p>
+          </Link>
+        ))}
+      </div>
     </section>
   );
 }
 
-function InfoCard({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
+function InfoCard({ icon, title, text, className = '' }: { icon: React.ReactNode; title: string; text: string; className?: string }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-[#19101c] p-5">
+    <div className={`rounded-xl border border-white/10 bg-[#19101c] p-5 ${className}`}>
       <div className="text-[#EA7301]">{icon}</div>
       <h3 className="mt-4 font-heading text-xl font-black text-white">{title}</h3>
       <p className="text-sm text-white/65">{text}</p>
@@ -481,31 +501,169 @@ function LoginPage({ onSuccess, onFavoriteTeamPreview }: { onSuccess: () => void
 
 function SportsDashboard() {
   const { currentUser } = useTournament();
+  const featuredTournaments = footballTournaments.slice(0, 5);
+  const [apiEvents, setApiEvents] = useState<NormalizedSportEvent[]>([]);
+  const [apiStatus, setApiStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [apiMessage, setApiMessage] = useState('Conectando con ESPN');
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    Promise.all([
+      getSportEvents('football', controller.signal),
+      getSportEvents('basketball', controller.signal),
+      getSportEvents('baseball', controller.signal),
+      getSportEvents('american-football', controller.signal),
+    ]).then((results) => {
+      const events = results.flatMap((result) => result.data.slice(0, 2)).slice(0, 6);
+      const usingFallback = results.some((result) => result.fromFallback);
+
+      setApiEvents(events);
+      setApiStatus(usingFallback ? 'error' : 'ready');
+      setApiMessage(usingFallback ? 'Mostrando respaldo local mientras una API externa responde.' : 'Datos conectados desde ESPN.');
+    }).catch((error) => {
+      if (controller.signal.aborted) return;
+      setApiEvents([]);
+      setApiStatus('error');
+      setApiMessage(error instanceof Error ? error.message : 'No se pudieron cargar eventos externos.');
+    });
+
+    return () => controller.abort();
+  }, []);
 
   return (
-    <div className="space-y-6 pb-24 px-4 pt-4">
-      <div className="rounded-2xl border border-[#EA7301]/30 bg-[#19101c] p-5">
-        <p className="text-sm font-mono text-[#EA7301]">DASHBOARD DE DEPORTES</p>
-        <h1 className="text-3xl font-heading font-black text-white">Bienvenido, {currentUser.name}</h1>
-        <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-          <Metric label="Prestigio" value={currentUser.points.toLocaleString()} />
-          <Metric label="Ranking global" value="Top 5%" />
-          <Metric label="Torneos activos" value="1" />
-          <Metric label="Pendientes" value="5" />
+    <div className="space-y-8 pb-24 px-4 pt-6 max-w-6xl mx-auto">
+      <section className="rounded-2xl border border-[#EA7301]/35 bg-[#19101c] p-5 sm:p-7 overflow-hidden relative">
+        <div className="absolute inset-y-0 right-0 w-1/2 opacity-20 bg-[radial-gradient(circle_at_center,#EA7301,transparent_58%)]" />
+        <div className="relative grid lg:grid-cols-[1.1fr_0.9fr] gap-6 items-end">
+          <div>
+            <p className="text-sm font-mono text-[#EA7301]">DASHBOARD KAS</p>
+            <h1 className="mt-2 text-4xl sm:text-5xl font-heading font-black text-white">Bienvenido, {currentUser.name}</h1>
+            <p className="mt-3 max-w-2xl text-[#d5c0d7]">
+              Gestiona tus deportes, compra accesos por torneo, compite en rankings y entra a comunidades deportivas desde un solo lugar.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <Metric label="Prestigio" value={currentUser.points.toLocaleString()} />
+            <Metric label="Ranking global" value="Top 5%" />
+            <Metric label="Deportes" value={String(sports.length)} />
+            <Metric label="Torneos activos" value={String(footballTournaments.length)} />
+          </div>
         </div>
-      </div>
-      <div className="grid sm:grid-cols-2 gap-4">
-        {sports.map((sport) => (
-          <Link key={sport.id} to={`/sports/${sport.id}`} className="rounded-xl border border-[#3c313e] bg-[#221824] p-5 hover:border-[#EA7301] transition-colors">
-            <div className="flex items-center justify-between">
-              <h2 className="font-heading text-2xl font-black text-white">{sport.name}</h2>
-              <span className="rounded-full bg-black/30 px-3 py-1 text-xs font-mono text-white/70">{sport.activeEvents} eventos</span>
-            </div>
-            <p className="mt-2 text-sm text-[#d5c0d7]">{sport.text}</p>
-            <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#EA7301]">Entrar <ArrowRight className="w-4 h-4" /></span>
+      </section>
+
+      <section className="grid md:grid-cols-3 gap-4">
+        <InfoCard className="kas-dark-card" icon={<Trophy />} title="Quinielas por torneo" text="Acceso individual a competiciones, picks, jornadas y finales sin paquetes obligatorios." />
+        <InfoCard className="kas-dark-card" icon={<BarChart3 />} title="Ranking y prestigio" text="Puntos, posiciones globales y reconocimiento por rendimiento en cada deporte." />
+        <InfoCard className="kas-dark-card" icon={<Users />} title="Comunidad deportiva" text="Foros, perfiles, historial y participacion social alrededor de cada torneo." />
+      </section>
+
+      <section className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <div>
+            <p className="text-sm font-mono text-[#EA7301]">DEPORTES</p>
+            <h2 className="text-3xl font-heading font-black text-white">Explora las categorias</h2>
+          </div>
+          <Link to="/sports/football" className="inline-flex items-center gap-2 text-sm font-bold text-[#EA7301] hover:text-orange-300">
+            Ver futbol <ArrowRight className="w-4 h-4" />
           </Link>
-        ))}
-      </div>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {sports.map((sport) => (
+            <Link key={sport.id} to={`/sports/${sport.id}`} className="rounded-xl border border-[#3c313e] bg-[#221824] p-5 hover:border-[#EA7301] transition-colors">
+              <div className="flex items-center justify-between">
+                <Dumbbell className="w-7 h-7" style={{ color: sport.accent }} />
+                <span className="rounded-full bg-black/30 px-3 py-1 text-xs font-mono text-white/70">{sport.activeEvents} eventos</span>
+              </div>
+              <h3 className="mt-5 font-heading text-2xl font-black text-white">{sport.name}</h3>
+              <p className="mt-2 text-sm text-[#d5c0d7]">{sport.text}</p>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#EA7301]">Entrar <ArrowRight className="w-4 h-4" /></span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="grid lg:grid-cols-[0.9fr_1.1fr] gap-4">
+        <div className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">
+          <p className="text-sm font-mono text-[#EA7301]">SERVICIOS KAS</p>
+          <h2 className="mt-2 text-3xl font-heading font-black text-white">Modelo pay-per-tournament</h2>
+          <p className="mt-3 text-sm text-[#d5c0d7]">
+            KAS permite crear experiencias deportivas independientes: membresia por torneo, ranking propio, foro de comunidad y reglas adaptadas a cada deporte.
+          </p>
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            <Metric label="Modelo" value="PPT" />
+            <Metric label="Accesos" value="Por torneo" />
+            <Metric label="Formato" value="Multi deporte" />
+            <Metric label="Comunidad" value="Incluida" />
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-mono text-[#EA7301]">TORNEOS</p>
+              <h2 className="text-3xl font-heading font-black text-white">Destacados</h2>
+            </div>
+            <Link to="/sports/football" className="text-sm font-bold text-[#EA7301] hover:text-orange-300">Ver todos</Link>
+          </div>
+          <div className="mt-4 space-y-3">
+            {featuredTournaments.map((tournament) => (
+              <Link key={tournament.id} to={getTournamentAccessPath(tournament.id)} className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-black/25 px-4 py-3 hover:border-[#EA7301]/70 transition-colors">
+                <div>
+                  <h3 className="font-heading text-xl font-black text-white">{tournament.name}</h3>
+                  <p className="text-xs text-[#d5c0d7]">{tournament.season} · {tournament.status}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{tournament.price}</span>
+                  <ArrowRight className="w-4 h-4 text-white/60" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <div>
+            <p className="text-sm font-mono text-[#EA7301]">API SPORTS DATA</p>
+            <h2 className="text-3xl font-heading font-black text-white">Eventos conectados</h2>
+          </div>
+          <span className={`rounded-full px-3 py-1 text-xs font-mono ${apiStatus === 'ready' ? 'bg-emerald-400/15 text-emerald-300' : apiStatus === 'loading' ? 'bg-[#EA7301]/15 text-[#EA7301]' : 'bg-amber-400/15 text-amber-200'}`}>
+            {apiStatus === 'loading' ? 'Cargando' : apiStatus === 'ready' ? 'ESPN activo' : 'Fallback local'}
+          </span>
+        </div>
+        <p className="mt-2 text-sm text-[#d5c0d7]">{apiMessage}</p>
+
+        <div className="mt-5 grid md:grid-cols-2 gap-3">
+          {apiStatus === 'loading' && [1, 2, 3, 4].map((item) => (
+            <div key={item} className="h-24 animate-pulse rounded-xl border border-white/10 bg-black/25" />
+          ))}
+
+          {apiStatus !== 'loading' && apiEvents.map((event) => (
+            <a
+              key={event.id}
+              href={event.sourceUrl || '#'}
+              target={event.sourceUrl ? '_blank' : undefined}
+              rel={event.sourceUrl ? 'noreferrer' : undefined}
+              className="rounded-xl border border-white/10 bg-black/25 p-4 hover:border-[#EA7301]/70 transition-colors"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-mono uppercase text-[#EA7301]">{event.league}</p>
+                  <h3 className="mt-1 font-heading text-xl font-black text-white">{event.title}</h3>
+                </div>
+                <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-mono text-white/65">{event.provider}</span>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[#d5c0d7]">
+                <span>{event.status}</span>
+                {event.score && <span className="text-white">Marcador {event.score}</span>}
+                {event.startsAt && <span>{new Date(event.startsAt).toLocaleDateString()}</span>}
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
@@ -553,6 +711,8 @@ function FootballDashboard() {
 function TournamentMembershipLogin() {
   const { tournamentId } = useParams();
   const tournament = tournamentId ? findTournamentSummary(tournamentId) : undefined;
+  const { loginUser } = useTournament();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('raymond@kas.com');
   const [password, setPassword] = useState('kas2026');
 
@@ -561,6 +721,8 @@ function TournamentMembershipLogin() {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    loginUser(email.trim().toLowerCase() === 'admin@kas.com');
+    navigate(`/tournaments/${tournamentId}`);
   };
 
   return (
@@ -619,11 +781,75 @@ function TournamentMembershipLogin() {
 
 function TournamentDashboard() {
   const { tournamentId } = useParams();
-  const tournament = footballTournaments.find((item) => item.id === tournamentId);
+  const tournament = tournamentId ? findTournamentSummary(tournamentId) : undefined;
 
-  if (!tournament) return <Navigate to="/sports/football" replace />;
+  if (!tournament || !tournamentId) return <Navigate to="/sports" replace />;
 
-  const enabledPath = getTournamentAccessPath(tournament.id);
+  const sport = sports.find((item) => item.id === tournament.sportId);
+  const dashboard = sportDashboards[tournament.sportId];
+  const isCostaRica = tournament.id === 'cr-apertura-2026';
+  const primaryPath = isCostaRica ? '/tournaments/cr-apertura-2026/predictions' : getTournamentAccessPath(tournament.id);
+  const events = dashboard?.events || [
+    'Jornada inicial pendiente de fixture',
+    'Ranking del torneo en preparacion',
+    'Foro de comunidad disponible',
+  ];
+  const enabledPath = primaryPath;
+
+  return (
+    <div className="space-y-6 pb-24 px-4 pt-4 max-w-6xl mx-auto">
+      <section className="rounded-2xl border border-[#EA7301]/40 bg-[#19101c] p-5 sm:p-7 overflow-hidden relative">
+        <div className="absolute inset-y-0 right-0 w-1/2 opacity-20 bg-[radial-gradient(circle_at_center,#EA7301,transparent_58%)]" />
+        <div className="relative grid lg:grid-cols-[1.1fr_0.9fr] gap-6 items-end">
+          <div>
+            <p className="text-sm font-mono text-[#EA7301]">DASHBOARD DEL TORNEO</p>
+            <h1 className="mt-2 text-4xl sm:text-5xl font-heading font-black text-white">{tournament.name}</h1>
+            <p className="mt-3 text-[#d5c0d7]">
+              {tournament.sportName} · {tournament.season} · {tournament.status} · Membresia {tournament.price}
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Metric label="Deporte" value={tournament.sportName} />
+            <Metric label="Formato" value="PPT" />
+            <Metric label="Estado" value={tournament.status} />
+            <Metric label="Eventos" value={String(sport?.activeEvents || events.length)} />
+          </div>
+        </div>
+      </section>
+
+      <section className="grid md:grid-cols-3 gap-4">
+        <InfoCard className="kas-dark-card" icon={<CalendarDays />} title="Calendario" text={isCostaRica ? 'Jornada activa disponible.' : 'Fixture conectado al deporte y listo para carga.'} />
+        <InfoCard className="kas-dark-card" icon={<BarChart3 />} title="Ranking KAS" text={`Prestigio y posiciones exclusivas para ${tournament.name}.`} />
+        <InfoCard className="kas-dark-card" icon={<Shield />} title="Membresia activa" text="Acceso pay-per-tournament para competir dentro de este torneo." />
+      </section>
+
+      <section className="grid lg:grid-cols-[0.85fr_1.15fr] gap-4">
+        <div className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">
+          <p className="text-sm font-mono text-[#EA7301]">FORMATO DE PREDICCION</p>
+          <h2 className="mt-2 text-3xl font-heading font-black text-white">{dashboard?.prediction || 'Ganador, marcador y ranking'}</h2>
+          <p className="mt-3 text-sm text-[#d5c0d7]">
+            Este torneo tiene su propio espacio de picks, ranking, comunidad y control de membresia.
+          </p>
+          <Link to={primaryPath} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#EA7301] px-5 py-3 font-heading font-bold text-black hover:bg-orange-400">
+            {isCostaRica ? 'Entrar a quiniela' : 'Gestionar membresia'} <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">
+          <p className="text-sm font-mono text-[#EA7301]">EVENTOS DEL TORNEO</p>
+          <h2 className="text-3xl font-heading font-black text-white">Actividad destacada</h2>
+          <div className="mt-4 space-y-3">
+            {events.map((event) => (
+              <div key={event} className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-black/25 px-4 py-3">
+                <span className="font-heading text-lg font-bold text-white">{event}</span>
+                <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">Picks</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 
   return (
     <div className="space-y-5 pb-24 px-4 pt-4">

@@ -20,7 +20,6 @@
       linear-gradient(90deg, rgba(0, 0, 0, 0.94) 0%, rgba(0, 0, 0, 0.72) 42%, rgba(18, 7, 22, 0.82) 100%),
       radial-gradient(circle at 72% 28%, rgba(234, 115, 1, 0.18), transparent 28%),
       radial-gradient(circle at 35% 42%, rgba(52, 20, 57, 0.48), transparent 36%),
-      url('/chatgpt_image_sep_21_2026_09_30_38_am.png') center 22% / min(96vw, 1120px) auto fixed no-repeat,
       #050505;
     color: #eeddee;
   }
@@ -38,7 +37,7 @@
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.92), rgba(52, 20, 57, 0.74), rgba(7, 40, 74, 0.42)),
     radial-gradient(circle at 78% 26%, color-mix(in srgb, var(--sport-accent, #EA7301) 45%, transparent), transparent 34%),
-    url('/logo-pasion-neon.jpg') center/cover no-repeat;
+    #050505;
 }
 
 .kas-slide-visual {
@@ -80,23 +79,26 @@
 [data-color-mode="light"] {
   color: #140b16;
   background:
-    radial-gradient(circle at 76% 12%, rgba(234, 115, 1, 0.14), transparent 24%),
-    linear-gradient(90deg, rgba(251, 250, 248, 0.92), rgba(251, 250, 248, 0.78)),
-    url('/chatgpt_image_sep_21_2026_09_30_38_am.png') center 120px / min(86vw, 980px) auto fixed no-repeat,
-    linear-gradient(180deg, #fbfaf8 0%, #f4f1ee 48%, #ede8e3 100%);
+    radial-gradient(circle at 18% 12%, rgba(234, 115, 1, 0.08), transparent 24%),
+    radial-gradient(circle at 78% 24%, rgba(52, 20, 57, 0.1), transparent 30%),
+    linear-gradient(180deg, #fbfaf8 0%, #f1eef2 48%, #ece7ee 100%);
 }
 
 [data-color-mode="light"] header,
 [data-color-mode="light"] footer,
 [data-color-mode="light"] nav {
-  background-color: rgba(255, 255, 255, 0.94) !important;
+  background-color: rgba(251, 250, 248, 0.9) !important;
   border-color: rgba(20, 11, 22, 0.1) !important;
   color: #140b16 !important;
-  box-shadow: 0 8px 30px rgba(20, 11, 22, 0.08);
+  box-shadow: 0 14px 36px rgba(20, 11, 22, 0.08);
+  backdrop-filter: blur(18px);
 }
 
 [data-color-mode="light"] main {
   color: #140b16;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.56), rgba(241, 238, 242, 0.6)),
+    radial-gradient(circle at 50% 0%, rgba(52, 20, 57, 0.08), transparent 42%);
 }
 
 [data-color-mode="light"] [class*="bg-[#050505]"],
@@ -106,8 +108,40 @@
 [data-color-mode="light"] [class*="bg-[#221824]"],
 [data-color-mode="light"] [class*="bg-[#261c28]"],
 [data-color-mode="light"] [class*="bg-[#2a1b2d]"] {
-  background-color: rgba(255, 255, 255, 0.92) !important;
+  background-color: #ffffff !important;
   box-shadow: 0 16px 40px rgba(20, 11, 22, 0.08);
+}
+
+[data-color-mode="light"] [class*="bg-black/25"],
+[data-color-mode="light"] [class*="bg-black/30"],
+[data-color-mode="light"] [class*="bg-white/5"],
+[data-color-mode="light"] [class*="bg-white/10"] {
+  background-color: rgba(52, 20, 57, 0.08) !important;
+  border-color: rgba(52, 20, 57, 0.16) !important;
+}
+
+[data-color-mode="light"] [class*="bg-[#EA7301]"],
+[data-color-mode="light"] [class*="bg-[#bf00ff]"],
+[data-color-mode="light"] [class*="bg-[#00f0ff]"] {
+  box-shadow: none;
+}
+
+[data-color-mode="light"] .kas-dark-card {
+  background-color: #19101c !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  color: #ffffff !important;
+  box-shadow: 0 18px 38px rgba(20, 11, 22, 0.16);
+}
+
+[data-color-mode="light"] .kas-dark-card h3,
+[data-color-mode="light"] .kas-dark-card p,
+[data-color-mode="light"] .kas-dark-card span {
+  color: #ffffff !important;
+}
+
+[data-color-mode="light"] .kas-dark-card p,
+[data-color-mode="light"] .kas-dark-card span {
+  color: rgba(255, 255, 255, 0.78) !important;
 }
 
 [data-color-mode="light"] [class*="text-white"],
@@ -129,11 +163,7 @@
 }
 
 [data-color-mode="light"] .kas-sport-hero {
-  background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.76) 44%, rgba(255, 246, 236, 0.34) 100%),
-    radial-gradient(circle at 18% 34%, rgba(234, 115, 1, 0.12), transparent 28%),
-    url('/chatgpt_image_sep_21_2026_09_30_38_am.png') right center / min(72vw, 920px) auto no-repeat,
-    #fbfaf8;
+  background: #ffffff;
 }
 
 [data-color-mode="light"] .kas-sport-hero h1,
@@ -147,8 +177,9 @@
 
 [data-color-mode="light"] .kas-login-bg::before {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.36), rgba(247, 247, 247, 0.82)),
-    radial-gradient(circle at 50% 50%, transparent 0%, rgba(247, 247, 247, 0.76) 76%);
+    linear-gradient(90deg, rgba(251, 250, 248, 0.94), rgba(241, 238, 242, 0.72)),
+    radial-gradient(circle at 76% 28%, rgba(234, 115, 1, 0.12), transparent 28%),
+    radial-gradient(circle at 36% 60%, rgba(52, 20, 57, 0.14), transparent 34%);
 }
 
 [data-color-mode="light"] .kas-slide-visual {
@@ -168,26 +199,94 @@
 [data-color-mode="light"] a[class*="bg-white"],
 [data-color-mode="light"] button[class*="bg-white"] {
   background-color: #ffffff !important;
+  color: #140b16 !important;
+  border-color: rgba(52, 20, 57, 0.18) !important;
 }
 
 [data-color-mode="light"] input {
-  border: 1px solid rgba(52, 20, 57, 0.5) !important;
-  background-color: rgba(255, 255, 255, 0.96) !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background-color: transparent !important;
   color: #140b16 !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(52, 20, 57, 0.08),
-    0 0 0 3px rgba(52, 20, 57, 0.04);
+  box-shadow: none !important;
 }
 
 [data-color-mode="light"] input:focus {
-  border-color: #341439 !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(52, 20, 57, 0.16),
-    0 0 0 4px rgba(52, 20, 57, 0.16);
+  outline: 0 !important;
+  box-shadow: none !important;
 }
 
 [data-color-mode="light"] input::placeholder {
   color: rgba(52, 20, 57, 0.45);
+}
+
+[data-color-mode="light"] label span[class*="bg-white"] {
+  background-color: #f7f4f7 !important;
+  border: 1px solid rgba(52, 20, 57, 0.16) !important;
+  color: #140b16 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 24px rgba(20, 11, 22, 0.12);
+}
+
+[data-color-mode="light"] label:focus-within span[class*="bg-white"] {
+  border-color: rgba(234, 115, 1, 0.62) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    0 0 0 4px rgba(234, 115, 1, 0.14),
+    0 12px 28px rgba(20, 11, 22, 0.16);
+}
+
+[data-color-mode="light"] main [class*="rounded"][class*="bg-white"] {
+  background-color: #f7f4f7 !important;
+  border-color: rgba(52, 20, 57, 0.14) !important;
+}
+
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"],
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#1e1321]"],
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"],
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"],
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#2a1b2d]"] {
+  background-color: #19101c !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  color: #ffffff !important;
+  box-shadow: 0 18px 38px rgba(20, 11, 22, 0.16);
+}
+
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] {
+  background-color: #221824 !important;
+}
+
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"],
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#2a1b2d]"] {
+  background-color: #261c28 !important;
+}
+
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] h1,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] h2,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] h3,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] p,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] span,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] h1,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] h2,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] h3,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] p,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] span,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] h1,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] h2,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] h3,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] p,
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] span {
+  color: inherit !important;
+}
+
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] [class*="text-[#d5c0d7]"],
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] [class*="text-white/"],
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] [class*="text-[#d5c0d7]"],
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] [class*="text-white/"],
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] [class*="text-[#d5c0d7]"],
+[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] [class*="text-white/"] {
+  color: rgba(255, 255, 255, 0.72) !important;
 }
 
 .kas-login-bg {

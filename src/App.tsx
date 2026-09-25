@@ -94,6 +94,7 @@ function KasShell() {
   const isAdmin = isLoggedIn && (currentUser.role === 'admin' || currentUser.isAdmin === true);
   const activeTab = getActiveTab(location.pathname);
   const isKasPublic = ['/', '/sports', '/sports/football'].includes(location.pathname);
+  const showBottomNav = location.pathname.includes('/tournaments/cr-apertura-2026') || location.pathname === '/profile' || location.pathname.startsWith('/admin');
 
   return (
     <div
@@ -110,6 +111,7 @@ function KasShell() {
         onNavigateToLogin={() => navigate('/login')}
         onNavigateToProfile={() => navigate('/profile')}
         onNavigateToAdmin={() => navigate('/admin')}
+        publicMode={isKasPublic}
         showUserProfile={location.pathname !== '/login'}
         showSimulator={isLoggedIn && !isAdmin && location.pathname.includes('/tournaments/cr-apertura-2026')}
       />
@@ -135,7 +137,11 @@ function KasShell() {
         </Routes>
       </main>
 
-      <BottomNav activeTab={activeTab} setActiveTab={(tab) => navigate(navPathByTab[tab])} isAdmin={isAdmin && activeTab === 'admin'} />
+      {showBottomNav && (
+        <BottomNav activeTab={activeTab} setActiveTab={(tab) => navigate(navPathByTab[tab])} isAdmin={isAdmin && activeTab === 'admin'} />
+      )}
+
+      {isKasPublic && <PublicFooter />}
 
       <ScorerVoteModal />
       <ChampionModal />
@@ -317,6 +323,34 @@ function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: () 
         </section>
       </div>
     </div>
+  );
+}
+
+function PublicFooter() {
+  return (
+    <footer className="border-t border-white/10 bg-[#050505] px-4 py-8">
+      <div className="max-w-6xl mx-auto flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <img
+            src="/logos/kas-logo.png"
+            alt="King Arthur Sports"
+            className="h-12 w-12 rounded-xl object-cover border border-[#EA7301]/50"
+          />
+          <div>
+            <p className="font-heading text-xl font-black text-white">KING ARTHUR SPORTS</p>
+            <p className="text-xs font-mono tracking-[0.2em] text-[#EA7301]">SPORTTECH ECOSYSTEM</p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-4 text-sm text-white/65">
+          <Link to="/sports" className="hover:text-[#EA7301]">Deportes</Link>
+          <Link to="/memberships" className="hover:text-[#EA7301]">Membresias</Link>
+          <Link to="/login" className="hover:text-[#EA7301]">Login</Link>
+        </div>
+      </div>
+      <div className="max-w-6xl mx-auto mt-6 text-xs text-white/40">
+        © 2026 King Arthur Sports. Pay-per-tournament, rankings y comunidad deportiva.
+      </div>
+    </footer>
   );
 }
 

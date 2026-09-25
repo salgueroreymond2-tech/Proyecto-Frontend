@@ -18,6 +18,7 @@ interface NavbarProps {
   onNavigateToLogin?: () => void;
   onNavigateToProfile?: () => void;
   onNavigateToAdmin?: () => void;
+  publicMode?: boolean;
   showUserProfile?: boolean;
   showSimulator?: boolean;
 }
@@ -27,6 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onNavigateToLogin,
   onNavigateToProfile,
   onNavigateToAdmin,
+  publicMode = false,
   showUserProfile = true,
   showSimulator = true,
 }) => {
@@ -49,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 bg-[#140b16]/95 backdrop-blur-md border-b border-[#3c313e]/60 px-4 py-3">
-      <div className="max-w-4xl mx-auto flex items-center justify-between">
+      <div className="max-w-6xl mx-auto flex items-center justify-between">
         {/* Left: Logo */}
         <div className="flex items-center gap-2.5">
           <img
@@ -67,7 +69,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* Right Actions */}
+        {publicMode ? (
+          <button
+            onClick={onNavigateToLogin}
+            className="rounded-xl bg-[#EA7301] px-4 py-2.5 text-sm font-heading font-black uppercase tracking-wide text-black hover:bg-orange-400 transition-colors"
+          >
+            Login
+          </button>
+        ) : (
+        /* Right Actions */
         <div className="flex items-center gap-2">
           {/* Quick Simulation / Tools Dropdown */}
           {showSimulator && (
@@ -269,6 +279,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
 
         </div>
+        )}
       </div>
     </header>
   );

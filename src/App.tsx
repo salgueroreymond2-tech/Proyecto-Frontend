@@ -159,6 +159,30 @@ const navPathByTab: Record<NavTab, string> = {
   login: '/login',
 };
 
+function toTournamentId(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function getTournamentAccessPath(id: string) {
+  return id === 'cr-apertura-2026' ? '/tournaments/cr-apertura-2026/login' : `/tournaments/${id}/membership`;
+}
+
+function findTournamentSummary(tournamentId: string) {
+  const football = footballTournaments.find((item) => item.id === tournamentId);
+  if (football) return { ...football, sportName: 'Futbol' };
+
+  for (const sport of sports) {
+    const dashboard = sportDashboards[sport.id];
+    const tournament = dashboard?.tournaments.find((item) => toTournamentId(item.name) === tournamentId);
+    if (tournament) return { id: tournamentId, ...tournament, enabled: false, sportName: sport.name };
+  }
+
+  return undefined;
+}
+
 function KasShell() {
   const [adminModalOpen, setAdminModalOpen] = useState(false);
   const { setActiveScorerMatchId, currentUser, isLoggedIn } = useTournament();
@@ -205,6 +229,7 @@ function KasShell() {
           <Route path="/sports" element={<SportsDashboard />} />
           <Route path="/sports/football" element={<FootballDashboard />} />
           <Route path="/sports/:sportId" element={<SportPlaceholder />} />
+          <Route path="/tournaments/:tournamentId/membership" element={<TournamentMembershipLogin />} />
           <Route path="/tournaments/:tournamentId" element={<TournamentDashboard />} />
           <Route path="/tournaments/cr-apertura-2026/login" element={<LoginPage onSuccess={() => navigate('/tournaments/cr-apertura-2026/predictions')} onFavoriteTeamPreview={setPreviewTeamId} />} />
           <Route path="/tournaments/:tournamentId/predictions" element={<CostaRicaOnly><DashboardView onOpenScorerModal={(id) => setActiveScorerMatchId(id)} onOpenAdmin={() => setAdminModalOpen(true)} /></CostaRicaOnly>} />
@@ -489,7 +514,7 @@ function FootballDashboard() {
         {footballTournaments.map((tournament) => (
           <Link
             key={tournament.id}
-            to={`/tournaments/${tournament.id}`}
+            to={getTournamentAccessPath(tournament.id)}
             className="rounded-xl border border-[#3c313e] bg-[#221824] p-5 hover:border-[#EA7301] transition-colors"
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -598,7 +623,7 @@ function SportPlaceholder() {
         </div>
         <div className="grid md:grid-cols-2 gap-4">
           {dashboard.tournaments.map((tournament) => (
-            <div key={tournament.name} className="rounded-xl border border-[#3c313e] bg-[#221824]/90 p-5 hover:border-[#EA7301] transition-colors">
+            <Link key={tournament.name} to={getTournamentAccessPath(toTournamentId(tournament.name))} className="rounded-xl border border-[#3c313e] bg-[#221824]/90 p-5 hover:border-[#EA7301] transition-colors">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <h3 className="font-heading text-2xl font-black text-white">{tournament.name}</h3>
@@ -606,10 +631,10 @@ function SportPlaceholder() {
                 </div>
                 <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{tournament.price}</span>
               </div>
-              <button className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#EA7301]">
-                Ver torneo <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#EA7301]">
+                Acceder con membresia <ArrowRight className="w-4 h-4" />
+              </span>
+            </Link>
           ))}
         </div>
       </section>

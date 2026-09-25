@@ -7,6 +7,11 @@
     --color-void-black: #050505;
     --color-surface-container: #19101c;
     --color-surface-card: #221824;
+    --kas-purple: #341439;
+    --kas-orange: #EA7301;
+    --kas-light: #F7F7F7;
+    --kas-blue: #07284A;
+    --kas-black: #000000;
   }
 
   body {
@@ -22,6 +27,19 @@
   .font-mono-data {
     font-family: 'JetBrains Mono', monospace;
   }
+}
+
+.kas-sport-hero {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.92), rgba(52, 20, 57, 0.74), rgba(7, 40, 74, 0.42)),
+    radial-gradient(circle at 78% 26%, color-mix(in srgb, var(--sport-accent, #EA7301) 45%, transparent), transparent 34%),
+    url('/logo-pasion-neon.jpg') center/cover no-repeat;
+}
+
+.kas-slide-visual {
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.82) 70%),
+    repeating-linear-gradient(135deg, color-mix(in srgb, var(--sport-accent, #EA7301) 34%, #111) 0 18px, #111 18px 36px);
 }
 
 /* Custom glowing effects */

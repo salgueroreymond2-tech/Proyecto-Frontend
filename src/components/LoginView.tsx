@@ -42,7 +42,14 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onFavorite
   };
 
   return (
-    <div className="min-h-[85vh] flex flex-col justify-center items-center py-6 px-4">
+    <div
+      data-login-theme={favoriteTeamId}
+      className="min-h-[85vh] flex flex-col justify-center items-center py-6 px-4"
+      style={{
+        '--theme-primary': loginThemeTeam?.primaryColor || '#bf00ff',
+        '--theme-secondary': loginThemeTeam?.accentColor || loginThemeTeam?.secondaryColor || '#00f0ff',
+      } as React.CSSProperties}
+    >
       <div className="w-full max-w-md space-y-6">
         
         {/* Header Branding */}

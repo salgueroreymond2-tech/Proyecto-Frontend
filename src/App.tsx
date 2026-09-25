@@ -534,13 +534,80 @@ function FootballDashboard() {
   );
 }
 
+function TournamentMembershipLogin() {
+  const { tournamentId } = useParams();
+  const tournament = tournamentId ? findTournamentSummary(tournamentId) : undefined;
+  const [email, setEmail] = useState('raymond@kas.com');
+  const [password, setPassword] = useState('kas2026');
+
+  if (!tournament || !tournamentId) return <Navigate to="/sports" replace />;
+  if (tournamentId === 'cr-apertura-2026') return <Navigate to="/tournaments/cr-apertura-2026/login" replace />;
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+  };
+
+  return (
+    <div className="min-h-[76vh] px-4 py-10 flex items-center justify-center">
+      <div className="w-full max-w-5xl grid lg:grid-cols-[0.9fr_1.1fr] gap-6 items-stretch">
+        <section className="rounded-2xl border border-[#EA7301]/40 bg-[#19101c]/90 p-6 sm:p-8">
+          <p className="text-sm font-mono text-[#EA7301]">MEMBRESIA PAY-PER-TOURNAMENT</p>
+          <h1 className="mt-2 text-4xl sm:text-5xl font-heading font-black text-white">{tournament.name}</h1>
+          <p className="mt-3 text-[#d5c0d7]">{tournament.sportName} · {tournament.season} · {tournament.status}</p>
+          <div className="mt-8 grid grid-cols-2 gap-3">
+            <Metric label="Acceso" value={tournament.price} />
+            <Metric label="Modelo" value="PPT" />
+          </div>
+          <div className="mt-6 rounded-xl border border-white/10 bg-black/25 p-4">
+            <p className="text-xs font-mono text-white/45">INCLUYE</p>
+            <ul className="mt-3 space-y-2 text-sm text-[#eeddee]">
+              <li>Quiniela del torneo</li>
+              <li>Ranking KAS por competicion</li>
+              <li>Foro exclusivo del torneo</li>
+              <li>Prestigio global y badges</li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-[#EA7301]/50 bg-[#19101c]/95 p-6 sm:p-8 shadow-2xl">
+          <p className="text-xs font-mono text-[#EA7301]">LOGIN DE MEMBRESIA</p>
+          <h2 className="mt-1 text-3xl font-heading font-black text-white">Acceso al torneo</h2>
+          <p className="mt-2 text-sm text-[#d5c0d7]">
+            Inicia sesion o compra esta membresia para desbloquear la experiencia completa.
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <label className="block space-y-1">
+              <span className="text-[11px] font-mono uppercase text-[#d5c0d7]">Correo</span>
+              <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" required className="w-full rounded-xl bg-white px-3 py-3 text-sm font-medium text-black outline-none" />
+            </label>
+
+            <label className="block space-y-1">
+              <span className="text-[11px] font-mono uppercase text-[#d5c0d7]">Contrasena</span>
+              <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" required className="w-full rounded-xl bg-white px-3 py-3 text-sm font-medium text-black outline-none" />
+            </label>
+
+            <button type="submit" className="w-full rounded-xl bg-[#EA7301] py-3.5 font-heading font-black uppercase tracking-wide text-black hover:bg-orange-400">
+              Comprar acceso {tournament.price}
+            </button>
+          </form>
+
+          <Link to={`/tournaments/${tournamentId}`} className="mt-4 block text-center text-xs font-mono text-[#d5c0d7] hover:text-[#EA7301]">
+            Ver resumen publico del torneo
+          </Link>
+        </section>
+      </div>
+    </div>
+  );
+}
+
 function TournamentDashboard() {
   const { tournamentId } = useParams();
   const tournament = footballTournaments.find((item) => item.id === tournamentId);
 
   if (!tournament) return <Navigate to="/sports/football" replace />;
 
-  const enabledPath = tournament.enabled ? `/tournaments/${tournament.id}/predictions` : '/sports/football';
+  const enabledPath = getTournamentAccessPath(tournament.id);
 
   return (
     <div className="space-y-5 pb-24 px-4 pt-4">
@@ -560,7 +627,7 @@ function TournamentDashboard() {
         <InfoCard icon={<Shield />} title="Membresia" text={tournament.enabled ? 'Acceso activo de prototipo.' : 'Pay-per-tournament preparado.'} />
       </div>
       <Link to={enabledPath} className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 font-heading font-bold ${tournament.enabled ? 'bg-[#EA7301] text-black' : 'bg-white/10 text-white'}`}>
-        {tournament.enabled ? 'Entrar a la quiniela actual' : 'Volver a torneos'} <ArrowRight className="w-4 h-4" />
+        {tournament.enabled ? 'Acceder con login de quiniela' : 'Comprar membresia'} <ArrowRight className="w-4 h-4" />
       </Link>
     </div>
   );

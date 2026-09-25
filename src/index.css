@@ -246,23 +246,31 @@ input[type=number] {
 }
 
 [data-login-theme] [class*="text-[#bf00ff]"] {
-  color: #bf00ff !important;
+  color: var(--theme-primary) !important;
 }
 
 [data-login-theme] [class*="text-[#ecb1ff]"] {
-  color: #ecb1ff !important;
+  color: color-mix(in srgb, var(--theme-primary) 76%, #ffffff) !important;
 }
 
 [data-login-theme] [class*="text-[#00f0ff]"] {
-  color: #00f0ff !important;
+  color: var(--theme-secondary) !important;
 }
 
 [data-login-theme] [class*="bg-[#bf00ff]"] {
-  background-color: #bf00ff !important;
+  background-color: var(--theme-primary) !important;
 }
 
 [data-login-theme] [class*="bg-[#00f0ff]"] {
-  background-color: #00f0ff !important;
+  background-color: var(--theme-secondary) !important;
+}
+
+[data-login-theme] [class*="border-[#bf00ff]"] {
+  border-color: var(--theme-primary) !important;
+}
+
+[data-login-theme] [class*="border-[#00f0ff]"] {
+  border-color: var(--theme-secondary) !important;
 }
 
 [data-login-theme] .glow-purple,
@@ -271,8 +279,8 @@ input[type=number] {
 [data-login-theme] .glow-cyan,
 [data-login-theme] .glow-cyan-sm,
 [data-login-theme] .text-glow-cyan {
-  box-shadow: none !important;
-  text-shadow: none !important;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--theme-primary) 36%, transparent) !important;
+  text-shadow: 0 0 12px color-mix(in srgb, var(--theme-primary) 52%, transparent) !important;
 }
 
 [data-login-theme] .team-themed-button {

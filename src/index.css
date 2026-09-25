@@ -16,7 +16,12 @@
 
   body {
     font-family: 'Inter', sans-serif;
-    background-color: #050505;
+    background:
+      linear-gradient(90deg, rgba(0, 0, 0, 0.94) 0%, rgba(0, 0, 0, 0.72) 42%, rgba(18, 7, 22, 0.82) 100%),
+      radial-gradient(circle at 72% 28%, rgba(234, 115, 1, 0.18), transparent 28%),
+      radial-gradient(circle at 35% 42%, rgba(52, 20, 57, 0.48), transparent 36%),
+      url('/chatgpt_image_sep_21_2026_09_30_38_am.png') center 22% / min(96vw, 1120px) auto fixed no-repeat,
+      #050505;
     color: #eeddee;
   }
 
@@ -40,6 +45,22 @@
   background:
     linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.82) 70%),
     repeating-linear-gradient(135deg, color-mix(in srgb, var(--sport-accent, #EA7301) 34%, #111) 0 18px, #111 18px 36px);
+}
+
+.kas-login-bg {
+  position: relative;
+  isolation: isolate;
+}
+
+.kas-login-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.78)),
+    radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.72) 76%);
+  pointer-events: none;
 }
 
 /* Custom glowing effects */

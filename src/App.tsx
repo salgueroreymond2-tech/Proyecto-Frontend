@@ -100,7 +100,7 @@ function KasShell() {
     <div
       data-team-theme={usesTeamTheme ? themeTeamId : undefined}
       data-login-theme={usesLoginTeamTheme ? themeTeamId : undefined}
-      className="min-h-screen bg-[#050505] text-[#eeddee] flex flex-col selection:bg-[#EA7301] selection:text-white"
+      className="min-h-screen bg-transparent text-[#eeddee] flex flex-col selection:bg-[#EA7301] selection:text-white"
       style={usesTeamTheme || usesLoginTeamTheme ? {
         '--theme-primary': (usesLoginTeamTheme ? loginThemeTeam : activeThemeTeam)?.primaryColor || '#341439',
         '--theme-secondary': (usesLoginTeamTheme ? loginThemeTeam : activeThemeTeam)?.accentColor || '#EA7301',
@@ -265,7 +265,7 @@ function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: () 
   };
 
   return (
-    <div className="min-h-[82vh] px-4 py-10 flex items-center justify-center">
+    <div className="min-h-[82vh] px-4 py-10 flex items-center justify-center kas-login-bg">
       <div className="w-full max-w-5xl grid lg:grid-cols-[1.05fr_0.95fr] gap-8 items-center">
         <section className="space-y-5">
           <p className="text-sm font-mono tracking-[0.35em] text-[#EA7301]">SPORTTECH ECOSYSTEM</p>

@@ -15,6 +15,7 @@ import {
   INITIAL_SOCIAL_POSTS,
   ALL_ACHIEVEMENTS,
 } from '../data/mockUsers';
+import { clearStoredSession, getStoredSession } from '../services/authApi';
 
 interface TournamentContextType {
   matches: Match[];
@@ -46,7 +47,7 @@ interface TournamentContextType {
   fillRandomPredictionsAll: () => void;
   resetTournament: () => void;
   toggleMute: () => void;
-  loginUser: (isAdmin?: boolean) => void;
+  loginUser: (user: UserProfile) => void;
   logoutUser: () => void;
   deleteUser: (userId: string) => void;
   setUserEnabled: (userId: string, enabled: boolean) => void;
@@ -77,6 +78,11 @@ const LOCAL_STORAGE_KEY_DELETED_USERS = 'pasion_cr_deleted_users_v1';
 const LOCAL_STORAGE_KEY_USER_STATUS = 'pasion_cr_user_status_v1';
 const LOCAL_STORAGE_KEY_USER_POINTS = 'pasion_cr_user_points_v1';
 const LOCAL_STORAGE_KEY_PREDICTIONS_BY_USER = 'pasion_cr_predictions_by_user_v1';
+
+const GUEST_USER: UserProfile = {
+  id: 'guest', name: 'Invitado', username: '@invitado', avatar: 'https://api.dicebear.com/9.x/initials/svg?seed=KAS', favoriteTeamId: 'sap',
+  points: 0, exactHits: 0, tendencyHits: 0, currentStreak: 0, maxStreak: 0, multiplier: 1, accuracyRate: 0, level: 1, countryRankPercentile: 100, unlockedAchievements: [], role: 'user', isEnabled: true,
+};
 
 export const TournamentProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // Initialize Matches
@@ -139,13 +145,14 @@ export const TournamentProvider: React.FC<{ children: ReactNode }> = ({ children
         console.error('Failed to parse saved user', e);
       }
     }
-    return INITIAL_CURRENT_USER;
+    const session = getStoredSession();
+    return session ? { ...GUEST_USER, ...session.user } : GUEST_USER;
   });
 
   const [socialPosts, setSocialPosts] = useState<SocialPost[]>(INITIAL_SOCIAL_POSTS);
   const [achievements, setAchievements] = useState<Achievement[]>(ALL_ACHIEVEMENTS);
   const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => Boolean(getStoredSession()));
   const [deletedUserIds, setDeletedUserIds] = useState<string[]>(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY_DELETED_USERS);
     return saved ? JSON.parse(saved) : [];
@@ -163,25 +170,16 @@ export const TournamentProvider: React.FC<{ children: ReactNode }> = ({ children
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const [showRulesModal, setShowRulesModal] = useState<boolean>(false);
 
-  const loginUser = (isAdmin = false) => {
+  const loginUser = (user: UserProfile) => {
     setIsLoggedIn(true);
-    setCurrentUser((prev) => ({
-      ...prev,
-      ...(isAdmin
-        ? { isAdmin: true, role: 'admin' as const, isEnabled: true }
-        : {
-            name: prev.username === '@admin_master' ? 'Carlos Mendoza' : prev.name,
-            username: prev.username === '@admin_master' ? '@carlos_predice' : prev.username,
-            isAdmin: false,
-            role: 'user' as const,
-            isEnabled: true,
-          }),
-    }));
+    setCurrentUser(user);
     playSound('click');
   };
 
   const logoutUser = () => {
     setIsLoggedIn(false);
+    clearStoredSession();
+    setCurrentUser(GUEST_USER);
     playSound('click');
   };
 

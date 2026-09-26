@@ -1,0 +1,109 @@
+{
+  "users": [
+    {
+      "id": "e8ada419-aa73-48c3-bf01-3d33b52ae0d6",
+      "email": "usuario@gmail.com",
+      "name": "user",
+      "username": "@user",
+      "favoriteTeamId": "sap",
+      "role": "user",
+      "createdAt": "2026-09-25T21:07:55.539Z",
+      "passwordHash": "1ef1d14a6cbb3c2638c07ffe2d562a413d19d3165f7a52ffb7a63f69aac6a6a1e40bf0a1ec360a6c6a08d846afed358d8393ad15b2827dd84aa1a8fa5f02edad",
+      "passwordSalt": "1e8f468aa085a69c307771f8b6379e9b"
+    },
+    {
+      "id": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "email": "ray@gmail.com",
+      "name": "reymond",
+      "username": "@reymond",
+      "favoriteTeamId": "sap",
+      "role": "admin",
+      "createdAt": "2026-09-25T21:10:29.108Z",
+      "passwordHash": "4ca285c6d8aa699b9e158afe6b2e2177330504580b3c2d0d31b77ab1e07f9457e7b154e8912beacdd5448daaced658bcbb9c9a636890eb38c4530f37089a88ef",
+      "passwordSalt": "cab5f63434fb0fb05a39140fdd337cd3"
+    },
+    {
+      "id": "84d99ae7-88f7-4fa0-aa7d-22cc2ec1cf82",
+      "email": "j@gmail.com",
+      "name": "jorge",
+      "username": "@jorge",
+      "favoriteTeamId": "sap",
+      "role": "user",
+      "createdAt": "2026-09-25T21:15:17.935Z",
+      "passwordHash": "ca879f0c098e7386788627f8ee9bb780abb04c5de950f1fe730c8e7404342827960d808107fcc60137bc3b2473f99a73e172975773e61753ef66e66fc00a27ec",
+      "passwordSalt": "1bf5680b1f2e666de9957b7629f58184"
+    }
+  ],
+  "sessions": [
+    {
+      "token": "155dc72ea6bd22e35532e2fb3adc5d599e3678aea1b8205ac49f8510a69aa1cc",
+      "userId": "e8ada419-aa73-48c3-bf01-3d33b52ae0d6",
+      "expiresAt": "2026-10-02T21:07:55.540Z"
+    },
+    {
+      "token": "6a3713283e12748bfc634e5fadece2d4e4698e0f53e8ea31d12a6639341a50e3",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-02T21:10:29.108Z"
+    },
+    {
+      "token": "4a06dc8e5fc3a3fc0e280c229f2c6c4f3a20bf80c2d7760df6b708b76926de01",
+      "userId": "84d99ae7-88f7-4fa0-aa7d-22cc2ec1cf82",
+      "expiresAt": "2026-10-02T21:15:17.937Z"
+    },
+    {
+      "token": "7f39f8c3239d279dd95636ff5178bbe1ccd2172461808ecbe396b55bb75ae2c1",
+      "userId": "84d99ae7-88f7-4fa0-aa7d-22cc2ec1cf82",
+      "expiresAt": "2026-10-02T21:19:06.940Z"
+    }
+  ],
+  "memberships": [
+    {
+      "id": "65d6471f-9b29-48ab-b2ff-93b3e062b699",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "nba-temporada-regular",
+      "paymentId": "SIM-8989d811-071f-4c30-ac52-7d16557aab69",
+      "status": "active",
+      "grantedAt": "2026-09-25T21:10:43.098Z"
+    },
+    {
+      "id": "bdcb0213-58e1-4553-bf3b-8fee66987bf7",
+      "userId": "84d99ae7-88f7-4fa0-aa7d-22cc2ec1cf82",
+      "tournamentId": "premier-league",
+      "paymentId": "SIM-a0c2cf7b-d00a-4b3d-8834-d65a221af693",
+      "status": "active",
+      "grantedAt": "2026-09-25T21:19:20.670Z"
+    }
+  ],
+  "payments": [
+    {
+      "id": "SIM-8989d811-071f-4c30-ac52-7d16557aab69",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "nba-temporada-regular",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-25T21:10:43.060Z",
+      "capturedAt": "2026-09-25T21:10:43.098Z"
+    },
+    {
+      "id": "SIM-999fb9b3-5d35-4afd-9e6c-6de829ca7a5c",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "nba-temporada-regular",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-25T21:10:54.341Z",
+      "capturedAt": "2026-09-25T21:10:54.379Z"
+    },
+    {
+      "id": "SIM-a0c2cf7b-d00a-4b3d-8834-d65a221af693",
+      "userId": "84d99ae7-88f7-4fa0-aa7d-22cc2ec1cf82",
+      "tournamentId": "premier-league",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-25T21:19:20.640Z",
+      "capturedAt": "2026-09-25T21:19:20.670Z"
+    }
+  ]
+}

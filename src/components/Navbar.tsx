@@ -13,6 +13,12 @@ import {
   LogOut,
   Sun,
   Moon,
+  ChevronDown,
+  Menu,
+  Dumbbell,
+  Trophy,
+  BadgeDollarSign,
+  Users,
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -24,8 +30,14 @@ interface NavbarProps {
   onToggleTheme?: () => void;
   colorMode?: 'dark' | 'light';
   publicMode?: boolean;
+  showPublicLogin?: boolean;
   showUserProfile?: boolean;
   showSimulator?: boolean;
+  publicNavigation?: {
+    sports: { id: string; label: string; path: string; accent: string }[];
+    services: { id: string; label: string; detail: string; path: string; icon: 'trophy' | 'payment' | 'community' }[];
+  };
+  onNavigateToPath?: (path: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -37,8 +49,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleTheme,
   colorMode = 'dark',
   publicMode = false,
+  showPublicLogin = true,
   showUserProfile = true,
   showSimulator = true,
+  publicNavigation,
+  onNavigateToPath,
 }) => {
   const {
     isMuted,
@@ -56,6 +71,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [showSimMenu, setShowSimMenu] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [publicMenuOpen, setPublicMenuOpen] = useState<'sports' | 'services' | null>(null);
+
+  const serviceIcons = {
+    trophy: Trophy,
+    payment: BadgeDollarSign,
+    community: Users,
+  };
 
   return (
     <header className="sticky top-0 z-40 bg-[#140b16]/95 backdrop-blur-md border-b border-[#3c313e]/60 px-4 py-3">
@@ -84,6 +106,49 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {publicMode ? (
           <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2">
+              <div className="relative">
+                <button type="button" onClick={() => setPublicMenuOpen((value) => value === 'services' ? null : 'services')} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-sm font-heading font-bold text-white hover:border-[#EA7301]/60 hover:bg-white/10">
+                  KAS <ChevronDown className="h-4 w-4" />
+                </button>
+                {publicMenuOpen === 'services' && publicNavigation && (
+                  <div className="absolute right-0 mt-2 w-72 rounded-xl border border-[#3c313e] bg-[#19101c] p-2 shadow-2xl">
+                    {publicNavigation.services.map((service) => {
+                      const Icon = serviceIcons[service.icon];
+                      return <button key={service.id} type="button" onClick={() => { onNavigateToPath?.(service.path); setPublicMenuOpen(null); }} className="flex w-full items-start gap-3 rounded-lg px-3 py-3 text-left hover:bg-white/10">
+                        <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#EA7301]" />
+                        <span><span className="block text-sm font-bold text-white">{service.label}</span><span className="mt-0.5 block text-xs text-white/60">{service.detail}</span></span>
+                      </button>;
+                    })}
+                  </div>
+                )}
+              </div>
+              <div className="relative">
+                <button type="button" onClick={() => setPublicMenuOpen((value) => value === 'sports' ? null : 'sports')} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-sm font-heading font-bold text-white hover:border-[#EA7301]/60 hover:bg-white/10">
+                  <Dumbbell className="h-4 w-4 text-[#EA7301]" /> Deportes <ChevronDown className="h-4 w-4" />
+                </button>
+                {publicMenuOpen === 'sports' && publicNavigation && (
+                  <div className="absolute right-0 mt-2 grid w-80 grid-cols-2 gap-1 rounded-xl border border-[#3c313e] bg-[#19101c] p-2 shadow-2xl">
+                    {publicNavigation.sports.map((sport) => <button key={sport.id} type="button" onClick={() => { onNavigateToPath?.(sport.path); setPublicMenuOpen(null); }} className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-bold text-white hover:bg-white/10">
+                      <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: sport.accent }} />{sport.label}
+                    </button>)}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="relative md:hidden">
+              <button type="button" onClick={() => setPublicMenuOpen((value) => value === 'services' ? null : 'services')} className="rounded-xl border border-white/15 bg-white/5 p-2.5 text-white" aria-label="Abrir navegacion">
+                <Menu className="h-4 w-4 text-[#EA7301]" />
+              </button>
+              {publicMenuOpen === 'services' && publicNavigation && (
+                <div className="absolute right-0 mt-2 w-72 rounded-xl border border-[#3c313e] bg-[#19101c] p-2 shadow-2xl">
+                  <p className="px-3 py-2 text-[10px] font-mono text-white/50">SERVICIOS</p>
+                  {publicNavigation.services.map((service) => <button key={service.id} type="button" onClick={() => { onNavigateToPath?.(service.path); setPublicMenuOpen(null); }} className="block w-full rounded-lg px-3 py-2 text-left text-sm font-bold text-white hover:bg-white/10">{service.label}</button>)}
+                  <p className="mt-2 px-3 py-2 text-[10px] font-mono text-white/50">DEPORTES</p>
+                  {publicNavigation.sports.map((sport) => <button key={sport.id} type="button" onClick={() => { onNavigateToPath?.(sport.path); setPublicMenuOpen(null); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-bold text-white hover:bg-white/10"><span className="h-2 w-2 rounded-full" style={{ backgroundColor: sport.accent }} />{sport.label}</button>)}
+                </div>
+              )}
+            </div>
             <button
               type="button"
               onClick={onToggleTheme}
@@ -94,12 +159,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               {colorMode === 'dark' ? <Sun className="w-4 h-4 text-[#EA7301]" /> : <Moon className="w-4 h-4 text-[#EA7301]" />}
             </button>
 
-            <button
+            {showPublicLogin && <button
               onClick={onNavigateToLogin}
               className="rounded-xl bg-[#EA7301] px-4 py-2.5 text-sm font-heading font-black uppercase tracking-wide text-black hover:bg-orange-400 transition-colors"
             >
               Login
-            </button>
+            </button>}
           </div>
         ) : (
         /* Right Actions */

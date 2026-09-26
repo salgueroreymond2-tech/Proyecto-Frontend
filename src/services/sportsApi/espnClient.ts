@@ -1,4 +1,5 @@
 import { espnLeagueBySport } from './config';
+import { getCachedJson } from './cache';
 import type { NormalizedSportEvent } from './types';
 
 type EspnCompetition = {
@@ -53,13 +54,11 @@ export async function fetchEspnScoreboard(sportId: string, signal?: AbortSignal)
   if (!config) return [];
 
   const url = `https://site.api.espn.com/apis/site/v2/sports/${config.sportSlug}/${config.leagueSlug}/scoreboard`;
-  const response = await fetch(url, { signal });
-
-  if (!response.ok) {
-    throw new Error(`ESPN ${config.leagueName} respondio ${response.status}`);
-  }
-
-  const payload = await response.json() as EspnScoreboardResponse;
+  const payload = await getCachedJson(url, async () => {
+    const response = await fetch(url, { signal });
+    if (!response.ok) throw new Error(`ESPN ${config.leagueName} respondio ${response.status}`);
+    return response.json() as Promise<EspnScoreboardResponse>;
+  });
 
   return (payload.events || []).map((event) => {
     const home = getCompetitor(event, 'home');
@@ -81,4 +80,3 @@ export async function fetchEspnScoreboard(sportId: string, signal?: AbortSignal)
     };
   });
 }
-

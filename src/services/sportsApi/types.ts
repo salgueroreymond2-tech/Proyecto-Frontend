@@ -1,4 +1,4 @@
-export type SportProvider = 'espn' | 'thesportsdb' | 'local';
+export type SportProvider = 'espn' | 'football-data' | 'thesportsdb' | 'openligadb' | 'local';
 
 export type NormalizedSportEvent = {
   id: string;
@@ -23,10 +23,16 @@ export type NormalizedLeague = {
   provider: SportProvider;
 };
 
+export type NormalizedSportVisual = {
+  sportId: string;
+  thumbnail?: string;
+  icon?: string;
+  provider: SportProvider;
+};
+
 export type SportsApiResult<T> = {
   data: T;
   provider: SportProvider;
   fromFallback: boolean;
   error?: string;
 };
-

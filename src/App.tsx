@@ -39,7 +39,8 @@ import { RulesModal } from './components/RulesModal';
 import { AdminMatchModal } from './components/AdminMatchModal';
 import { AdminView } from './components/AdminView';
 import { getTeamById } from './data/teams';
-import { getSportEvents, type NormalizedSportEvent } from './services/sportsApi';
+import { getSportEvents, getSportVisuals, getTournamentEvents, type NormalizedSportEvent, type SportProvider } from './services/sportsApi';
+import { signIn, signUp, simulatePayPalCheckout } from './services/authApi';
 
 type Sport = {
   id: string;
@@ -52,12 +53,12 @@ type Sport = {
 };
 
 const sports: Sport[] = [
-  { id: 'football', name: 'Futbol', text: 'Jornadas, marcadores, rankings y finales.', tournaments: 8, activeEvents: 42, accent: '#EA7301', image: '/sports/football.jpg' },
-  { id: 'tennis', name: 'Tenis', text: 'Rondas, sets y prestigio por torneo.', tournaments: 7, activeEvents: 18, accent: '#46D369', image: '/sports/tennis.jpg' },
-  { id: 'basketball', name: 'Baloncesto', text: 'NBA con ganador, marcador y diferencia.', tournaments: 1, activeEvents: 14, accent: '#F97316', image: '/sports/basketball.jpg' },
-  { id: 'baseball', name: 'Beisbol', text: 'MLB con carreras y ganador por juego.', tournaments: 1, activeEvents: 12, accent: '#38BDF8', image: '/sports/baseball.jpg' },
-  { id: 'american-football', name: 'Futbol Americano', text: 'NFL con picks por semana y playoffs.', tournaments: 1, activeEvents: 16, accent: '#A78BFA', image: '/sports/american-football.jpg' },
-  { id: 'mma', name: 'UFC / MMA', text: 'Ganador, metodo y round por cartelera.', tournaments: 1, activeEvents: 9, accent: '#EF4444', image: '/sports/mma.jpg' },
+  { id: 'football', name: 'Futbol', text: 'Jornadas, marcadores, rankings y finales.', tournaments: 8, activeEvents: 42, accent: '#EA7301', image: '/sports/football.png' },
+  { id: 'tennis', name: 'Tenis', text: 'Rondas, sets y prestigio por torneo.', tournaments: 7, activeEvents: 18, accent: '#46D369', image: '/sports/tennis.png' },
+  { id: 'basketball', name: 'Baloncesto', text: 'NBA con ganador, marcador y diferencia.', tournaments: 1, activeEvents: 14, accent: '#F97316', image: '/sports/basketball.png' },
+  { id: 'baseball', name: 'Beisbol', text: 'MLB con carreras y ganador por juego.', tournaments: 1, activeEvents: 12, accent: '#38BDF8', image: '/sports/baseball.png' },
+  { id: 'american-football', name: 'Futbol Americano', text: 'NFL con picks por semana y playoffs.', tournaments: 1, activeEvents: 16, accent: '#A78BFA', image: '/sports/american-football.png' },
+  { id: 'mma', name: 'UFC / MMA', text: 'Ganador, metodo y round por cartelera.', tournaments: 1, activeEvents: 9, accent: '#EF4444', image: '/sports/mma.png' },
 ];
 
 const footballTournaments = [
@@ -151,6 +152,114 @@ const sportDashboards = {
   tournaments: { name: string; season: string; status: string; price: string }[];
 }>;
 
+const tournamentDetails: Record<string, {
+  overview: string;
+  teams: string[];
+  format: string;
+  predictionRules: string[];
+  coverage: string[];
+}> = {
+  'cr-apertura-2026': {
+    overview: 'Torneo base de la quiniela nacional con clubes de Primera Division de Costa Rica, jornadas activas, ranking y comunidad local.',
+    teams: ['Saprissa', 'Alajuelense', 'Herediano', 'Cartagines', 'Sporting FC', 'Puntarenas FC', 'Perez Zeledon', 'San Carlos', 'Guanacasteca', 'Liberia'],
+    format: 'Apertura 2026 · fase regular, semifinales y final nacional.',
+    predictionRules: ['Marcador exacto', 'Ganador del partido', 'Campeon del torneo', 'Goleador destacado'],
+    coverage: ['Jornadas nacionales', 'Tabla de posiciones', 'Playoffs', 'Ranking Promerica'],
+  },
+  'champions-league': {
+    overview: 'Competicion europea premium con clubes elite, fase de liga, rondas eliminatorias y final continental.',
+    teams: ['Real Madrid', 'Manchester City', 'Bayern Munich', 'PSG', 'Barcelona', 'Liverpool', 'Inter', 'Arsenal'],
+    format: 'Temporada 2026-2027 · fase de liga y eliminatorias.',
+    predictionRules: ['Ganador', 'Marcador exacto', 'Clasificados por ronda', 'Campeon'],
+    coverage: ['Fixture europeo', 'Octavos a final', 'Ranking continental', 'Clubes favoritos'],
+  },
+  'premier-league': {
+    overview: 'Liga inglesa con jornadas semanales, tabla acumulada y quiniela por fecha.',
+    teams: ['Manchester City', 'Arsenal', 'Liverpool', 'Chelsea', 'Manchester United', 'Tottenham', 'Newcastle', 'Aston Villa'],
+    format: 'Temporada 2026-2027 · todos contra todos.',
+    predictionRules: ['Ganador', 'Marcador', 'Diferencia de goles', 'Top 4'],
+    coverage: ['Calendario de liga', 'Tabla general', 'Derbis', 'Carrera al titulo'],
+  },
+  laliga: {
+    overview: 'Competicion espanola con seguimiento de clubes principales, jornadas y lucha por puestos europeos.',
+    teams: ['Real Madrid', 'Barcelona', 'Atletico Madrid', 'Sevilla', 'Real Sociedad', 'Villarreal', 'Athletic Club', 'Valencia'],
+    format: 'Temporada 2026-2027 · liga regular.',
+    predictionRules: ['Ganador', 'Marcador', 'Porteria a cero', 'Campeon'],
+    coverage: ['Jornadas', 'Clasico', 'Tabla', 'Puestos europeos'],
+  },
+  'serie-a': {
+    overview: 'Liga italiana con pronosticos de resultados, ranking de usuarios y seguimiento de candidatos al Scudetto.',
+    teams: ['Inter', 'Milan', 'Juventus', 'Napoli', 'Roma', 'Lazio', 'Atalanta', 'Fiorentina'],
+    format: 'Temporada 2026-2027 · liga regular.',
+    predictionRules: ['Ganador', 'Marcador', 'Resultado doble oportunidad', 'Campeon'],
+    coverage: ['Jornadas', 'Tabla', 'Clasicos italianos', 'Zona europea'],
+  },
+  bundesliga: {
+    overview: 'Liga alemana con foco en marcadores, liderato y rendimiento ofensivo.',
+    teams: ['Bayern Munich', 'Borussia Dortmund', 'RB Leipzig', 'Bayer Leverkusen', 'Stuttgart', 'Eintracht Frankfurt', 'Wolfsburg', 'Freiburg'],
+    format: 'Temporada 2026-2027 · liga regular.',
+    predictionRules: ['Ganador', 'Marcador', 'Total de goles', 'Campeon'],
+    coverage: ['Jornadas', 'Tabla', 'Carrera al titulo', 'Goleadores'],
+  },
+  'primeira-liga': {
+    overview: 'Liga portuguesa con predicciones por fecha y seguimiento de clubes historicos.',
+    teams: ['Benfica', 'Porto', 'Sporting CP', 'Braga', 'Vitoria SC', 'Boavista', 'Casa Pia', 'Famalicao'],
+    format: 'Temporada 2026-2027 · liga regular.',
+    predictionRules: ['Ganador', 'Marcador', 'Diferencia de goles', 'Campeon'],
+    coverage: ['Jornadas', 'Tabla', 'Clasicos', 'Puestos europeos'],
+  },
+  'europa-league': {
+    overview: 'Torneo europeo de eliminatorias con clubes internacionales y alto valor de prediccion.',
+    teams: ['Roma', 'Sevilla', 'Bayer Leverkusen', 'Tottenham', 'Porto', 'Lyon', 'Ajax', 'Benfica'],
+    format: 'Temporada 2026-2027 · fase de liga y eliminatorias.',
+    predictionRules: ['Ganador', 'Marcador', 'Clasificados', 'Campeon'],
+    coverage: ['Fase de liga', 'Eliminatorias', 'Final', 'Ranking europeo'],
+  },
+  'nba-temporada-regular': {
+    overview: 'Temporada regular NBA con partidos diarios, marcadores y ranking por aciertos.',
+    teams: ['Boston Celtics', 'Los Angeles Lakers', 'Denver Nuggets', 'Dallas Mavericks', 'Golden State Warriors', 'Phoenix Suns', 'Miami Heat', 'Milwaukee Bucks'],
+    format: 'Temporada 2026-2027 · conferencia Este y Oeste.',
+    predictionRules: ['Ganador', 'Marcador', 'Diferencia de puntos', 'Equipo con mas puntos'],
+    coverage: ['Calendario NBA', 'Conferencias', 'Rachas', 'Play-in'],
+  },
+  'nba-playoffs': {
+    overview: 'Playoffs NBA con series al mejor de siete y predicciones por ronda.',
+    teams: ['Clasificados Este', 'Clasificados Oeste', 'Semifinalistas', 'Finalistas de conferencia'],
+    format: 'Playoffs 2027 · series eliminatorias.',
+    predictionRules: ['Ganador de juego', 'Ganador de serie', 'Resultado de serie', 'Campeon de conferencia'],
+    coverage: ['Primera ronda', 'Semifinales', 'Finales de conferencia', 'Finales NBA'],
+  },
+  'nba-finals': {
+    overview: 'Serie final NBA con predicciones premium por partido, MVP y campeon.',
+    teams: ['Campeon del Este', 'Campeon del Oeste'],
+    format: 'Finales NBA 2027 · mejor de siete.',
+    predictionRules: ['Ganador', 'Marcador', 'MVP', 'Resultado de serie'],
+    coverage: ['Finales', 'MVP', 'Marcadores', 'Campeon'],
+  },
+  'mlb-temporada-regular': {
+    overview: 'Temporada MLB con picks por juego, carreras y series.',
+    teams: ['New York Yankees', 'Boston Red Sox', 'Los Angeles Dodgers', 'San Diego Padres', 'Houston Astros', 'Texas Rangers', 'Atlanta Braves', 'Chicago Cubs'],
+    format: 'Temporada 2027 · liga Americana y Nacional.',
+    predictionRules: ['Ganador', 'Carreras totales', 'Ganador de serie', 'Diferencia de carreras'],
+    coverage: ['Temporada regular', 'Divisiones', 'Series', 'Wild Card'],
+  },
+  'mlb-postseason': {
+    overview: 'Postemporada MLB con series eliminatorias y predicciones por ronda.',
+    teams: ['Wild Cards', 'Campeones divisionales', 'Finalistas Liga Americana', 'Finalistas Liga Nacional'],
+    format: 'Postseason 2027 · series eliminatorias.',
+    predictionRules: ['Ganador de juego', 'Ganador de serie', 'Carreras', 'Campeon de liga'],
+    coverage: ['Wild Card', 'Division Series', 'Championship Series', 'World Series'],
+  },
+  'world-series': {
+    overview: 'Final de MLB con predicciones de campeon, marcador y MVP.',
+    teams: ['Campeon Liga Americana', 'Campeon Liga Nacional'],
+    format: 'World Series 2027 · mejor de siete.',
+    predictionRules: ['Ganador', 'Carreras', 'Resultado de serie', 'MVP'],
+    coverage: ['Serie final', 'MVP', 'Campeon', 'Juego decisivo'],
+  },
+};
+
+
 const navPathByTab: Record<NavTab, string> = {
   dashboard: '/tournaments/cr-apertura-2026/predictions',
   ranking: '/tournaments/cr-apertura-2026/ranking',
@@ -230,8 +339,18 @@ function KasShell() {
         onToggleTheme={() => setColorMode((mode) => mode === 'dark' ? 'light' : 'dark')}
         colorMode={colorMode}
         publicMode={isKasPublic}
+        showPublicLogin={location.pathname === '/'}
         showUserProfile={location.pathname !== '/login'}
         showSimulator={isLoggedIn && !isAdmin && location.pathname.includes('/tournaments/cr-apertura-2026')}
+        publicNavigation={{
+          sports: sports.map((sport) => ({ id: sport.id, label: sport.name, path: `/sports/${sport.id}`, accent: sport.accent })),
+          services: [
+            { id: 'tournaments', label: 'Torneos activos', detail: 'Competiciones, jornadas y finales.', path: '/sports', icon: 'trophy' },
+            { id: 'membership', label: 'Pay-Per-Tournament', detail: 'Accesos por torneo sin paquetes globales.', path: '/sports', icon: 'payment' },
+            { id: 'community', label: 'Comunidad', detail: 'Ranking, perfiles y actividad deportiva.', path: '/dashboard', icon: 'community' },
+          ],
+        }}
+        onNavigateToPath={(path) => navigate(path)}
       />
 
       <main className={isKasPublic ? 'flex-1 w-full' : 'flex-1 w-full max-w-4xl mx-auto pt-3 px-2 sm:px-4'}>
@@ -305,18 +424,31 @@ function HomePage() {
         </div>
       </section>
 
-      <SectionGrid />
     </div>
   );
 }
 
 function SportsCarousel() {
   const [active, setActive] = useState(0);
+  const [providerVisuals, setProviderVisuals] = useState<Record<string, string>>({});
   const slide = sports[active];
 
   useEffect(() => {
     const timer = window.setInterval(() => setActive((current) => (current + 1) % sports.length), 4800);
     return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    getSportVisuals(controller.signal).then((result) => {
+      const visuals = result.data.reduce<Record<string, string>>((items, visual) => {
+        if (visual.thumbnail) items[visual.sportId] = visual.thumbnail;
+        return items;
+      }, {});
+      setProviderVisuals(visuals);
+    }).catch(() => undefined);
+
+    return () => controller.abort();
   }, []);
 
   return (
@@ -326,7 +458,7 @@ function SportsCarousel() {
         className="min-h-[360px] rounded-xl p-6 flex flex-col justify-end kas-slide-visual overflow-hidden"
         style={{
           '--sport-accent': slide.accent,
-          '--sport-image': `url(${slide.image})`,
+          '--sport-image': `url(${providerVisuals[slide.id] || slide.image})`,
         } as React.CSSProperties}
       >
         <div className="max-w-xl">
@@ -359,30 +491,6 @@ function SportsCarousel() {
   );
 }
 
-function SectionGrid() {
-  return (
-    <section className="max-w-6xl mx-auto px-4 py-10 space-y-8">
-      <div className="grid sm:grid-cols-3 gap-4">
-        <InfoCard className="kas-dark-card" icon={<Trophy />} title="Torneos activos" text="Campeonato Nacional listo como torneo base." />
-        <InfoCard className="kas-dark-card" icon={<BadgeDollarSign />} title="Pay-Per-Tournament" text="Compra acceso por torneo, sin forzar paquetes globales." />
-        <InfoCard className="kas-dark-card" icon={<Users />} title="Comunidad" text="Foro, ranking y prestigio por competicion." />
-      </div>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {sports.map((sport) => (
-          <Link key={sport.id} to={`/sports/${sport.id}`} className="kas-dark-card rounded-xl border border-white/10 bg-[#19101c] p-5 hover:border-[#EA7301]/70 transition-colors">
-            <div className="flex items-center justify-between">
-              <Dumbbell className="w-7 h-7" style={{ color: sport.accent }} />
-              <span className="text-xs font-mono text-white/60">{sport.tournaments} torneos</span>
-            </div>
-            <h3 className="mt-5 text-2xl font-heading font-black text-white">{sport.name}</h3>
-            <p className="mt-1 text-sm text-white/65">{sport.text}</p>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function InfoCard({ icon, title, text, className = '' }: { icon: React.ReactNode; title: string; text: string; className?: string }) {
   return (
     <div className={`rounded-xl border border-white/10 bg-[#19101c] p-5 ${className}`}>
@@ -396,13 +504,28 @@ function InfoCard({ icon, title, text, className = '' }: { icon: React.ReactNode
 function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: () => void; isRegisterDefault?: boolean }) {
   const { loginUser } = useTournament();
   const [isRegister, setIsRegister] = useState(isRegisterDefault);
-  const [email, setEmail] = useState('raymond@kas.com');
-  const [password, setPassword] = useState('kas2026');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    loginUser(email.trim().toLowerCase() === 'admin@kas.com');
-    onSuccess();
+    setError('');
+    setIsSubmitting(true);
+    try {
+      const session = isRegister
+        ? await signUp({ email, password, name, username, favoriteTeamId: 'sap' })
+        : await signIn(email, password);
+      loginUser(session.user);
+      onSuccess();
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : 'No se pudo iniciar sesion.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -437,6 +560,16 @@ function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: () 
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {isRegister && <>
+              <label className="block space-y-1">
+                <span className="text-[11px] font-mono uppercase text-[#d5c0d7]">Nombre</span>
+                <input value={name} onChange={(event) => setName(event.target.value)} type="text" required className="w-full rounded-xl bg-white px-3 py-3 text-sm font-medium text-black outline-none" />
+              </label>
+              <label className="block space-y-1">
+                <span className="text-[11px] font-mono uppercase text-[#d5c0d7]">Usuario</span>
+                <input value={username} onChange={(event) => setUsername(event.target.value)} type="text" required className="w-full rounded-xl bg-white px-3 py-3 text-sm font-medium text-black outline-none" />
+              </label>
+            </>}
             <label className="block space-y-1">
               <span className="text-[11px] font-mono uppercase text-[#d5c0d7]">Correo</span>
               <span className="flex items-center gap-2 rounded-xl bg-white px-3 py-3 text-black">
@@ -453,8 +586,9 @@ function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: () 
               </span>
             </label>
 
-            <button type="submit" className="w-full rounded-xl bg-[#EA7301] py-3.5 font-heading font-black uppercase tracking-wide text-black hover:bg-orange-400">
-              {isRegister ? 'Crear cuenta KAS' : 'Iniciar sesion'}
+            {error && <p className="rounded-xl border border-red-400/40 bg-red-400/10 px-3 py-2 text-xs text-red-100">{error}</p>}
+            <button type="submit" disabled={isSubmitting} className="w-full rounded-xl bg-[#EA7301] py-3.5 font-heading font-black uppercase tracking-wide text-black hover:bg-orange-400 disabled:opacity-60">
+              {isSubmitting ? 'Procesando' : isRegister ? 'Crear cuenta KAS' : 'Iniciar sesion'}
             </button>
           </form>
 
@@ -502,6 +636,7 @@ function LoginPage({ onSuccess, onFavoriteTeamPreview }: { onSuccess: () => void
 function SportsDashboard() {
   const { currentUser } = useTournament();
   const featuredTournaments = footballTournaments.slice(0, 5);
+  const tournamentCount = footballTournaments.length + Object.values(sportDashboards).reduce((total, dashboard) => total + dashboard.tournaments.length, 0);
   const [apiEvents, setApiEvents] = useState<NormalizedSportEvent[]>([]);
   const [apiStatus, setApiStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [apiMessage, setApiMessage] = useState('Conectando con ESPN');
@@ -537,25 +672,27 @@ function SportsDashboard() {
         <div className="absolute inset-y-0 right-0 w-1/2 opacity-20 bg-[radial-gradient(circle_at_center,#EA7301,transparent_58%)]" />
         <div className="relative grid lg:grid-cols-[1.1fr_0.9fr] gap-6 items-end">
           <div>
-            <p className="text-sm font-mono text-[#EA7301]">DASHBOARD KAS</p>
+            <p className="text-sm font-mono text-[#EA7301]">CENTRO DEPORTIVO KAS</p>
             <h1 className="mt-2 text-4xl sm:text-5xl font-heading font-black text-white">Bienvenido, {currentUser.name}</h1>
             <p className="mt-3 max-w-2xl text-[#d5c0d7]">
-              Gestiona tus deportes, compra accesos por torneo, compite en rankings y entra a comunidades deportivas desde un solo lugar.
+              Un solo espacio para descubrir competiciones, revisar la actualidad deportiva y activar membresias por el torneo que realmente quieres jugar.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <Metric label="Prestigio" value={currentUser.points.toLocaleString()} />
             <Metric label="Ranking global" value="Top 5%" />
             <Metric label="Deportes" value={String(sports.length)} />
-            <Metric label="Torneos activos" value={String(footballTournaments.length)} />
+            <Metric label="Torneos disponibles" value={String(tournamentCount)} />
           </div>
         </div>
       </section>
 
-      <section className="grid md:grid-cols-3 gap-4">
-        <InfoCard className="kas-dark-card" icon={<Trophy />} title="Quinielas por torneo" text="Acceso individual a competiciones, picks, jornadas y finales sin paquetes obligatorios." />
-        <InfoCard className="kas-dark-card" icon={<BarChart3 />} title="Ranking y prestigio" text="Puntos, posiciones globales y reconocimiento por rendimiento en cada deporte." />
-        <InfoCard className="kas-dark-card" icon={<Users />} title="Comunidad deportiva" text="Foros, perfiles, historial y participacion social alrededor de cada torneo." />
+      <section className="border-y border-white/10 py-6">
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="border-l-2 border-[#EA7301] pl-4"><Trophy className="h-5 w-5 text-[#EA7301]" /><h2 className="mt-3 font-heading text-2xl font-black text-white">Quinielas por torneo</h2><p className="mt-2 text-sm text-[#d5c0d7]">Acceso individual a competiciones, picks, jornadas y finales sin paquetes obligatorios.</p></div>
+          <div className="border-l-2 border-[#EA7301] pl-4"><BarChart3 className="h-5 w-5 text-[#EA7301]" /><h2 className="mt-3 font-heading text-2xl font-black text-white">Ranking y prestigio</h2><p className="mt-2 text-sm text-[#d5c0d7]">Tus resultados se convierten en puntos, posiciones y reconocimiento dentro de cada torneo.</p></div>
+          <div className="border-l-2 border-[#EA7301] pl-4"><Users className="h-5 w-5 text-[#EA7301]" /><h2 className="mt-3 font-heading text-2xl font-black text-white">Comunidad deportiva</h2><p className="mt-2 text-sm text-[#d5c0d7]">Foros, perfiles e historial de actividad para seguir cada competencia con contexto.</p></div>
+        </div>
       </section>
 
       <section className="space-y-4">
@@ -623,17 +760,30 @@ function SportsDashboard() {
         </div>
       </section>
 
+      <section className="border-y border-white/10 py-8">
+        <div className="max-w-3xl">
+          <p className="text-sm font-mono text-[#EA7301]">ASI FUNCIONA KAS</p>
+          <h2 className="mt-2 text-3xl font-heading font-black text-white">Elige, activa y compite</h2>
+          <p className="mt-3 text-sm text-[#d5c0d7]">Cada deporte mantiene sus propias reglas, calendario y comunidad. La membresia se activa por torneo para que tu experiencia no dependa de un paquete global.</p>
+        </div>
+        <div className="mt-7 grid gap-5 md:grid-cols-3">
+          <div><span className="font-mono text-[#EA7301]">01</span><h3 className="mt-2 font-heading text-xl font-black text-white">Explora el torneo</h3><p className="mt-1 text-sm text-[#d5c0d7]">Consulta participantes, formato, precio y la actividad disponible antes de ingresar.</p></div>
+          <div><span className="font-mono text-[#EA7301]">02</span><h3 className="mt-2 font-heading text-xl font-black text-white">Activa membresia</h3><p className="mt-1 text-sm text-[#d5c0d7]">Tu acceso queda asociado a tu cuenta y a la competición seleccionada.</p></div>
+          <div><span className="font-mono text-[#EA7301]">03</span><h3 className="mt-2 font-heading text-xl font-black text-white">Participa y sigue</h3><p className="mt-1 text-sm text-[#d5c0d7]">Registra picks, revisa jornadas, ranking y actualizaciones de cada torneo.</p></div>
+        </div>
+      </section>
+
       <section className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
           <div>
-            <p className="text-sm font-mono text-[#EA7301]">API SPORTS DATA</p>
-            <h2 className="text-3xl font-heading font-black text-white">Eventos conectados</h2>
+            <p className="text-sm font-mono text-[#EA7301]">ACTUALIDAD DEPORTIVA</p>
+            <h2 className="text-3xl font-heading font-black text-white">Noticias y agenda</h2>
           </div>
           <span className={`rounded-full px-3 py-1 text-xs font-mono ${apiStatus === 'ready' ? 'bg-emerald-400/15 text-emerald-300' : apiStatus === 'loading' ? 'bg-[#EA7301]/15 text-[#EA7301]' : 'bg-amber-400/15 text-amber-200'}`}>
             {apiStatus === 'loading' ? 'Cargando' : apiStatus === 'ready' ? 'ESPN activo' : 'Fallback local'}
           </span>
         </div>
-        <p className="mt-2 text-sm text-[#d5c0d7]">{apiMessage}</p>
+        <p className="mt-2 text-sm text-[#d5c0d7]">{apiMessage} La agenda se actualiza desde los proveedores disponibles y se identifica claramente cuando se usa un respaldo local.</p>
 
         <div className="mt-5 grid md:grid-cols-2 gap-3">
           {apiStatus === 'loading' && [1, 2, 3, 4].map((item) => (
@@ -662,6 +812,7 @@ function SportsDashboard() {
               </div>
             </a>
           ))}
+          {apiStatus !== 'loading' && apiEvents.length === 0 && <div className="rounded-xl border border-white/10 bg-black/25 p-4 text-sm text-[#d5c0d7]">No hay eventos publicados por los proveedores en este momento. Vuelve a consultar mas tarde.</div>}
         </div>
       </section>
     </div>
@@ -675,6 +826,11 @@ function Metric({ label, value }: { label: string; value: string }) {
       <div className="font-heading text-xl font-black text-white">{value}</div>
     </div>
   );
+}
+
+function eventsFromDashboard(events: string[] | undefined, sportName: string) {
+  if (!events || events.length === 0) return [`Participantes ${sportName}`, 'Calendario pendiente', 'Ranking disponible'];
+  return events.flatMap((event) => event.split(' vs ')).slice(0, 8);
 }
 
 function FootballDashboard() {
@@ -711,18 +867,25 @@ function FootballDashboard() {
 function TournamentMembershipLogin() {
   const { tournamentId } = useParams();
   const tournament = tournamentId ? findTournamentSummary(tournamentId) : undefined;
-  const { loginUser } = useTournament();
+  const { isLoggedIn } = useTournament();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('raymond@kas.com');
-  const [password, setPassword] = useState('kas2026');
+  const [isPaying, setIsPaying] = useState(false);
+  const [paymentError, setPaymentError] = useState('');
 
   if (!tournament || !tournamentId) return <Navigate to="/sports" replace />;
   if (tournamentId === 'cr-apertura-2026') return <Navigate to="/tournaments/cr-apertura-2026/login" replace />;
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    loginUser(email.trim().toLowerCase() === 'admin@kas.com');
-    navigate(`/tournaments/${tournamentId}`);
+  const handleCheckout = async () => {
+    setPaymentError('');
+    setIsPaying(true);
+    try {
+      await simulatePayPalCheckout(tournamentId, tournament.price);
+      navigate(`/tournaments/${tournamentId}`);
+    } catch (requestError) {
+      setPaymentError(requestError instanceof Error ? requestError.message : 'No se pudo procesar el pago.');
+    } finally {
+      setIsPaying(false);
+    }
   };
 
   return (
@@ -748,27 +911,27 @@ function TournamentMembershipLogin() {
         </section>
 
         <section className="rounded-2xl border border-[#EA7301]/50 bg-[#19101c]/95 p-6 sm:p-8 shadow-2xl">
-          <p className="text-xs font-mono text-[#EA7301]">LOGIN DE MEMBRESIA</p>
-          <h2 className="mt-1 text-3xl font-heading font-black text-white">Acceso al torneo</h2>
+          <p className="text-xs font-mono text-[#EA7301]">MEMBRESIA DEL TORNEO</p>
+          <h2 className="mt-1 text-3xl font-heading font-black text-white">Acceso protegido</h2>
           <p className="mt-2 text-sm text-[#d5c0d7]">
-            Inicia sesion o compra esta membresia para desbloquear la experiencia completa.
+            {isLoggedIn ? 'Completa el pago simulado para activar tu membresia en este torneo.' : 'Inicia sesion antes de comprar una membresia.'}
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            <label className="block space-y-1">
-              <span className="text-[11px] font-mono uppercase text-[#d5c0d7]">Correo</span>
-              <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" required className="w-full rounded-xl bg-white px-3 py-3 text-sm font-medium text-black outline-none" />
-            </label>
-
-            <label className="block space-y-1">
-              <span className="text-[11px] font-mono uppercase text-[#d5c0d7]">Contrasena</span>
-              <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" required className="w-full rounded-xl bg-white px-3 py-3 text-sm font-medium text-black outline-none" />
-            </label>
-
-            <button type="submit" className="w-full rounded-xl bg-[#EA7301] py-3.5 font-heading font-black uppercase tracking-wide text-black hover:bg-orange-400">
-              Comprar acceso {tournament.price}
-            </button>
-          </form>
+          <div className="mt-6 space-y-4">
+            <div className="rounded-xl border border-blue-400/30 bg-blue-400/10 px-4 py-3 text-sm text-blue-100">
+              PayPal Sandbox: no se realiza ningun cobro real.
+            </div>
+            {isLoggedIn ? (
+              <button type="button" onClick={handleCheckout} disabled={isPaying} className="w-full rounded-xl bg-[#0070ba] py-3.5 font-heading font-black uppercase tracking-wide text-white hover:bg-[#005ea6] disabled:opacity-60">
+                {isPaying ? 'Procesando pago...' : `Pagar con PayPal simulado ${tournament.price}`}
+              </button>
+            ) : (
+              <Link to="/login" className="block w-full rounded-xl bg-[#EA7301] py-3.5 text-center font-heading font-black uppercase tracking-wide text-black hover:bg-orange-400">
+                Iniciar sesion para continuar
+              </Link>
+            )}
+            {paymentError && <p className="rounded-xl border border-red-400/40 bg-red-400/10 px-3 py-2 text-xs text-red-100">{paymentError}</p>}
+          </div>
 
           <Link to={`/tournaments/${tournamentId}`} className="mt-4 block text-center text-xs font-mono text-[#d5c0d7] hover:text-[#EA7301]">
             Ver resumen publico del torneo
@@ -782,6 +945,28 @@ function TournamentMembershipLogin() {
 function TournamentDashboard() {
   const { tournamentId } = useParams();
   const tournament = tournamentId ? findTournamentSummary(tournamentId) : undefined;
+  const [tournamentApiEvents, setTournamentApiEvents] = useState<NormalizedSportEvent[]>([]);
+  const [tournamentApiStatus, setTournamentApiStatus] = useState<'loading' | 'ready' | 'fallback'>('loading');
+  const [tournamentProvider, setTournamentProvider] = useState<SportProvider>('local');
+
+  useEffect(() => {
+    if (!tournamentId) return;
+
+    const controller = new AbortController();
+    setTournamentApiStatus('loading');
+
+    getTournamentEvents(tournamentId, controller.signal).then((result) => {
+      setTournamentApiEvents(result.data);
+      setTournamentApiStatus(result.fromFallback ? 'fallback' : 'ready');
+      setTournamentProvider(result.provider);
+    }).catch(() => {
+      setTournamentApiEvents([]);
+      setTournamentApiStatus('fallback');
+      setTournamentProvider('local');
+    });
+
+    return () => controller.abort();
+  }, [tournamentId]);
 
   if (!tournament || !tournamentId) return <Navigate to="/sports" replace />;
 
@@ -789,11 +974,19 @@ function TournamentDashboard() {
   const dashboard = sportDashboards[tournament.sportId];
   const isCostaRica = tournament.id === 'cr-apertura-2026';
   const primaryPath = isCostaRica ? '/tournaments/cr-apertura-2026/predictions' : getTournamentAccessPath(tournament.id);
+  const detail = tournamentDetails[tournament.id] || {
+    overview: dashboard?.description || `Dashboard de ${tournament.name} con informacion del torneo, participantes y formato de quiniela.`,
+    teams: eventsFromDashboard(dashboard?.events, tournament.sportName),
+    format: `${tournament.season} · ${tournament.status}`,
+    predictionRules: [dashboard?.prediction || 'Ganador y marcador', 'Ranking del torneo', 'Prestigio KAS'],
+    coverage: ['Calendario', 'Ranking', 'Comunidad', 'Membresia'],
+  };
   const events = dashboard?.events || [
     'Jornada inicial pendiente de fixture',
     'Ranking del torneo en preparacion',
     'Foro de comunidad disponible',
   ];
+  const liveTournamentEvents = tournamentApiEvents.length > 0 ? tournamentApiEvents : [];
   const enabledPath = primaryPath;
 
   return (
@@ -817,6 +1010,50 @@ function TournamentDashboard() {
         </div>
       </section>
 
+      <section className="grid lg:grid-cols-[1.1fr_0.9fr] gap-4">
+        <div className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-mono text-[#EA7301]">EQUIPOS / PARTICIPANTES</p>
+              <h2 className="text-3xl font-heading font-black text-white">Competidores</h2>
+            </div>
+            <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{detail.teams.length} activos</span>
+          </div>
+          <p className="mt-3 text-sm text-[#d5c0d7]">{detail.overview}</p>
+          <div className="mt-5 grid sm:grid-cols-2 gap-3">
+            {detail.teams.map((team) => (
+              <div key={team} className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
+                <p className="font-heading text-lg font-black text-white">{team}</p>
+                <p className="text-xs text-[#d5c0d7]">{tournament.sportName}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">
+          <p className="text-sm font-mono text-[#EA7301]">INFORMACION DEL TORNEO</p>
+          <h2 className="mt-2 text-3xl font-heading font-black text-white">{detail.format}</h2>
+          <div className="mt-5 space-y-4">
+            <div>
+              <p className="text-xs font-mono text-white/45">REGLAS DE PREDICCION</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {detail.predictionRules.map((rule) => (
+                  <span key={rule} className="rounded-full border border-white/10 bg-black/25 px-3 py-1 text-xs text-[#eeddee]">{rule}</span>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-mono text-white/45">COBERTURA</p>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                {detail.coverage.map((item) => (
+                  <div key={item} className="rounded-lg bg-black/25 px-3 py-2 text-sm text-[#d5c0d7]">{item}</div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="grid md:grid-cols-3 gap-4">
         <InfoCard className="kas-dark-card" icon={<CalendarDays />} title="Calendario" text={isCostaRica ? 'Jornada activa disponible.' : 'Fixture conectado al deporte y listo para carga.'} />
         <InfoCard className="kas-dark-card" icon={<BarChart3 />} title="Ranking KAS" text={`Prestigio y posiciones exclusivas para ${tournament.name}.`} />
@@ -836,10 +1073,35 @@ function TournamentDashboard() {
         </div>
 
         <div className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">
-          <p className="text-sm font-mono text-[#EA7301]">EVENTOS DEL TORNEO</p>
-          <h2 className="text-3xl font-heading font-black text-white">Actividad destacada</h2>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-mono text-[#EA7301]">EVENTOS DEL TORNEO</p>
+              <h2 className="text-3xl font-heading font-black text-white">Actividad destacada</h2>
+            </div>
+            <span className={`rounded-full px-3 py-1 text-xs font-mono ${tournamentApiStatus === 'ready' ? 'bg-emerald-400/15 text-emerald-300' : tournamentApiStatus === 'loading' ? 'bg-[#EA7301]/15 text-[#EA7301]' : 'bg-amber-400/15 text-amber-200'}`}>
+              {tournamentApiStatus === 'ready' ? tournamentProvider === 'openligadb' ? 'OpenLigaDB' : 'Football-Data' : tournamentApiStatus === 'loading' ? 'Cargando' : 'Fallback'}
+            </span>
+          </div>
           <div className="mt-4 space-y-3">
-            {events.map((event) => (
+            {tournamentApiStatus === 'loading' && [1, 2, 3].map((item) => (
+              <div key={item} className="h-16 animate-pulse rounded-xl border border-white/10 bg-black/25" />
+            ))}
+
+            {tournamentApiStatus !== 'loading' && liveTournamentEvents.map((event) => (
+              <div key={event.id} className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-heading text-lg font-bold text-white">{event.title}</span>
+                  <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{event.status}</span>
+                </div>
+                <div className="mt-1 flex flex-wrap gap-2 text-xs text-[#d5c0d7]">
+                  <span>{event.league}</span>
+                  {event.startsAt && <span>{new Date(event.startsAt).toLocaleDateString()}</span>}
+                  {event.score && <span className="text-white">Marcador {event.score}</span>}
+                </div>
+              </div>
+            ))}
+
+            {tournamentApiStatus !== 'loading' && liveTournamentEvents.length === 0 && events.map((event) => (
               <div key={event} className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-black/25 px-4 py-3">
                 <span className="font-heading text-lg font-bold text-white">{event}</span>
                 <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">Picks</span>

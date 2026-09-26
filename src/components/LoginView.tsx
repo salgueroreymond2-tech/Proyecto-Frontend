@@ -4,6 +4,7 @@ import { TEAMS, getTeamById } from '../data/teams';
 import { TeamBadge } from './TeamBadge';
 import { PasionLogo } from './PasionLogo';
 import { Mail, Lock, ArrowRight, User, Sparkles, CheckCircle2, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { signIn, signUp } from '../services/authApi';
 
 interface LoginViewProps {
   onLoginSuccess?: () => void;
@@ -11,34 +12,36 @@ interface LoginViewProps {
 }
 
 export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onFavoriteTeamPreview }) => {
-  const { currentUser, updateUserProfile, loginUser } = useTournament();
+  const { currentUser, loginUser } = useTournament();
   const [isRegister, setIsRegister] = useState(false);
-  const [email, setEmail] = useState('carlos@promerica.cr');
-  const [password, setPassword] = useState('••••••••');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState(currentUser.name);
   const [username, setUsername] = useState(currentUser.username);
   const [favoriteTeamId, setFavoriteTeamId] = useState(currentUser.favoriteTeamId);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const favoriteTeam = getTeamById(favoriteTeamId);
   const loginThemeTeam = favoriteTeamId === 'csh' ? getTeamById('esc') : favoriteTeam;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const isAdminLogin = email.trim().toLowerCase() === 'admin@pasion.cr' && password === 'admin2026';
-    updateUserProfile(
-      isAdminLogin ? 'Administrador Quiniela' : name,
-      isAdminLogin ? '@admin_master' : username,
-      favoriteTeamId,
-    );
-    loginUser(isAdminLogin);
-    setIsSubmitted(true);
-    setTimeout(() => {
-      if (onLoginSuccess) {
-        setIsSubmitted(false);
-        onLoginSuccess();
-      }
-    }, 600);
+    setError('');
+    setIsSubmitting(true);
+    try {
+      const session = isRegister
+        ? await signUp({ email, password, name, username, favoriteTeamId })
+        : await signIn(email, password);
+      loginUser(session.user);
+      setIsSubmitted(true);
+      window.setTimeout(() => onLoginSuccess?.(), 600);
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : 'No se pudo iniciar sesion.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -229,9 +232,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onFavorite
                 </div>
               </div>
 
+              {error && <p role="alert" className="rounded-xl border border-red-400/40 bg-red-400/10 px-3 py-2 text-xs text-red-100">{error}</p>}
+
               {/* Primary Submit Button */}
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="w-full py-3.5 rounded-xl bg-[#261c28] hover:bg-[#3c313e] border border-[#bf00ff] text-white font-heading font-bold text-base uppercase tracking-wider flex items-center justify-center gap-2 glow-purple-sm transition-all mt-2 cursor-pointer team-themed-button"
               >
                 <span>{isRegister ? 'Crear Cuenta' : 'Iniciar Sesión'}</span>
@@ -241,7 +247,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onFavorite
               {/* Google Social Button */}
               <button
                 type="button"
-                onClick={handleSubmit}
+                onClick={() => setError('El acceso con Google no esta configurado.')}
                 className="w-full py-3 rounded-xl bg-[#140b16] hover:bg-[#261c28] border border-[#3c313e] text-[#eeddee] text-xs font-mono flex items-center justify-center gap-2 transition-all cursor-pointer team-themed-outline"
               >
                 <span className="text-[#00f0ff]">➜]</span>

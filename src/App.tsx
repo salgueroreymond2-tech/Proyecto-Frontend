@@ -343,11 +343,11 @@ function KasShell() {
         showUserProfile={location.pathname !== '/login'}
         showSimulator={isLoggedIn && !isAdmin && location.pathname.includes('/tournaments/cr-apertura-2026')}
         publicNavigation={{
-          sports: sports.map((sport) => ({ id: sport.id, label: sport.name, path: `/sports/${sport.id}`, accent: sport.accent })),
+          sports: sports.map((sport) => ({ id: sport.id, label: sport.name, path: '/login', accent: sport.accent })),
           services: [
-            { id: 'tournaments', label: 'Torneos activos', detail: 'Competiciones, jornadas y finales.', path: '/sports', icon: 'trophy' },
-            { id: 'membership', label: 'Pay-Per-Tournament', detail: 'Accesos por torneo sin paquetes globales.', path: '/sports', icon: 'payment' },
-            { id: 'community', label: 'Comunidad', detail: 'Ranking, perfiles y actividad deportiva.', path: '/dashboard', icon: 'community' },
+            { id: 'tournaments', label: 'Torneos activos', detail: 'Competiciones, jornadas y finales.', path: '/login', icon: 'trophy' },
+            { id: 'membership', label: 'Pay-Per-Tournament', detail: 'Accesos por torneo sin paquetes globales.', path: '/register', icon: 'payment' },
+            { id: 'community', label: 'Comunidad', detail: 'Ranking, perfiles y actividad deportiva.', path: '/login', icon: 'community' },
           ],
         }}
         onNavigateToPath={(path) => navigate(path)}
@@ -358,10 +358,10 @@ function KasShell() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<KasLoginPage onSuccess={() => navigate('/dashboard')} />} />
           <Route path="/register" element={<KasLoginPage onSuccess={() => navigate('/dashboard')} isRegisterDefault />} />
-          <Route path="/dashboard" element={<SportsDashboard />} />
-          <Route path="/sports" element={<SportsDashboard />} />
-          <Route path="/sports/football" element={<FootballDashboard />} />
-          <Route path="/sports/:sportId" element={<SportPlaceholder />} />
+          <Route path="/dashboard" element={isLoggedIn ? <SportsDashboard /> : <Navigate to="/login" replace />} />
+          <Route path="/sports" element={isLoggedIn ? <SportsDashboard /> : <Navigate to="/login" replace />} />
+          <Route path="/sports/football" element={isLoggedIn ? <FootballDashboard /> : <Navigate to="/login" replace />} />
+          <Route path="/sports/:sportId" element={isLoggedIn ? <SportPlaceholder /> : <Navigate to="/login" replace />} />
           <Route path="/tournaments/:tournamentId/membership" element={<TournamentMembershipLogin />} />
           <Route path="/tournaments/:tournamentId" element={<TournamentDashboard />} />
           <Route path="/tournaments/cr-apertura-2026/login" element={<LoginPage onSuccess={() => navigate('/tournaments/cr-apertura-2026/predictions')} onFavoriteTeamPreview={setPreviewTeamId} />} />
@@ -369,7 +369,7 @@ function KasShell() {
           <Route path="/tournaments/:tournamentId/ranking" element={<CostaRicaOnly><RankingView /></CostaRicaOnly>} />
           <Route path="/tournaments/:tournamentId/playoffs" element={<CostaRicaOnly><PlayoffsView onOpenScorerModal={(id) => setActiveScorerMatchId(id)} /></CostaRicaOnly>} />
           <Route path="/tournaments/:tournamentId/forum" element={<CostaRicaOnly><SocialView /></CostaRicaOnly>} />
-          <Route path="/profile" element={<ProfileView onOpenLogin={() => navigate('/sports/football')} />} />
+          <Route path="/profile" element={<ProfileView onOpenLogin={() => navigate('/login')} />} />
           <Route path="/admin/*" element={isAdmin ? <AdminView /> : <Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
@@ -402,9 +402,17 @@ function getActiveTab(pathname: string): NavTab {
 
 function HomePage() {
   const { matches, standings, leaderboard } = useTournament();
+  const [homeEvents, setHomeEvents] = useState<NormalizedSportEvent[]>([]);
+  const [homeEventsStatus, setHomeEventsStatus] = useState<'loading' | 'ready' | 'fallback'>('loading');
   const scoreboard = matches
     .filter((match) => match.status === 'live' || match.status === 'finished')
     .slice(0, 6);
+  const homeFallbackEvents = [
+    { id: 'kas-champions', league: 'UEFA Champions League', title: 'Champions League 2026-2027 prepara quiniela premium', status: 'Preparacion', sportId: 'football', path: '/tournaments/champions-league' },
+    { id: 'kas-nba', league: 'NBA', title: 'Temporada regular NBA abre picks diarios y ranking por conferencia', status: 'Activo', sportId: 'basketball', path: '/tournaments/nba-temporada-regular' },
+    { id: 'kas-mlb', league: 'MLB', title: 'MLB suma pronosticos por carreras, series y ganador', status: 'Activo', sportId: 'baseball', path: '/tournaments/mlb-temporada-regular' },
+    { id: 'kas-nfl', league: 'NFL', title: 'NFL activa picks semanales rumbo a playoffs', status: 'Activo', sportId: 'american-football', path: '/tournaments/nfl-temporada-regular' },
+  ];
   const headlines = [
     `${getTeamById(standings[0]?.teamId || 'sap').shortName} domina la tabla nacional con ${standings[0]?.points ?? 0} puntos`,
     `${leaderboard[0]?.name || 'Ranking KAS'} marca el paso del prestigio semanal`,
@@ -414,6 +422,45 @@ function HomePage() {
   const upcoming = matches
     .filter((match) => match.status === 'scheduled')
     .slice(0, 4);
+  const tournamentNews = homeEvents.length > 0
+    ? homeEvents.slice(0, 6).map((event) => ({
+        id: event.id,
+        league: event.league,
+        title: event.title,
+        status: event.score ? `Marcador ${event.score}` : event.status,
+        provider: event.provider,
+        href: event.sourceUrl,
+        path: '/login',
+      }))
+    : homeFallbackEvents.map((event) => ({
+        ...event,
+        provider: 'KAS',
+        href: undefined,
+      }));
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setHomeEventsStatus('loading');
+
+    Promise.all([
+      getSportEvents('football', controller.signal),
+      getSportEvents('basketball', controller.signal),
+      getSportEvents('baseball', controller.signal),
+      getSportEvents('american-football', controller.signal),
+    ]).then((results) => {
+      if (controller.signal.aborted) return;
+      const events = results.flatMap((result) => result.data.slice(0, 2)).slice(0, 6);
+      const usingFallback = results.some((result) => result.fromFallback);
+      setHomeEvents(events);
+      setHomeEventsStatus(usingFallback ? 'fallback' : 'ready');
+    }).catch(() => {
+      if (controller.signal.aborted) return;
+      setHomeEvents([]);
+      setHomeEventsStatus('fallback');
+    });
+
+    return () => controller.abort();
+  }, []);
 
   return (
     <div className="pb-16">
@@ -429,8 +476,8 @@ function HomePage() {
               <Link to="/login" className="inline-flex items-center gap-2 rounded-xl bg-[#EA7301] px-5 py-3 font-heading font-bold text-black hover:bg-orange-400">
                 Iniciar sesion <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link to="/sports" className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-5 py-3 font-heading font-bold text-white hover:bg-white/10">
-                Ver deportes
+              <Link to="/register" className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-5 py-3 font-heading font-bold text-white hover:bg-white/10">
+                Crear cuenta KAS
               </Link>
             </div>
           </div>
@@ -479,7 +526,7 @@ function HomePage() {
             <Metric label="Torneos" value={String(footballTournaments.length)} />
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
+          <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="space-y-4">
               <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/92 p-4">
                 <div className="flex items-center gap-2 border-b border-[#3c313e]/60 pb-3">
@@ -515,6 +562,59 @@ function HomePage() {
                 </div>
               </section>
             </div>
+
+            <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/92 p-4">
+              <div className="flex flex-col gap-2 border-b border-[#3c313e]/60 pb-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4 text-[#EA7301]" />
+                  <h2 className="font-heading text-xl font-black text-white">Noticias de torneos KAS</h2>
+                </div>
+                <span className={`w-fit rounded-full px-3 py-1 text-[11px] font-mono ${
+                  homeEventsStatus === 'ready'
+                    ? 'bg-emerald-400/15 text-emerald-300'
+                    : homeEventsStatus === 'loading'
+                      ? 'bg-[#EA7301]/15 text-[#EA7301]'
+                      : 'bg-amber-400/15 text-amber-200'
+                }`}>
+                  {homeEventsStatus === 'loading' ? 'Cargando' : homeEventsStatus === 'ready' ? 'Datos en vivo' : 'Respaldo KAS'}
+                </span>
+              </div>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {homeEventsStatus === 'loading' && [1, 2, 3, 4].map((item) => (
+                  <div key={item} className="h-28 animate-pulse rounded-xl border border-white/10 bg-black/25" />
+                ))}
+
+                {homeEventsStatus !== 'loading' && tournamentNews.map((event) => {
+                  const sport = sports.find((item) => item.id === event.sportId);
+                  const content = (
+                    <>
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-[11px] font-mono uppercase text-[#EA7301]">{event.league}</p>
+                          <h3 className="mt-1 font-heading text-lg font-black leading-tight text-white">{event.title}</h3>
+                        </div>
+                        <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-mono text-white/65">{event.provider}</span>
+                      </div>
+                      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[#d5c0d7]">
+                        <span>{sport?.name || 'KAS'}</span>
+                        <span className="rounded-full bg-[#EA7301]/15 px-2 py-0.5 text-[#EA7301]">{event.status}</span>
+                      </div>
+                    </>
+                  );
+
+                  return event.href ? (
+                    <a key={event.id} href={event.href} target="_blank" rel="noreferrer" className="rounded-xl border border-white/10 bg-black/25 p-4 hover:border-[#EA7301]/70 transition-colors">
+                      {content}
+                    </a>
+                  ) : (
+                    <Link key={event.id} to={event.path} className="rounded-xl border border-white/10 bg-black/25 p-4 hover:border-[#EA7301]/70 transition-colors">
+                      {content}
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
           </div>
         </div>
       </section>
@@ -561,8 +661,8 @@ function SportsCarousel({ compact = false }: { compact?: boolean }) {
           <h2 className={`${compact ? 'text-4xl' : 'text-5xl'} mt-2 font-heading font-black text-white leading-none`}>{slide.name}</h2>
           <p className="mt-3 text-base text-white/82">{slide.text}</p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Link to={`/sports/${slide.id}`} className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-black text-black hover:bg-[#EA7301] transition-colors">
-              Explorar deporte <ArrowRight className="w-4 h-4" />
+            <Link to="/login" className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-black text-black hover:bg-[#EA7301] transition-colors">
+              Entrar para explorar <ArrowRight className="w-4 h-4" />
             </Link>
             <span className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-xs font-mono text-white/75">
               {slide.tournaments} torneos · {slide.activeEvents} eventos
@@ -712,7 +812,7 @@ function PublicFooter() {
           </div>
         </div>
         <div className="flex flex-wrap gap-4 text-sm text-white/65">
-          <Link to="/sports" className="hover:text-[#EA7301]">Deportes</Link>
+          <Link to="/login" className="hover:text-[#EA7301]">Deportes</Link>
           <Link to="/memberships" className="hover:text-[#EA7301]">Membresias</Link>
           <Link to="/login" className="hover:text-[#EA7301]">Login</Link>
         </div>

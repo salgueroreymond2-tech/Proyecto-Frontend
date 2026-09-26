@@ -74,6 +74,21 @@
       "token": "2a5913afd23588e2eaf53011dcd6b8bb3cb0e32b6488e3737615279a9321bc5a",
       "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
       "expiresAt": "2026-10-03T20:38:22.854Z"
+    },
+    {
+      "token": "0f0df2fdb9ca517106df62678a35bc890709460e125d495dbe3673bc9f7c4d11",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-03T20:41:20.968Z"
+    },
+    {
+      "token": "c47e5bc639f69bc9ff09fea44572c4421564c2e95d3c5cc7479483dc373759ef",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-03T20:51:41.477Z"
+    },
+    {
+      "token": "c2b5738f90e9958c5a62edc1442eb2c17f66ec9b42053c979fe98678f7d80572",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-03T20:58:51.265Z"
     }
   ],
   "memberships": [
@@ -92,6 +107,22 @@
       "paymentId": "SIM-a0c2cf7b-d00a-4b3d-8834-d65a221af693",
       "status": "active",
       "grantedAt": "2026-09-25T21:19:20.670Z"
+    },
+    {
+      "id": "3ffa70d2-8d15-45db-a586-feeec389af4e",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "mlb-temporada-regular",
+      "paymentId": "SIM-a2fce076-4dab-4681-9be0-6494f7d61f64",
+      "status": "active",
+      "grantedAt": "2026-09-26T20:59:43.848Z"
+    },
+    {
+      "id": "3f53b123-6e8a-4d8b-be25-fbbd647dca0a",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "mlb-postseason",
+      "paymentId": "SIM-d1d11be9-e732-4f04-8008-0095ad82db06",
+      "status": "active",
+      "grantedAt": "2026-09-26T21:00:16.107Z"
     }
   ],
   "payments": [
@@ -124,6 +155,26 @@
       "status": "captured",
       "createdAt": "2026-09-25T21:19:20.640Z",
       "capturedAt": "2026-09-25T21:19:20.670Z"
+    },
+    {
+      "id": "SIM-a2fce076-4dab-4681-9be0-6494f7d61f64",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "mlb-temporada-regular",
+      "amount": "$11.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-26T20:59:43.803Z",
+      "capturedAt": "2026-09-26T20:59:43.848Z"
+    },
+    {
+      "id": "SIM-d1d11be9-e732-4f04-8008-0095ad82db06",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "mlb-postseason",
+      "amount": "$13.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-26T21:00:16.077Z",
+      "capturedAt": "2026-09-26T21:00:16.106Z"
     }
   ]
 }

@@ -14,6 +14,10 @@ import {
   Trophy,
   Flame,
   UserCheck,
+  Newspaper,
+  CalendarDays,
+  BarChart3,
+  Clock,
 } from 'lucide-react';
 
 interface DashboardViewProps {
@@ -34,6 +38,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     setSelectedRound,
     simulateRound,
     fillRandomPredictionsForRound,
+    standings,
+    leaderboard,
+    currentUser,
   } = useTournament();
 
   const [activeEditingMatchId, setActiveEditingMatchId] = useState<string | null>(null);
@@ -42,6 +49,21 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const roundMatches = matches.filter((m) => m.round === selectedRound);
   const featuredMatch = roundMatches.find((m) => m.isFeatured) || roundMatches[0];
   const restOfMatches = roundMatches.filter((m) => m.id !== featuredMatch?.id);
+  const finishedRoundMatches = roundMatches.filter((m) => m.status === 'finished').length;
+  const liveRoundMatches = roundMatches.filter((m) => m.status === 'live').length;
+  const predictedRoundMatches = roundMatches.filter((m) => {
+    const pred = userPredictions[m.id];
+    return pred?.homeScore !== null && pred?.homeScore !== undefined && pred?.awayScore !== null && pred?.awayScore !== undefined;
+  }).length;
+  const lockedRoundMatches = roundMatches.filter((m) => userPredictions[m.id]?.isLocked).length;
+  const topStandings = standings.slice(0, 5);
+  const topLeaderboard = leaderboard.slice(0, 5);
+  const liveTickerMatches = matches
+    .filter((m) => m.status === 'live' || m.status === 'finished')
+    .slice(0, 8);
+  const nextMatches = matches
+    .filter((m) => m.status === 'scheduled')
+    .slice(0, 4);
 
   // Round label generator
   const getRoundLabel = (r: number) => {
@@ -53,6 +75,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     if (r === 23) return 'Gran Final - Ida';
     return 'Gran Final - Vuelta';
   };
+  const headlineItems = [
+    `${getTeamById(standings[0]?.teamId || 'sap').shortName} lidera la tabla con ${standings[0]?.points ?? 0} puntos`,
+    `${currentUser.name} suma ${currentUser.points.toLocaleString('es-CR')} puntos en el ranking KAS`,
+    `${predictedRoundMatches} de ${roundMatches.length} pronosticos listos para ${getRoundLabel(selectedRound).toLowerCase()}`,
+    liveRoundMatches > 0 ? `${liveRoundMatches} partido${liveRoundMatches > 1 ? 's' : ''} en vivo ahora mismo` : 'La jornada queda abierta para nuevos picks',
+  ];
 
   // Helper to calculate comparison result and points
   const getPredictionComparison = (matchId: string) => {
@@ -109,7 +137,42 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   };
 
   return (
-    <div className="space-y-5 pb-24 max-w-xl mx-auto px-4 pt-2">
+    <div className="space-y-5 pb-24 max-w-6xl mx-auto px-4 pt-2">
+      <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/90 overflow-hidden">
+        <div className="flex items-center gap-3 border-b border-[#3c313e]/60 px-3 py-2">
+          <span className="rounded-md bg-[#EA7301] px-2 py-1 text-[10px] font-heading font-black uppercase tracking-wide text-black">
+            KAS Live
+          </span>
+          <div className="flex gap-2 overflow-x-auto scrollbar-none">
+            {liveTickerMatches.map((match) => {
+              const home = getTeamById(match.homeTeamId);
+              const away = getTeamById(match.awayTeamId);
+              return (
+                <button
+                  key={match.id}
+                  onClick={() => setSelectedRound(match.round)}
+                  className="min-w-[178px] rounded-lg border border-white/10 bg-black/25 px-3 py-2 text-left hover:border-[#EA7301]/70 transition-colors"
+                >
+                  <div className="flex items-center justify-between text-[10px] font-mono text-[#d5c0d7]">
+                    <span>J{match.round}</span>
+                    <span className={match.status === 'live' ? 'text-[#00f0ff]' : 'text-emerald-300'}>
+                      {match.status === 'live' ? `${match.minute}'` : 'Final'}
+                    </span>
+                  </div>
+                  <div className="mt-1 grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-sm font-heading font-bold text-white">
+                    <span className="truncate">{home.code}</span>
+                    <span className="font-black">{match.homeScore ?? 0} - {match.awayScore ?? 0}</span>
+                    <span className="truncate text-right">{away.code}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.55fr)_minmax(300px,0.85fr)]">
+        <div className="space-y-5 min-w-0">
       {/* Horizontal Round Selector Carousel */}
       <div className="flex items-center justify-between gap-2 bg-[#19101c]/80 p-1.5 rounded-xl border border-[#3c313e]/60">
         <button
@@ -211,6 +274,25 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <Play className="w-3.5 h-3.5 text-[#00f0ff]" />
             <span>Simular J{selectedRound}</span>
           </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-3">
+          <p className="text-[10px] font-mono uppercase text-[#d5c0d7]">Partidos</p>
+          <p className="mt-1 text-2xl font-heading font-black text-white">{roundMatches.length}</p>
+        </div>
+        <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-3">
+          <p className="text-[10px] font-mono uppercase text-[#d5c0d7]">En vivo</p>
+          <p className="mt-1 text-2xl font-heading font-black text-[#00f0ff]">{liveRoundMatches}</p>
+        </div>
+        <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-3">
+          <p className="text-[10px] font-mono uppercase text-[#d5c0d7]">Pronosticos</p>
+          <p className="mt-1 text-2xl font-heading font-black text-white">{predictedRoundMatches}/{roundMatches.length}</p>
+        </div>
+        <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-3">
+          <p className="text-[10px] font-mono uppercase text-[#d5c0d7]">Bloqueados</p>
+          <p className="mt-1 text-2xl font-heading font-black text-[#EA7301]">{lockedRoundMatches}</p>
         </div>
       </div>
 
@@ -537,6 +619,87 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             );
           })}
         </div>
+      </div>
+
+        </div>
+
+        <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+          <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-4">
+            <div className="flex items-center gap-2 border-b border-[#3c313e]/60 pb-3">
+              <Newspaper className="h-4 w-4 text-[#EA7301]" />
+              <h2 className="font-heading text-xl font-black text-white">Titulares</h2>
+            </div>
+            <div className="divide-y divide-[#3c313e]/60">
+              {headlineItems.map((item) => (
+                <p key={item} className="py-3 text-sm leading-snug text-[#eeddee]">{item}</p>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-4">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4 text-[#EA7301]" />
+              <h2 className="font-heading text-xl font-black text-white">Tabla UNAFUT</h2>
+            </div>
+            <div className="mt-3 space-y-2">
+              {topStandings.map((standing, index) => {
+                const team = getTeamById(standing.teamId);
+                return (
+                  <div key={standing.teamId} className="grid grid-cols-[auto_1fr_auto_auto] items-center gap-2 rounded-lg bg-black/25 px-3 py-2 text-sm">
+                    <span className="w-5 text-xs font-mono text-[#d5c0d7]">{index + 1}</span>
+                    <span className="font-heading font-bold text-white truncate">{team.shortName}</span>
+                    <span className="text-xs text-[#d5c0d7]">DG {standing.goalDifference}</span>
+                    <span className="font-mono font-bold text-[#EA7301]">{standing.points}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-4">
+            <div className="flex items-center gap-2">
+              <Trophy className="h-4 w-4 text-[#EA7301]" />
+              <h2 className="font-heading text-xl font-black text-white">Ranking KAS</h2>
+            </div>
+            <div className="mt-3 space-y-2">
+              {topLeaderboard.map((user, index) => (
+                <div key={user.id} className="flex items-center justify-between gap-3 rounded-lg bg-black/25 px-3 py-2">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-heading font-bold text-white">{index + 1}. {user.name}</p>
+                    <p className="text-[11px] text-[#d5c0d7]">{user.exactHits} exactos</p>
+                  </div>
+                  <span className="text-sm font-mono font-bold text-[#EA7301]">{user.points.toLocaleString('es-CR')}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-4">
+            <div className="flex items-center gap-2">
+              <CalendarDays className="h-4 w-4 text-[#EA7301]" />
+              <h2 className="font-heading text-xl font-black text-white">Agenda</h2>
+            </div>
+            <div className="mt-3 space-y-2">
+              {nextMatches.map((match) => {
+                const home = getTeamById(match.homeTeamId);
+                const away = getTeamById(match.awayTeamId);
+                return (
+                  <button
+                    key={match.id}
+                    onClick={() => setSelectedRound(match.round)}
+                    className="w-full rounded-lg bg-black/25 px-3 py-2 text-left hover:bg-black/40 transition-colors"
+                  >
+                    <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
+                      <span>J{match.round} · {match.date}</span>
+                      <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {match.time}</span>
+                    </div>
+                    <p className="mt-1 truncate text-sm font-heading font-bold text-white">{home.shortName} vs {away.shortName}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        </aside>
       </div>
     </div>
   );

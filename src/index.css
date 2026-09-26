@@ -77,28 +77,46 @@
 }
 
 [data-color-mode="light"] {
-  color: #140b16;
-  background:
-    radial-gradient(circle at 18% 12%, rgba(234, 115, 1, 0.08), transparent 24%),
-    radial-gradient(circle at 78% 24%, rgba(52, 20, 57, 0.1), transparent 30%),
-    linear-gradient(180deg, #fbfaf8 0%, #f1eef2 48%, #ece7ee 100%);
+  color: #341439;
+  background: #f9f9f9;
 }
 
 [data-color-mode="light"] header,
 [data-color-mode="light"] footer,
 [data-color-mode="light"] nav {
-  background-color: rgba(251, 250, 248, 0.9) !important;
-  border-color: rgba(20, 11, 22, 0.1) !important;
-  color: #140b16 !important;
-  box-shadow: 0 14px 36px rgba(20, 11, 22, 0.08);
-  backdrop-filter: blur(18px);
+  background-color: #19001f !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 32px -8px rgba(52, 20, 57, 0.28);
+  backdrop-filter: blur(12px);
 }
 
 [data-color-mode="light"] main {
-  color: #140b16;
+  color: #341439;
+  background: #f9f9f9;
+}
+
+[data-color-mode="light"] .kas-sport-hero {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.56), rgba(241, 238, 242, 0.6)),
-    radial-gradient(circle at 50% 0%, rgba(52, 20, 57, 0.08), transparent 42%);
+    linear-gradient(90deg, rgba(25, 0, 31, 0.98) 0%, rgba(52, 20, 57, 0.96) 48%, rgba(10, 34, 63, 0.84) 100%),
+    radial-gradient(circle at 74% 22%, rgba(234, 115, 1, 0.16), transparent 30%),
+    #341439 !important;
+  color: #ffffff;
+}
+
+[data-color-mode="light"] .kas-sport-hero h1,
+[data-color-mode="light"] .kas-sport-hero p {
+  color: #ffffff !important;
+  text-shadow: none;
+}
+
+[data-color-mode="light"] .kas-sport-hero [class*="text-[#F7F7F7]"] {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
+[data-color-mode="light"] .kas-sport-hero > div > div:first-child p:first-child,
+[data-color-mode="light"] [class*="text-[#EA7301]"] {
+  color: #EA7301 !important;
 }
 
 [data-color-mode="light"] [class*="bg-[#050505]"],
@@ -109,15 +127,15 @@
 [data-color-mode="light"] [class*="bg-[#261c28]"],
 [data-color-mode="light"] [class*="bg-[#2a1b2d]"] {
   background-color: #ffffff !important;
-  box-shadow: 0 16px 40px rgba(20, 11, 22, 0.08);
+  box-shadow: 0 12px 32px -8px rgba(52, 20, 57, 0.16);
 }
 
 [data-color-mode="light"] [class*="bg-black/25"],
 [data-color-mode="light"] [class*="bg-black/30"],
 [data-color-mode="light"] [class*="bg-white/5"],
 [data-color-mode="light"] [class*="bg-white/10"] {
-  background-color: rgba(52, 20, 57, 0.08) !important;
-  border-color: rgba(52, 20, 57, 0.16) !important;
+  background-color: #f3f3f3 !important;
+  border-color: #d0c3cc !important;
 }
 
 [data-color-mode="light"] [class*="bg-[#EA7301]"],
@@ -147,32 +165,19 @@
 [data-color-mode="light"] [class*="text-white"],
 [data-color-mode="light"] [class*="text-[#eeddee]"],
 [data-color-mode="light"] [class*="text-[#d5c0d7]"] {
-  color: #140b16 !important;
+  color: #341439 !important;
 }
 
 [data-color-mode="light"] [class*="text-white/"],
 [data-color-mode="light"] [class*="text-[#F7F7F7]"] {
-  color: rgba(20, 11, 22, 0.78) !important;
+  color: #6b5e70 !important;
 }
 
 [data-color-mode="light"] [class*="border-[#3c313e]"],
 [data-color-mode="light"] [class*="border-white/10"],
 [data-color-mode="light"] [class*="border-white/15"],
 [data-color-mode="light"] [class*="border-white/20"] {
-  border-color: rgba(20, 11, 22, 0.14) !important;
-}
-
-[data-color-mode="light"] .kas-sport-hero {
-  background: #ffffff;
-}
-
-[data-color-mode="light"] .kas-sport-hero h1,
-[data-color-mode="light"] .kas-sport-hero p {
-  text-shadow: none;
-}
-
-[data-color-mode="light"] .kas-sport-hero [class*="text-[#F7F7F7]"] {
-  color: rgba(20, 11, 22, 0.78) !important;
+  border-color: #d0c3cc !important;
 }
 
 [data-color-mode="light"] .kas-login-bg::before {
@@ -191,16 +196,70 @@
   color: white !important;
 }
 
+[data-color-mode="light"] .kas-slide-visual p,
+[data-color-mode="light"] .kas-slide-visual h2,
+[data-color-mode="light"] .kas-slide-visual span {
+  color: white !important;
+}
+
+[data-color-mode="light"] .kas-slide-visual a,
+[data-color-mode="light"] .kas-slide-visual button {
+  box-shadow: 0 4px 16px rgba(234, 115, 1, 0.22);
+}
+
 [data-color-mode="light"] .kas-slide-visual + div button {
-  background-color: rgba(20, 11, 22, 0.08) !important;
-  color: #140b16 !important;
+  background-color: #e2e2e2 !important;
+  color: #341439 !important;
 }
 
 [data-color-mode="light"] a[class*="bg-white"],
 [data-color-mode="light"] button[class*="bg-white"] {
   background-color: #ffffff !important;
-  color: #140b16 !important;
-  border-color: rgba(52, 20, 57, 0.18) !important;
+  color: #19001f !important;
+  border-color: #d0c3cc !important;
+}
+
+[data-color-mode="light"] a[class*="bg-[#EA7301]"],
+[data-color-mode="light"] button[class*="bg-[#EA7301]"] {
+  background-color: #EA7301 !important;
+  color: #111111 !important;
+}
+
+[data-color-mode="light"] header button,
+[data-color-mode="light"] header span {
+  color: #ffffff !important;
+}
+
+[data-color-mode="light"] header [class*="text-[#EA7301]"],
+[data-color-mode="light"] header svg {
+  color: #EA7301 !important;
+}
+
+[data-color-mode="light"] header [class*="bg-white/5"] {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-color-mode="light"] header [class*="border-white/15"] {
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+[data-color-mode="light"] section[class*="bg-[#050505]"],
+[data-color-mode="light"] section[class*="bg-[#050505]/55"] {
+  background-color: #f9f9f9 !important;
+}
+
+[data-color-mode="light"] .kas-sport-hero [class*="bg-[#140b16]"],
+[data-color-mode="light"] .kas-sport-hero [class*="bg-[#19101c]"],
+[data-color-mode="light"] .kas-sport-hero [class*="bg-[#221824]"] {
+  background-color: rgba(25, 0, 31, 0.82) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+
+[data-color-mode="light"] .kas-sport-hero [class*="bg-[#140b16]"] span,
+[data-color-mode="light"] .kas-sport-hero [class*="bg-[#19101c]"] span,
+[data-color-mode="light"] .kas-sport-hero [class*="bg-[#221824]"] span {
+  color: #ffffff !important;
 }
 
 [data-color-mode="light"] input {
@@ -238,8 +297,8 @@
 }
 
 [data-color-mode="light"] main [class*="rounded"][class*="bg-white"] {
-  background-color: #f7f4f7 !important;
-  border-color: rgba(52, 20, 57, 0.14) !important;
+  background-color: #ffffff !important;
+  border-color: #d8dbe0 !important;
 }
 
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"],
@@ -247,19 +306,19 @@
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"],
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"],
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#2a1b2d]"] {
-  background-color: #19101c !important;
-  border-color: rgba(255, 255, 255, 0.14) !important;
-  color: #ffffff !important;
-  box-shadow: 0 18px 38px rgba(20, 11, 22, 0.16);
+  background-color: #ffffff !important;
+  border-color: #d8dbe0 !important;
+  color: #17191f !important;
+  box-shadow: 0 10px 26px rgba(25, 31, 40, 0.08);
 }
 
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] {
-  background-color: #221824 !important;
+  background-color: #ffffff !important;
 }
 
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"],
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#2a1b2d]"] {
-  background-color: #261c28 !important;
+  background-color: #f7f8fa !important;
 }
 
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] h1,
@@ -277,7 +336,7 @@
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] h3,
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] p,
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] span {
-  color: inherit !important;
+  color: #17191f !important;
 }
 
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] [class*="text-[#d5c0d7]"],
@@ -286,7 +345,21 @@
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] [class*="text-white/"],
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] [class*="text-[#d5c0d7]"],
 [data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] [class*="text-white/"] {
-  color: rgba(255, 255, 255, 0.72) !important;
+  color: #5a6270 !important;
+}
+
+[data-color-mode="light"] main .kas-sport-hero [class*="rounded"][class*="bg-[#140b16]"],
+[data-color-mode="light"] main .kas-sport-hero [class*="rounded"][class*="bg-[#19101c]"],
+[data-color-mode="light"] main .kas-sport-hero [class*="rounded"][class*="bg-[#221824]"] {
+  background-color: rgba(25, 0, 31, 0.82) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+
+[data-color-mode="light"] main .kas-sport-hero [class*="rounded"][class*="bg-[#140b16]"] span,
+[data-color-mode="light"] main .kas-sport-hero [class*="rounded"][class*="bg-[#19101c]"] span,
+[data-color-mode="light"] main .kas-sport-hero [class*="rounded"][class*="bg-[#221824]"] span {
+  color: #ffffff !important;
 }
 
 .kas-login-bg {

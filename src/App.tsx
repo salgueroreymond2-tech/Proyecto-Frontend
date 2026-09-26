@@ -401,6 +401,20 @@ function getActiveTab(pathname: string): NavTab {
 }
 
 function HomePage() {
+  const { matches, standings, leaderboard } = useTournament();
+  const scoreboard = matches
+    .filter((match) => match.status === 'live' || match.status === 'finished')
+    .slice(0, 6);
+  const headlines = [
+    `${getTeamById(standings[0]?.teamId || 'sap').shortName} domina la tabla nacional con ${standings[0]?.points ?? 0} puntos`,
+    `${leaderboard[0]?.name || 'Ranking KAS'} marca el paso del prestigio semanal`,
+    `${footballTournaments.length} torneos de futbol listos para membresia pay-per-tournament`,
+    'Agenda multi deporte conectada a eventos, rankings y comunidad',
+  ];
+  const upcoming = matches
+    .filter((match) => match.status === 'scheduled')
+    .slice(0, 4);
+
   return (
     <div className="pb-16">
       <section className="min-h-[78vh] px-4 py-8 sm:py-12 flex items-center kas-sport-hero" style={{ '--sport-accent': '#EA7301' } as React.CSSProperties}>
@@ -424,11 +438,92 @@ function HomePage() {
         </div>
       </section>
 
+      <section className="px-4 py-8 bg-[#050505]/55">
+        <div className="max-w-6xl mx-auto space-y-5">
+          <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/92 overflow-hidden">
+            <div className="flex items-center gap-3 border-b border-[#3c313e]/60 px-3 py-2">
+              <span className="shrink-0 rounded-md bg-[#EA7301] px-2 py-1 text-[10px] font-heading font-black uppercase tracking-wide text-black">
+                Marcadores
+              </span>
+              <div className="flex gap-2 overflow-x-auto scrollbar-none">
+                {scoreboard.map((match) => {
+                  const home = getTeamById(match.homeTeamId);
+                  const away = getTeamById(match.awayTeamId);
+                  return (
+                    <Link
+                      key={match.id}
+                      to="/tournaments/cr-apertura-2026/predictions"
+                      className="min-w-[184px] rounded-lg border border-white/10 bg-black/25 px-3 py-2 hover:border-[#EA7301]/70 transition-colors"
+                    >
+                      <div className="flex items-center justify-between text-[10px] font-mono text-[#d5c0d7]">
+                        <span>J{match.round}</span>
+                        <span className={match.status === 'live' ? 'text-[#00f0ff]' : 'text-emerald-300'}>
+                          {match.status === 'live' ? `${match.minute}'` : 'Final'}
+                        </span>
+                      </div>
+                      <div className="mt-1 grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-sm font-heading font-bold text-white">
+                        <span className="truncate">{home.code}</span>
+                        <span className="font-black">{match.homeScore ?? 0} - {match.awayScore ?? 0}</span>
+                        <span className="truncate text-right">{away.code}</span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3">
+            <Metric label="Deportes" value={String(sports.length)} />
+            <Metric label="Eventos" value={String(sports.reduce((total, sport) => total + sport.activeEvents, 0))} />
+            <Metric label="Torneos" value={String(footballTournaments.length)} />
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
+            <div className="space-y-4">
+              <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/92 p-4">
+                <div className="flex items-center gap-2 border-b border-[#3c313e]/60 pb-3">
+                  <BarChart3 className="h-4 w-4 text-[#EA7301]" />
+                  <h2 className="font-heading text-xl font-black text-white">Titulares</h2>
+                </div>
+                <div className="divide-y divide-[#3c313e]/60">
+                  {headlines.map((headline) => (
+                    <p key={headline} className="py-3 text-sm leading-snug text-[#eeddee]">{headline}</p>
+                  ))}
+                </div>
+              </section>
+
+              <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/92 p-4">
+                <div className="flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4 text-[#EA7301]" />
+                  <h2 className="font-heading text-xl font-black text-white">Agenda</h2>
+                </div>
+                <div className="mt-3 space-y-2">
+                  {upcoming.map((match) => {
+                    const home = getTeamById(match.homeTeamId);
+                    const away = getTeamById(match.awayTeamId);
+                    return (
+                      <Link key={match.id} to="/tournaments/cr-apertura-2026/predictions" className="block rounded-lg bg-black/25 px-3 py-2 hover:bg-black/40">
+                        <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
+                          <span>J{match.round} · {match.date}</span>
+                          <span>{match.time}</span>
+                        </div>
+                        <p className="mt-1 truncate text-sm font-heading font-bold text-white">{home.shortName} vs {away.shortName}</p>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 }
 
-function SportsCarousel() {
+function SportsCarousel({ compact = false }: { compact?: boolean }) {
   const [active, setActive] = useState(0);
   const [providerVisuals, setProviderVisuals] = useState<Record<string, string>>({});
   const slide = sports[active];
@@ -452,10 +547,10 @@ function SportsCarousel() {
   }, []);
 
   return (
-    <div className="mx-auto rounded-2xl border border-white/15 bg-[#140b16]/80 p-4 shadow-2xl backdrop-blur w-full max-w-xl">
+    <div className={`mx-auto rounded-2xl border border-white/15 bg-[#140b16]/80 p-4 shadow-2xl backdrop-blur w-full ${compact ? 'max-w-none' : 'max-w-xl'}`}>
       <div
         key={slide.id}
-        className="min-h-[360px] rounded-xl p-6 flex flex-col justify-end kas-slide-visual overflow-hidden"
+        className={`${compact ? 'min-h-[300px]' : 'min-h-[360px]'} rounded-xl p-6 flex flex-col justify-end kas-slide-visual overflow-hidden`}
         style={{
           '--sport-accent': slide.accent,
           '--sport-image': `url(${providerVisuals[slide.id] || slide.image})`,
@@ -463,7 +558,7 @@ function SportsCarousel() {
       >
         <div className="max-w-xl">
           <p className="text-sm font-mono tracking-[0.28em] text-white/70">DEPORTE DESTACADO</p>
-          <h2 className="mt-2 text-5xl font-heading font-black text-white leading-none">{slide.name}</h2>
+          <h2 className={`${compact ? 'text-4xl' : 'text-5xl'} mt-2 font-heading font-black text-white leading-none`}>{slide.name}</h2>
           <p className="mt-3 text-base text-white/82">{slide.text}</p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link to={`/sports/${slide.id}`} className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-black text-black hover:bg-[#EA7301] transition-colors">

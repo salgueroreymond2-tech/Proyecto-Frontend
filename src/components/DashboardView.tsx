@@ -160,9 +160,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     </span>
                   </div>
                   <div className="mt-1 grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-sm font-heading font-bold text-white">
-                    <span className="truncate">{home.code}</span>
+                    <span className="flex min-w-0 items-center gap-1.5 truncate"><TeamBadge team={home} size="xs" />{home.code}</span>
                     <span className="font-black">{match.homeScore ?? 0} - {match.awayScore ?? 0}</span>
-                    <span className="truncate text-right">{away.code}</span>
+                    <span className="flex min-w-0 items-center justify-end gap-1.5 truncate text-right">{away.code}<TeamBadge team={away} size="xs" /></span>
                   </div>
                 </button>
               );
@@ -647,7 +647,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 return (
                   <div key={standing.teamId} className="grid grid-cols-[auto_1fr_auto_auto] items-center gap-2 rounded-lg bg-black/25 px-3 py-2 text-sm">
                     <span className="w-5 text-xs font-mono text-[#d5c0d7]">{index + 1}</span>
-                    <span className="font-heading font-bold text-white truncate">{team.shortName}</span>
+                    <span className="flex min-w-0 items-center gap-2 truncate font-heading font-bold text-white">
+                      <TeamBadge team={team} size="xs" />
+                      <span className="truncate">{team.shortName}</span>
+                    </span>
                     <span className="text-xs text-[#d5c0d7]">DG {standing.goalDifference}</span>
                     <span className="font-mono font-bold text-[#EA7301]">{standing.points}</span>
                   </div>
@@ -693,7 +696,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <span>J{match.round} · {match.date}</span>
                       <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {match.time}</span>
                     </div>
-                    <p className="mt-1 truncate text-sm font-heading font-bold text-white">{home.shortName} vs {away.shortName}</p>
+                    <p className="mt-1 flex items-center gap-2 truncate text-sm font-heading font-bold text-white">
+                      <TeamBadge team={home} size="xs" /> {home.shortName}
+                      <span className="text-[#d5c0d7]">vs</span>
+                      <TeamBadge team={away} size="xs" /> {away.shortName}
+                    </p>
                   </button>
                 );
               })}

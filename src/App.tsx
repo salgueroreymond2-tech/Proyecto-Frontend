@@ -38,6 +38,7 @@ import { AuthModal } from './components/AuthModal';
 import { RulesModal } from './components/RulesModal';
 import { AdminMatchModal } from './components/AdminMatchModal';
 import { AdminView } from './components/AdminView';
+import { TeamBadge } from './components/TeamBadge';
 import { getTeamById } from './data/teams';
 import { getSportEvents, getSportVisuals, getTournamentEvents, type NormalizedSportEvent, type SportProvider } from './services/sportsApi';
 import { signIn, signUp, simulatePayPalCheckout } from './services/authApi';
@@ -509,9 +510,9 @@ function HomePage() {
                         </span>
                       </div>
                       <div className="mt-1 grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-sm font-heading font-bold text-white">
-                        <span className="truncate">{home.code}</span>
+                        <span className="flex min-w-0 items-center gap-1.5 truncate"><TeamBadge team={home} size="xs" />{home.code}</span>
                         <span className="font-black">{match.homeScore ?? 0} - {match.awayScore ?? 0}</span>
-                        <span className="truncate text-right">{away.code}</span>
+                        <span className="flex min-w-0 items-center justify-end gap-1.5 truncate text-right">{away.code}<TeamBadge team={away} size="xs" /></span>
                       </div>
                     </Link>
                   );
@@ -555,7 +556,11 @@ function HomePage() {
                           <span>J{match.round} · {match.date}</span>
                           <span>{match.time}</span>
                         </div>
-                        <p className="mt-1 truncate text-sm font-heading font-bold text-white">{home.shortName} vs {away.shortName}</p>
+                        <p className="mt-1 flex items-center gap-2 truncate text-sm font-heading font-bold text-white">
+                          <TeamBadge team={home} size="xs" /> {home.shortName}
+                          <span className="text-[#d5c0d7]">vs</span>
+                          <TeamBadge team={away} size="xs" /> {away.shortName}
+                        </p>
                       </Link>
                     );
                   })}

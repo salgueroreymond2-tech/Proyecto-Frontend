@@ -11,7 +11,7 @@ import {
   Send,
   Sparkles,
   Zap,
-} from 'lucide-react';
+} from './Icon';
 
 export const SocialView: React.FC = () => {
   const { socialPosts, toggleLikePost, addSocialPost, currentUser } = useTournament();

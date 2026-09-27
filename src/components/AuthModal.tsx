@@ -4,7 +4,7 @@ import { TEAMS, getTeamById } from '../data/teams';
 import { TeamBadge } from './TeamBadge';
 import { PasionLogo } from './PasionLogo';
 import { ASSET_PATHS } from '../config/assets';
-import { Mail, Lock, ArrowRight, X, User, Camera, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, ArrowRight, X, User, Camera, Eye, EyeOff } from './Icon';
 
 export const AuthModal: React.FC = () => {
   const { showAuthModal, setShowAuthModal, currentUser, updateUserProfile } = useTournament();

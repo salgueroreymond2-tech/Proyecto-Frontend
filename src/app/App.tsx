@@ -22,7 +22,7 @@ import {
   Shield,
   Trophy,
   Users,
-} from 'lucide-react';
+} from '../components/Icon';
 import { TournamentProvider, useTournament } from '../context/TournamentContext';
 import { Navbar } from '../components/Navbar';
 import { BottomNav, NavTab } from '../components/BottomNav';
@@ -39,8 +39,10 @@ import { RulesModal } from '../components/RulesModal';
 import { AdminMatchModal } from '../components/AdminMatchModal';
 import { AdminView } from '../components/AdminView';
 import { TeamBadge } from '../components/TeamBadge';
+import { UniversalTeamLogo } from '../components/UniversalTeamLogo';
 import { ASSET_PATHS } from '../config/assets';
-import { getTeamById } from '../data/teams';
+import { TEAMS, getTeamById } from '../data/teams';
+import { splitMatchupTitle } from '../data/teamLogos';
 import { getSportEvents, getSportVisuals, getTournamentEvents, type NormalizedSportEvent, type SportProvider } from '../services/sportsApi';
 import { signIn, signUp, simulatePayPalCheckout } from '../services/authApi';
 
@@ -296,6 +298,65 @@ function findTournamentSummary(tournamentId: string) {
   return undefined;
 }
 
+function findCostaRicaTeamByName(name: string) {
+  const normalizedName = name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+  return TEAMS.find((team) => {
+    const candidates = [team.name, team.shortName, team.code, team.id].map((item) =>
+      item
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+    );
+    return candidates.includes(normalizedName);
+  });
+}
+
+function getCostaRicaTeamByProviderAlias(value: string) {
+  const alias = value.trim().toUpperCase();
+  const aliases: Record<string, string> = {
+    ALA: 'lda',
+    LDA: 'lda',
+    SAP: 'sap',
+    DSC: 'sap',
+    CAR: 'csc',
+    CSC: 'csc',
+    HER: 'csh',
+    CSH: 'csh',
+    ADSC: 'sca',
+    SCA: 'sca',
+    SAN: 'sca',
+    PFC: 'pfc',
+    PUN: 'pfc',
+    MPZ: 'mpz',
+    PZ: 'mpz',
+    SPO: 'spo',
+    SFC: 'spo',
+    ESC: 'esc',
+    ISC: 'isc',
+    ADG: 'adg',
+    GUA: 'adg',
+    LIB: 'lib',
+  };
+
+  const teamId = aliases[alias];
+  return teamId ? getTeamById(teamId) : findCostaRicaTeamByName(value);
+}
+
+function parseCostaRicaMatchup(title: string) {
+  const parts = title.split(/\s+(?:@|vs\.?|v\.?)\s+/i);
+  if (parts.length !== 2) return null;
+
+  const home = getCostaRicaTeamByProviderAlias(parts[0]);
+  const away = getCostaRicaTeamByProviderAlias(parts[1]);
+  if (!home || !away) return null;
+
+  return { home, away };
+}
+
 function KasShell() {
   const [adminModalOpen, setAdminModalOpen] = useState(false);
   const [colorMode, setColorMode] = useState<'dark' | 'light'>(() => {
@@ -409,6 +470,7 @@ function HomePage() {
   const scoreboard = matches
     .filter((match) => match.status === 'live' || match.status === 'finished')
     .slice(0, 6);
+  const homeLeaderTeam = getTeamById(standings[0]?.teamId || 'sap');
   const homeFallbackEvents = [
     { id: 'kas-champions', league: 'UEFA Champions League', title: 'Champions League 2026-2027 prepara quiniela premium', status: 'Preparacion', sportId: 'football', path: '/tournaments/champions-league' },
     { id: 'kas-nba', league: 'NBA', title: 'Temporada regular NBA abre picks diarios y ranking por conferencia', status: 'Activo', sportId: 'basketball', path: '/tournaments/nba-temporada-regular' },
@@ -416,7 +478,7 @@ function HomePage() {
     { id: 'kas-nfl', league: 'NFL', title: 'NFL activa picks semanales rumbo a playoffs', status: 'Activo', sportId: 'american-football', path: '/tournaments/nfl-temporada-regular' },
   ];
   const headlines = [
-    `${getTeamById(standings[0]?.teamId || 'sap').shortName} domina la tabla nacional con ${standings[0]?.points ?? 0} puntos`,
+    `${homeLeaderTeam.shortName} domina la tabla nacional con ${standings[0]?.points ?? 0} puntos`,
     `${leaderboard[0]?.name || 'Ranking KAS'} marca el paso del prestigio semanal`,
     `${footballTournaments.length} torneos de futbol listos para membresia pay-per-tournament`,
     'Agenda multi deporte conectada a eventos, rankings y comunidad',
@@ -536,8 +598,11 @@ function HomePage() {
                   <h2 className="font-heading text-xl font-black text-white">Titulares</h2>
                 </div>
                 <div className="divide-y divide-[#3c313e]/60">
-                  {headlines.map((headline) => (
-                    <p key={headline} className="py-3 text-sm leading-snug text-[#eeddee]">{headline}</p>
+                  {headlines.map((headline, index) => (
+                    <p key={headline} className="flex items-center gap-2 py-3 text-sm leading-snug text-[#eeddee]">
+                      {index === 0 && <TeamBadge team={homeLeaderTeam} size="xs" />}
+                      <span>{headline}</span>
+                    </p>
                   ))}
                 </div>
               </section>
@@ -593,12 +658,26 @@ function HomePage() {
 
                 {homeEventsStatus !== 'loading' && tournamentNews.map((event) => {
                   const sport = sports.find((item) => item.id === event.sportId);
+                  const matchup = parseCostaRicaMatchup(event.title);
                   const content = (
                     <>
                       <div className="flex items-start justify-between gap-3">
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-[11px] font-mono uppercase text-[#EA7301]">{event.league}</p>
-                          <h3 className="mt-1 font-heading text-lg font-black leading-tight text-white">{event.title}</h3>
+                          {matchup ? (
+                            <h3 className="mt-2 flex items-center gap-2 font-heading text-lg font-black leading-tight text-white">
+                              <TeamBadge team={matchup.home} size="xs" />
+                              <span className="truncate">{matchup.home.code}</span>
+                              <span className="text-xs text-[#d5c0d7]">@</span>
+                              <TeamBadge team={matchup.away} size="xs" />
+                              <span className="truncate">{matchup.away.code}</span>
+                            </h3>
+                          ) : (
+                            <h3 className="mt-1 flex min-w-0 items-center gap-2 font-heading text-lg font-black leading-tight text-white">
+                              <MatchupLogoRow title={event.title} size="xs" />
+                              <span className="truncate">{event.title}</span>
+                            </h3>
+                          )}
                         </div>
                         <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-mono text-white/65">{event.provider}</span>
                       </div>
@@ -793,9 +872,6 @@ function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: () 
             </button>
           </form>
 
-          <Link to="/tournaments/cr-apertura-2026/login" className="mt-4 block text-center text-xs font-mono text-[#d5c0d7] hover:text-[#EA7301]">
-            Acceso especifico a Quiniela Futbol Costa Rica
-          </Link>
         </section>
       </div>
     </div>
@@ -991,28 +1067,42 @@ function SportsDashboard() {
             <div key={item} className="h-24 animate-pulse rounded-xl border border-white/10 bg-black/25" />
           ))}
 
-          {apiStatus !== 'loading' && apiEvents.map((event) => (
-            <a
-              key={event.id}
-              href={event.sourceUrl || '#'}
-              target={event.sourceUrl ? '_blank' : undefined}
-              rel={event.sourceUrl ? 'noreferrer' : undefined}
-              className="rounded-xl border border-white/10 bg-black/25 p-4 hover:border-[#EA7301]/70 transition-colors"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs font-mono uppercase text-[#EA7301]">{event.league}</p>
-                  <h3 className="mt-1 font-heading text-xl font-black text-white">{event.title}</h3>
+          {apiStatus !== 'loading' && apiEvents.map((event) => {
+            const matchup = parseCostaRicaMatchup(event.title);
+
+            return (
+              <a
+                key={event.id}
+                href={event.sourceUrl || '#'}
+                target={event.sourceUrl ? '_blank' : undefined}
+                rel={event.sourceUrl ? 'noreferrer' : undefined}
+                className="rounded-xl border border-white/10 bg-black/25 p-4 hover:border-[#EA7301]/70 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-xs font-mono uppercase text-[#EA7301]">{event.league}</p>
+                    {matchup ? (
+                      <h3 className="mt-2 flex items-center gap-2 font-heading text-xl font-black text-white">
+                        <TeamBadge team={matchup.home} size="sm" />
+                        <span className="truncate">{matchup.home.code}</span>
+                        <span className="text-sm text-[#d5c0d7]">@</span>
+                        <TeamBadge team={matchup.away} size="sm" />
+                        <span className="truncate">{matchup.away.code}</span>
+                      </h3>
+                    ) : (
+                      <h3 className="mt-1 font-heading text-xl font-black text-white">{event.title}</h3>
+                    )}
+                  </div>
+                  <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-mono text-white/65">{event.provider}</span>
                 </div>
-                <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-mono text-white/65">{event.provider}</span>
-              </div>
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[#d5c0d7]">
-                <span>{event.status}</span>
-                {event.score && <span className="text-white">Marcador {event.score}</span>}
-                {event.startsAt && <span>{new Date(event.startsAt).toLocaleDateString()}</span>}
-              </div>
-            </a>
-          ))}
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[#d5c0d7]">
+                  <span>{event.status}</span>
+                  {event.score && <span className="text-white">Marcador {event.score}</span>}
+                  {event.startsAt && <span>{new Date(event.startsAt).toLocaleDateString()}</span>}
+                </div>
+              </a>
+            );
+          })}
           {apiStatus !== 'loading' && apiEvents.length === 0 && <div className="rounded-xl border border-white/10 bg-black/25 p-4 text-sm text-[#d5c0d7]">No hay eventos publicados por los proveedores en este momento. Vuelve a consultar mas tarde.</div>}
         </div>
       </section>
@@ -1032,6 +1122,19 @@ function Metric({ label, value }: { label: string; value: string }) {
 function eventsFromDashboard(events: string[] | undefined, sportName: string) {
   if (!events || events.length === 0) return [`Participantes ${sportName}`, 'Calendario pendiente', 'Ranking disponible'];
   return events.flatMap((event) => event.split(' vs ')).slice(0, 8);
+}
+
+function MatchupLogoRow({ title, size = 'sm' }: { title: string; size?: 'xs' | 'sm' | 'md' }) {
+  const matchup = splitMatchupTitle(title);
+
+  if (!matchup) return null;
+
+  return (
+    <span className="flex shrink-0 items-center -space-x-1">
+      <UniversalTeamLogo name={matchup.home} size={size} className="rounded-full bg-black/30" />
+      <UniversalTeamLogo name={matchup.away} size={size} className="rounded-full bg-black/30" />
+    </span>
+  );
 }
 
 function FootballDashboard() {
@@ -1222,12 +1325,20 @@ function TournamentDashboard() {
           </div>
           <p className="mt-3 text-sm text-[#d5c0d7]">{detail.overview}</p>
           <div className="mt-5 grid sm:grid-cols-2 gap-3">
-            {detail.teams.map((team) => (
-              <div key={team} className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
-                <p className="font-heading text-lg font-black text-white">{team}</p>
-                <p className="text-xs text-[#d5c0d7]">{tournament.sportName}</p>
-              </div>
-            ))}
+            {detail.teams.map((team) => {
+              const localTeam = findCostaRicaTeamByName(team);
+              return (
+                <div key={team} className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    {localTeam ? <TeamBadge team={localTeam} size="sm" /> : <UniversalTeamLogo name={team} size="sm" />}
+                    <div className="min-w-0">
+                      <p className="truncate font-heading text-lg font-black text-white">{localTeam?.shortName || team}</p>
+                      <p className="text-xs text-[#d5c0d7]">{localTeam?.name || tournament.sportName}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -1291,7 +1402,10 @@ function TournamentDashboard() {
             {tournamentApiStatus !== 'loading' && liveTournamentEvents.map((event) => (
               <div key={event.id} className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
                 <div className="flex items-center justify-between gap-4">
-                  <span className="font-heading text-lg font-bold text-white">{event.title}</span>
+                  <span className="flex min-w-0 items-center gap-3 font-heading text-lg font-bold text-white">
+                    <MatchupLogoRow title={event.title} />
+                    <span className="truncate">{event.title}</span>
+                  </span>
                   <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{event.status}</span>
                 </div>
                 <div className="mt-1 flex flex-wrap gap-2 text-xs text-[#d5c0d7]">
@@ -1304,7 +1418,10 @@ function TournamentDashboard() {
 
             {tournamentApiStatus !== 'loading' && liveTournamentEvents.length === 0 && events.map((event) => (
               <div key={event} className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-black/25 px-4 py-3">
-                <span className="font-heading text-lg font-bold text-white">{event}</span>
+                <span className="flex min-w-0 items-center gap-3 font-heading text-lg font-bold text-white">
+                  <MatchupLogoRow title={event} />
+                  <span className="truncate">{event}</span>
+                </span>
                 <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">Picks</span>
               </div>
             ))}
@@ -1380,7 +1497,10 @@ function SportPlaceholder() {
           <div className="mt-4 space-y-3">
             {dashboard.events.map((event) => (
               <div key={event} className="flex items-center justify-between rounded-xl bg-black/25 border border-white/10 px-4 py-3">
-                <span className="font-heading text-lg font-bold text-white">{event}</span>
+                <span className="flex min-w-0 items-center gap-3 font-heading text-lg font-bold text-white">
+                  <MatchupLogoRow title={event} />
+                  <span className="truncate">{event}</span>
+                </span>
                 <span className="text-xs font-mono text-[#EA7301]">Picks</span>
               </div>
             ))}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
 import { getTeamById } from '../data/teams';
 import { TeamBadge } from './TeamBadge';
-import { X, Save, Sliders, Play, RotateCcw } from 'lucide-react';
+import { X, Save, Sliders, Play, RotateCcw } from './Icon';
 
 interface AdminMatchModalProps {
   isOpen: boolean;

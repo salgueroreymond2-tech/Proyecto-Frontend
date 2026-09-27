@@ -18,7 +18,7 @@ import {
   CalendarDays,
   BarChart3,
   Clock,
-} from 'lucide-react';
+} from './Icon';
 
 interface DashboardViewProps {
   onOpenScorerModal: (matchId: string) => void;
@@ -64,6 +64,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const nextMatches = matches
     .filter((m) => m.status === 'scheduled')
     .slice(0, 4);
+  const leaderTeam = getTeamById(standings[0]?.teamId || 'sap');
 
   // Round label generator
   const getRoundLabel = (r: number) => {
@@ -76,7 +77,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     return 'Gran Final - Vuelta';
   };
   const headlineItems = [
-    `${getTeamById(standings[0]?.teamId || 'sap').shortName} lidera la tabla con ${standings[0]?.points ?? 0} puntos`,
+    `${leaderTeam.shortName} lidera la tabla con ${standings[0]?.points ?? 0} puntos`,
     `${currentUser.name} suma ${currentUser.points.toLocaleString('es-CR')} puntos en el ranking KAS`,
     `${predictedRoundMatches} de ${roundMatches.length} pronosticos listos para ${getRoundLabel(selectedRound).toLowerCase()}`,
     liveRoundMatches > 0 ? `${liveRoundMatches} partido${liveRoundMatches > 1 ? 's' : ''} en vivo ahora mismo` : 'La jornada queda abierta para nuevos picks',
@@ -630,8 +631,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <h2 className="font-heading text-xl font-black text-white">Titulares</h2>
             </div>
             <div className="divide-y divide-[#3c313e]/60">
-              {headlineItems.map((item) => (
-                <p key={item} className="py-3 text-sm leading-snug text-[#eeddee]">{item}</p>
+              {headlineItems.map((item, index) => (
+                <p key={item} className="flex items-center gap-2 py-3 text-sm leading-snug text-[#eeddee]">
+                  {index === 0 && <TeamBadge team={leaderTeam} size="xs" />}
+                  <span>{item}</span>
+                </p>
               ))}
             </div>
           </section>

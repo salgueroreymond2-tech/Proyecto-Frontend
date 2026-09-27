@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, BarChart3, Trophy, MessageSquare, User } from 'lucide-react';
+import { LayoutDashboard, BarChart3, Trophy, MessageSquare, User } from './Icon';
 
 export type NavTab = 'dashboard' | 'ranking' | 'playoffs' | 'social' | 'profile' | 'admin' | 'login';
 

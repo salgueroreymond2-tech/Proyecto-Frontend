@@ -89,6 +89,11 @@
       "token": "c2b5738f90e9958c5a62edc1442eb2c17f66ec9b42053c979fe98678f7d80572",
       "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
       "expiresAt": "2026-10-03T20:58:51.265Z"
+    },
+    {
+      "token": "91e451752ef2a58ee61b9cd656e8a0a44bc4d0fce36ccc2c4ec72d43fc83d298",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-04T00:10:34.967Z"
     }
   ],
   "memberships": [
@@ -123,6 +128,22 @@
       "paymentId": "SIM-d1d11be9-e732-4f04-8008-0095ad82db06",
       "status": "active",
       "grantedAt": "2026-09-26T21:00:16.107Z"
+    },
+    {
+      "id": "0e9e09f7-57f8-446e-bc0b-2ee85435a38b",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "champions-league",
+      "paymentId": "SIM-5bf581e2-85bb-44f3-baa6-3192f73b18e5",
+      "status": "active",
+      "grantedAt": "2026-09-27T00:33:46.346Z"
+    },
+    {
+      "id": "b312d5ce-1062-47eb-a168-0e4678e79d92",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "premier-league",
+      "paymentId": "SIM-47449d4f-a515-42d6-90e9-35a5a20b7a80",
+      "status": "active",
+      "grantedAt": "2026-09-27T00:34:09.867Z"
     }
   ],
   "payments": [
@@ -175,6 +196,26 @@
       "status": "captured",
       "createdAt": "2026-09-26T21:00:16.077Z",
       "capturedAt": "2026-09-26T21:00:16.106Z"
+    },
+    {
+      "id": "SIM-5bf581e2-85bb-44f3-baa6-3192f73b18e5",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "champions-league",
+      "amount": "$14.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-27T00:33:46.305Z",
+      "capturedAt": "2026-09-27T00:33:46.346Z"
+    },
+    {
+      "id": "SIM-47449d4f-a515-42d6-90e9-35a5a20b7a80",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "premier-league",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-27T00:34:09.846Z",
+      "capturedAt": "2026-09-27T00:34:09.867Z"
     }
   ]
 }

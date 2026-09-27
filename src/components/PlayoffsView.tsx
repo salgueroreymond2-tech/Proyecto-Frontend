@@ -11,7 +11,7 @@ import {
   Award,
   Crown,
   Share2,
-} from 'lucide-react';
+} from './Icon';
 
 interface PlayoffsViewProps {
   onOpenScorerModal: (matchId: string) => void;

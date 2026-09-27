@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useTournament } from '../context/TournamentContext';
 import confetti from 'canvas-confetti';
-import { Trophy, Share2, X, Sparkles } from 'lucide-react';
+import { Trophy, Share2, X, Sparkles } from './Icon';
 
 export const ChampionModal: React.FC = () => {
   const { showChampionModal, setShowChampionModal, currentUser } = useTournament();

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTournament } from '../context/TournamentContext';
 import { getTeamById } from '../data/teams';
 import { TeamBadge } from './TeamBadge';
-import { X, Check } from 'lucide-react';
+import { X, Check } from './Icon';
 
 export const ScorerVoteModal: React.FC = () => {
   const {

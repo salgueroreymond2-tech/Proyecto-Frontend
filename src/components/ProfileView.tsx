@@ -16,7 +16,7 @@ import {
   CheckCircle2,
   LogOut,
   ShieldCheck,
-} from 'lucide-react';
+} from './Icon';
 
 interface ProfileViewProps {
   onOpenLogin?: () => void;
@@ -210,7 +210,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onOpenLogin }) => {
             <span className="font-heading font-bold text-white text-xs block leading-tight">
               Fiel Seguidor
             </span>
-            <span className="text-[10px] text-[#d5c0d7] font-mono">
+            <span className="flex items-center gap-1.5 text-[10px] text-[#d5c0d7] font-mono">
+              <TeamBadge teamId="sap" size="xs" />
               10 partidos Saprissa
             </span>
           </div>

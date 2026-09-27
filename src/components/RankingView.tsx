@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
 import { TeamBadge } from './TeamBadge';
 import { getTeamById } from '../data/teams';
-import { Trophy, Medal, Flame, Users, ShieldCheck, ChevronRight, Info } from 'lucide-react';
+import { Trophy, Medal, Flame, Users, ShieldCheck, ChevronRight, Info } from './Icon';
 
 export const RankingView: React.FC = () => {
   const { standings, leaderboard, currentUser, setShowRulesModal } = useTournament();

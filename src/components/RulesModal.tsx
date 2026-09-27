@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTournament } from '../context/TournamentContext';
-import { X, Trophy, Swords, ShieldAlert, Award } from 'lucide-react';
+import { X, Trophy, Swords, ShieldAlert, Award } from './Icon';
 
 export const RulesModal: React.FC = () => {
   const { showRulesModal, setShowRulesModal } = useTournament();

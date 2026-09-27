@@ -19,8 +19,9 @@ import {
   Trophy,
   BadgeDollarSign,
   Users,
-} from 'lucide-react';
+} from './Icon';
 import { ASSET_PATHS } from '../config/assets';
+import { TeamBadge } from './TeamBadge';
 
 interface NavbarProps {
   onOpenAdmin: () => void;
@@ -294,7 +295,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </div>
                   <div className="p-2 rounded bg-[#261c28] border-l-2 border-[#00f0ff]">
                     <p className="font-semibold text-white">El Clásico Nacional en vivo</p>
-                    <p className="text-[11px] text-[#d5c0d7]">Saprissa 2 - 1 Alajuelense (Min 64)</p>
+                    <p className="flex items-center gap-1.5 text-[11px] text-[#d5c0d7]">
+                      <TeamBadge teamId="sap" size="xs" />
+                      <span>Saprissa 2 - 1 Alajuelense</span>
+                      <TeamBadge teamId="lda" size="xs" />
+                      <span>(Min 64)</span>
+                    </p>
                   </div>
                   <div className="p-2 rounded bg-[#261c28] border-l-2 border-emerald-400">
                     <p className="font-semibold text-white">Top 5% Alcanzado</p>

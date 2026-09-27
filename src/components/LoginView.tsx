@@ -3,7 +3,7 @@ import { useTournament } from '../context/TournamentContext';
 import { TEAMS, getTeamById } from '../data/teams';
 import { TeamBadge } from './TeamBadge';
 import { PasionLogo } from './PasionLogo';
-import { Mail, Lock, ArrowRight, User, Sparkles, CheckCircle2, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, ArrowRight, User, Sparkles, CheckCircle2, ShieldCheck, Eye, EyeOff } from './Icon';
 import { signIn, signUp } from '../services/authApi';
 
 interface LoginViewProps {

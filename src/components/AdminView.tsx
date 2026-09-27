@@ -14,7 +14,7 @@ import {
   Activity,
   LockKeyhole,
   Server,
-} from 'lucide-react';
+} from './Icon';
 
 export const AdminView: React.FC = () => {
   const {

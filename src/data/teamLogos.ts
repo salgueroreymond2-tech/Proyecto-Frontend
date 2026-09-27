@@ -4,6 +4,16 @@ type LogoEntry = {
   aliases?: string[];
 };
 
+const kasBadgeLogo = (label: string, color: string) =>
+  `data:image/svg+xml,${encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+      <rect width="120" height="120" rx="24" fill="#111111"/>
+      <circle cx="60" cy="60" r="47" fill="${color}" opacity="0.18"/>
+      <circle cx="60" cy="60" r="43" fill="none" stroke="${color}" stroke-width="6"/>
+      <text x="60" y="68" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#ffffff">${label}</text>
+    </svg>
+  `)}`;
+
 export const LEAGUE_LOGOS: Record<string, string> = {
   'serie-a': 'https://a.espncdn.com/i/leaguelogos/soccer/500/12.png',
   bundesliga: 'https://a.espncdn.com/i/leaguelogos/soccer/500/10.png',
@@ -20,6 +30,18 @@ export const LEAGUE_LOGOS: Record<string, string> = {
   'nfl-temporada-regular': 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png',
   'nfl-playoffs': 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png',
   'super-bowl': 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png',
+  'nations-league': kasBadgeLogo('UNL', '#2563eb'),
+  'concacaf-nations-league': kasBadgeLogo('CNL', '#0ea5e9'),
+  'copa-oro': kasBadgeLogo('ORO', '#facc15'),
+  'copa-america': kasBadgeLogo('CA', '#22c55e'),
+  eurocopa: kasBadgeLogo('EURO', '#3b82f6'),
+  'f1-world-championship': kasBadgeLogo('F1', '#ef4444'),
+  'f1-sprint-series': kasBadgeLogo('F1S', '#f97316'),
+  'f1-constructors-cup': kasBadgeLogo('F1C', '#a855f7'),
+  'tour-de-france': kasBadgeLogo('TDF', '#facc15'),
+  'giro-d-italia': kasBadgeLogo('GIRO', '#ec4899'),
+  'la-vuelta': kasBadgeLogo('VTA', '#ef4444'),
+  'uci-world-championships': kasBadgeLogo('UCI', '#22c55e'),
 };
 
 export function getLeagueLogo(tournamentId: string) {

@@ -68,11 +68,13 @@ type Sport = {
 };
 
 const sports: Sport[] = [
-  { id: 'football', name: 'Futbol', text: 'Jornadas, marcadores, rankings y finales.', tournaments: 8, activeEvents: 42, accent: '#EA7301', image: ASSET_PATHS.images.sports.football },
+  { id: 'football', name: 'Futbol', text: 'Jornadas, marcadores, rankings y finales.', tournaments: 13, activeEvents: 64, accent: '#EA7301', image: ASSET_PATHS.images.sports.football },
   { id: 'tennis', name: 'Tenis', text: 'Rondas, sets y prestigio por torneo.', tournaments: 7, activeEvents: 18, accent: '#46D369', image: ASSET_PATHS.images.sports.tennis },
   { id: 'basketball', name: 'Baloncesto', text: 'NBA con ganador, marcador y diferencia.', tournaments: 1, activeEvents: 14, accent: '#F97316', image: ASSET_PATHS.images.sports.basketball },
   { id: 'baseball', name: 'Beisbol', text: 'MLB con carreras y ganador por juego.', tournaments: 1, activeEvents: 12, accent: '#38BDF8', image: ASSET_PATHS.images.sports.baseball },
   { id: 'american-football', name: 'Futbol Americano', text: 'NFL con picks por semana y playoffs.', tournaments: 1, activeEvents: 16, accent: '#A78BFA', image: ASSET_PATHS.images.sports.americanFootball },
+  { id: 'f1', name: 'F1', text: 'Grandes premios, pole, podio y campeonatos.', tournaments: 3, activeEvents: 24, accent: '#EF4444', image: ASSET_PATHS.images.sports.americanFootball },
+  { id: 'cycling', name: 'Ciclismo', text: 'Grand Tours, etapas, maillots y clasificaciones.', tournaments: 4, activeEvents: 21, accent: '#22C55E', image: ASSET_PATHS.images.sports.tennis },
   { id: 'mma', name: 'UFC / MMA', text: 'Ganador, metodo y round por cartelera.', tournaments: 1, activeEvents: 9, accent: '#EF4444', image: ASSET_PATHS.images.sports.mma },
 ];
 
@@ -85,6 +87,11 @@ const footballTournaments = [
   { id: 'bundesliga', name: 'Bundesliga', season: '2026-2027', status: 'Preparacion', price: '$11.99', enabled: false },
   { id: 'primeira-liga', name: 'Liga Portugal', season: '2026-2027', status: 'Preparacion', price: '$9.99', enabled: false },
   { id: 'europa-league', name: 'UEFA Europa League', season: '2026-2027', status: 'Preparacion', price: '$10.99', enabled: false },
+  { id: 'nations-league', name: 'UEFA Nations League', season: '2026-2027', status: 'Preparacion', price: '$9.99', enabled: false },
+  { id: 'concacaf-nations-league', name: 'Concacaf Nations League', season: '2026-2027', status: 'Preparacion', price: '$8.99', enabled: false },
+  { id: 'copa-oro', name: 'Copa Oro', season: '2027', status: 'Preparacion', price: '$9.99', enabled: false },
+  { id: 'copa-america', name: 'Copa America', season: '2028', status: 'Preparacion', price: '$11.99', enabled: false },
+  { id: 'eurocopa', name: 'Eurocopa', season: '2028', status: 'Preparacion', price: '$12.99', enabled: false },
 ];
 
 const sportDashboards = {
@@ -142,6 +149,33 @@ const sportDashboards = {
       { name: 'NFL Temporada Regular', season: '2026-2027', status: 'Activo', price: '$12.99' },
       { name: 'NFL Playoffs', season: '2027', status: 'Preparacion', price: '$14.99' },
       { name: 'Super Bowl', season: '2027', status: 'Premium', price: '$9.99' },
+    ],
+  },
+  f1: {
+    eyebrow: 'FORMULA 1',
+    title: 'Dashboard F1',
+    description: 'Quinielas de Grand Prix con pole position, podio, vuelta rapida y campeonato.',
+    prediction: 'Pole, podio, ganador y vuelta rapida',
+    featured: 'Formula 1 World Championship 2027',
+    events: ['Gran Premio de Bahrain', 'Gran Premio de Monaco', 'Gran Premio de Brasil'],
+    tournaments: [
+      { name: 'F1 World Championship', season: '2027', status: 'Activo', price: '$12.99' },
+      { name: 'F1 Sprint Series', season: '2027', status: 'Preparacion', price: '$8.99' },
+      { name: 'F1 Constructors Cup', season: '2027', status: 'Premium', price: '$9.99' },
+    ],
+  },
+  cycling: {
+    eyebrow: 'CICLISMO',
+    title: 'Dashboard Ciclismo',
+    description: 'Pronostica ganadores de etapa, clasificacion general, maillots y equipos.',
+    prediction: 'Ganador de etapa, general y maillots',
+    featured: 'Grand Tours 2027',
+    events: ['Tour de France - Etapa reina', 'Giro d Italia - Contrarreloj', 'La Vuelta - Final en alto'],
+    tournaments: [
+      { name: 'Tour de France', season: '2027', status: 'Activo', price: '$10.99' },
+      { name: 'Giro d Italia', season: '2027', status: 'Preparacion', price: '$9.99' },
+      { name: 'La Vuelta', season: '2027', status: 'Preparacion', price: '$9.99' },
+      { name: 'UCI World Championships', season: '2027', status: 'Premium', price: '$8.99' },
     ],
   },
   mma: {
@@ -230,7 +264,41 @@ const tournamentDetails: Record<string, {
     predictionRules: ['Ganador', 'Marcador', 'Clasificados', 'Campeon'],
     coverage: ['Fase de liga', 'Eliminatorias', 'Final', 'Ranking europeo'],
   },
-  'nba-temporada-regular': {
+  'nations-league': {
+    overview: 'Torneo UEFA de selecciones con grupos, semifinales y final continental.',
+    teams: ['Espana', 'Francia', 'Portugal', 'Alemania', 'Italia', 'Paises Bajos', 'Inglaterra', 'Croacia', 'Belgica', 'Dinamarca', 'Suiza', 'Austria', 'Polonia', 'Serbia', 'Escocia', 'Hungria'],
+    format: 'UEFA Nations League 2026-2027 - grupos, final four y descenso.',
+    predictionRules: ['Ganador', 'Marcador', 'Clasificados de grupo', 'Campeon'],
+    coverage: ['Liga A', 'Liga B', 'Final Four', 'Ranking UEFA'],
+  },
+  'concacaf-nations-league': {
+    overview: 'Competicion de selecciones CONCACAF con fase de grupos y finales regionales.',
+    teams: ['Costa Rica', 'Mexico', 'Estados Unidos', 'Canada', 'Panama', 'Honduras', 'Jamaica', 'Guatemala', 'El Salvador', 'Trinidad y Tobago', 'Haiti', 'Curazao'],
+    format: 'Concacaf Nations League 2026-2027 - grupos y eliminatorias.',
+    predictionRules: ['Ganador', 'Marcador', 'Clasificados', 'Campeon regional'],
+    coverage: ['Liga A', 'Cuartos', 'Final Four', 'Ranking CONCACAF'],
+  },
+  'copa-oro': {
+    overview: 'Torneo principal de selecciones CONCACAF con fase de grupos y eliminacion directa.',
+    teams: ['Costa Rica', 'Mexico', 'Estados Unidos', 'Canada', 'Panama', 'Honduras', 'Jamaica', 'Guatemala', 'El Salvador', 'Trinidad y Tobago', 'Haiti', 'Curazao', 'Qatar', 'Martinica', 'Surinam', 'Nicaragua'],
+    format: 'Copa Oro 2027 - grupos, cuartos, semifinales y final.',
+    predictionRules: ['Ganador', 'Marcador', 'Clasificado', 'Campeon'],
+    coverage: ['Fase de grupos', 'Eliminatorias', 'Final', 'Goleadores'],
+  },
+  'copa-america': {
+    overview: 'Competicion continental CONMEBOL con selecciones sudamericanas e invitadas.',
+    teams: ['Argentina', 'Brasil', 'Uruguay', 'Colombia', 'Chile', 'Peru', 'Ecuador', 'Paraguay', 'Bolivia', 'Venezuela', 'Costa Rica', 'Mexico', 'Estados Unidos', 'Canada', 'Panama', 'Jamaica'],
+    format: 'Copa America 2028 - grupos y eliminatorias.',
+    predictionRules: ['Ganador', 'Marcador', 'Clasificados', 'Campeon'],
+    coverage: ['Grupos', 'Cuartos', 'Semifinales', 'Final'],
+  },
+  eurocopa: {
+    overview: 'Eurocopa de selecciones con fase de grupos, eliminatorias y final europea.',
+    teams: ['Espana', 'Francia', 'Alemania', 'Portugal', 'Italia', 'Inglaterra', 'Paises Bajos', 'Belgica', 'Croacia', 'Dinamarca', 'Suiza', 'Austria', 'Polonia', 'Turquia', 'Escocia', 'Serbia', 'Hungria', 'Republica Checa', 'Eslovenia', 'Rumania', 'Ucrania', 'Suecia', 'Noruega', 'Gales'],
+    format: 'Eurocopa 2028 - 24 selecciones.',
+    predictionRules: ['Ganador', 'Marcador', 'Clasificados por grupo', 'Campeon'],
+    coverage: ['Grupos', 'Octavos', 'Semifinales', 'Final'],
+  },  'nba-temporada-regular': {
     overview: 'Temporada regular NBA con partidos diarios, marcadores y ranking por aciertos.',
     teams: NBA_TEAMS,
     format: 'Temporada 2026-2027 · conferencia Este y Oeste.',
@@ -292,6 +360,55 @@ const tournamentDetails: Record<string, {
     format: 'Super Bowl 2027 - final unica por el campeonato.',
     predictionRules: ['Ganador', 'Marcador', 'MVP', 'Total de puntos'],
     coverage: ['Final NFL', 'MVP', 'Campeon', 'Halftime props'],
+  },
+  'f1-world-championship': {
+    overview: 'Temporada completa de Formula 1 con predicciones por gran premio y tabla de pilotos.',
+    teams: ['Red Bull Racing', 'Ferrari', 'Mercedes', 'McLaren', 'Aston Martin', 'Alpine', 'Williams', 'RB', 'Sauber', 'Haas'],
+    format: 'F1 2027 - calendario mundial de grandes premios.',
+    predictionRules: ['Pole position', 'Ganador', 'Podio', 'Vuelta rapida'],
+    coverage: ['Clasificacion', 'Carrera', 'Pilotos', 'Constructores'],
+  },
+  'f1-sprint-series': {
+    overview: 'Formato sprint de F1 con puntos cortos, pole sprint y ganador de fin de semana.',
+    teams: ['Red Bull Racing', 'Ferrari', 'Mercedes', 'McLaren', 'Aston Martin', 'Alpine', 'Williams', 'RB', 'Sauber', 'Haas'],
+    format: 'Sprint Series 2027 - fines de semana seleccionados.',
+    predictionRules: ['Sprint winner', 'Pole sprint', 'Top 3', 'Ganador GP'],
+    coverage: ['Sprint', 'Qualy', 'Carrera', 'Puntos extra'],
+  },
+  'f1-constructors-cup': {
+    overview: 'Competencia premium centrada en puntos por escuderia y campeonato de constructores.',
+    teams: ['Red Bull Racing', 'Ferrari', 'Mercedes', 'McLaren', 'Aston Martin', 'Alpine', 'Williams', 'RB', 'Sauber', 'Haas'],
+    format: 'Constructors Cup 2027 - acumulado por escuderia.',
+    predictionRules: ['Equipo ganador', 'Doble podio', 'Puntos por carrera', 'Campeon constructores'],
+    coverage: ['Escuderias', 'Pilotos', 'Puntos', 'Campeonato'],
+  },
+  'tour-de-france': {
+    overview: 'Grand Tour frances con predicciones por etapa, general, montana y puntos.',
+    teams: ['UAE Team Emirates', 'Visma Lease a Bike', 'Soudal Quick-Step', 'INEOS Grenadiers', 'Bora Hansgrohe', 'Lidl-Trek', 'Alpecin-Deceuninck', 'Movistar Team', 'EF Education-EasyPost', 'Groupama-FDJ'],
+    format: 'Tour de France 2027 - 21 etapas.',
+    predictionRules: ['Ganador de etapa', 'Maillot amarillo', 'Montana', 'Puntos'],
+    coverage: ['Etapas llanas', 'Montana', 'Contrarreloj', 'Clasificacion general'],
+  },
+  'giro-d-italia': {
+    overview: 'Grand Tour italiano con clasificacion general, sprints y etapas de montana.',
+    teams: ['UAE Team Emirates', 'Visma Lease a Bike', 'Soudal Quick-Step', 'INEOS Grenadiers', 'Bora Hansgrohe', 'Lidl-Trek', 'Alpecin-Deceuninck', 'Movistar Team', 'EF Education-EasyPost', 'Groupama-FDJ'],
+    format: 'Giro d Italia 2027 - 21 etapas.',
+    predictionRules: ['Ganador de etapa', 'Maglia rosa', 'Montana', 'Joven destacado'],
+    coverage: ['Etapas', 'General', 'Montana', 'Sprint'],
+  },
+  'la-vuelta': {
+    overview: 'Grand Tour espanol con finales en alto, general y etapas explosivas.',
+    teams: ['UAE Team Emirates', 'Visma Lease a Bike', 'Soudal Quick-Step', 'INEOS Grenadiers', 'Bora Hansgrohe', 'Lidl-Trek', 'Alpecin-Deceuninck', 'Movistar Team', 'EF Education-EasyPost', 'Groupama-FDJ'],
+    format: 'La Vuelta 2027 - 21 etapas.',
+    predictionRules: ['Ganador de etapa', 'Maillot rojo', 'Montana', 'Equipo lider'],
+    coverage: ['Finales en alto', 'Contrarreloj', 'General', 'Puntos'],
+  },
+  'uci-world-championships': {
+    overview: 'Campeonato mundial UCI con ruta, contrarreloj y maillots arcoiris.',
+    teams: ['Belgica', 'Paises Bajos', 'Francia', 'Italia', 'Espana', 'Dinamarca', 'Eslovenia', 'Reino Unido', 'Colombia', 'Australia'],
+    format: 'UCI World Championships 2027 - seleccion nacional y pruebas elite.',
+    predictionRules: ['Campeon ruta', 'Campeon CRI', 'Podio', 'Pais ganador'],
+    coverage: ['Ruta elite', 'Contrarreloj', 'Sub-23', 'Ranking paises'],
   },
 };
 
@@ -1608,6 +1725,8 @@ export default function App() {
     </TournamentProvider>
   );
 }
+
+
 
 
 

@@ -1,5 +1,5 @@
 import { Team } from '../types';
-import unafutCalendar from '../../calendario_unafut.json';
+import unafutCalendar from '../../data/calendario_unafut.json';
 
 const UNAFUT_LOGOS: Record<string, string> = {};
 

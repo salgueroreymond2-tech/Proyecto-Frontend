@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
 import { getTeamById } from '../data/teams';
+import { TeamBadge } from './TeamBadge';
 import {
   ShieldCheck,
   Users,
@@ -246,13 +247,19 @@ export const AdminView: React.FC = () => {
               const away = getTeamById(match.awayTeamId);
               return (
                 <div key={match.id} className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 bg-[#221824] rounded-xl p-3">
-                  <span className="text-xs text-white text-right">{home.name}</span>
+                  <span className="flex items-center justify-end gap-2 text-xs text-white text-right">
+                    {home.name}
+                    <TeamBadge team={home} size="xs" />
+                  </span>
                   <div className="flex items-center gap-1">
                     <ScoreInput value={match.homeScore} onChange={(value) => updateRealMatchScore(match.id, value, match.awayScore, value === null ? 'scheduled' : 'finished')} />
                     <span className="text-white">-</span>
                     <ScoreInput value={match.awayScore} onChange={(value) => updateRealMatchScore(match.id, match.homeScore, value, value === null ? 'scheduled' : 'finished')} />
                   </div>
-                  <span className="text-xs text-white">{away.name}</span>
+                  <span className="flex items-center gap-2 text-xs text-white">
+                    <TeamBadge team={away} size="xs" />
+                    {away.name}
+                  </span>
                 </div>
               );
             })}

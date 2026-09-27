@@ -23,25 +23,26 @@ import {
   Trophy,
   Users,
 } from 'lucide-react';
-import { TournamentProvider, useTournament } from './context/TournamentContext';
-import { Navbar } from './components/Navbar';
-import { BottomNav, NavTab } from './components/BottomNav';
-import { DashboardView } from './components/DashboardView';
-import { RankingView } from './components/RankingView';
-import { PlayoffsView } from './components/PlayoffsView';
-import { SocialView } from './components/SocialView';
-import { ProfileView } from './components/ProfileView';
-import { LoginView } from './components/LoginView';
-import { ScorerVoteModal } from './components/ScorerVoteModal';
-import { ChampionModal } from './components/ChampionModal';
-import { AuthModal } from './components/AuthModal';
-import { RulesModal } from './components/RulesModal';
-import { AdminMatchModal } from './components/AdminMatchModal';
-import { AdminView } from './components/AdminView';
-import { TeamBadge } from './components/TeamBadge';
-import { getTeamById } from './data/teams';
-import { getSportEvents, getSportVisuals, getTournamentEvents, type NormalizedSportEvent, type SportProvider } from './services/sportsApi';
-import { signIn, signUp, simulatePayPalCheckout } from './services/authApi';
+import { TournamentProvider, useTournament } from '../context/TournamentContext';
+import { Navbar } from '../components/Navbar';
+import { BottomNav, NavTab } from '../components/BottomNav';
+import { DashboardView } from '../components/DashboardView';
+import { RankingView } from '../components/RankingView';
+import { PlayoffsView } from '../components/PlayoffsView';
+import { SocialView } from '../components/SocialView';
+import { ProfileView } from '../components/ProfileView';
+import { LoginView } from '../components/LoginView';
+import { ScorerVoteModal } from '../components/ScorerVoteModal';
+import { ChampionModal } from '../components/ChampionModal';
+import { AuthModal } from '../components/AuthModal';
+import { RulesModal } from '../components/RulesModal';
+import { AdminMatchModal } from '../components/AdminMatchModal';
+import { AdminView } from '../components/AdminView';
+import { TeamBadge } from '../components/TeamBadge';
+import { ASSET_PATHS } from '../config/assets';
+import { getTeamById } from '../data/teams';
+import { getSportEvents, getSportVisuals, getTournamentEvents, type NormalizedSportEvent, type SportProvider } from '../services/sportsApi';
+import { signIn, signUp, simulatePayPalCheckout } from '../services/authApi';
 
 type Sport = {
   id: string;
@@ -54,12 +55,12 @@ type Sport = {
 };
 
 const sports: Sport[] = [
-  { id: 'football', name: 'Futbol', text: 'Jornadas, marcadores, rankings y finales.', tournaments: 8, activeEvents: 42, accent: '#EA7301', image: '/sports/football.png' },
-  { id: 'tennis', name: 'Tenis', text: 'Rondas, sets y prestigio por torneo.', tournaments: 7, activeEvents: 18, accent: '#46D369', image: '/sports/tennis.png' },
-  { id: 'basketball', name: 'Baloncesto', text: 'NBA con ganador, marcador y diferencia.', tournaments: 1, activeEvents: 14, accent: '#F97316', image: '/sports/basketball.png' },
-  { id: 'baseball', name: 'Beisbol', text: 'MLB con carreras y ganador por juego.', tournaments: 1, activeEvents: 12, accent: '#38BDF8', image: '/sports/baseball.png' },
-  { id: 'american-football', name: 'Futbol Americano', text: 'NFL con picks por semana y playoffs.', tournaments: 1, activeEvents: 16, accent: '#A78BFA', image: '/sports/american-football.png' },
-  { id: 'mma', name: 'UFC / MMA', text: 'Ganador, metodo y round por cartelera.', tournaments: 1, activeEvents: 9, accent: '#EF4444', image: '/sports/mma.png' },
+  { id: 'football', name: 'Futbol', text: 'Jornadas, marcadores, rankings y finales.', tournaments: 8, activeEvents: 42, accent: '#EA7301', image: ASSET_PATHS.images.sports.football },
+  { id: 'tennis', name: 'Tenis', text: 'Rondas, sets y prestigio por torneo.', tournaments: 7, activeEvents: 18, accent: '#46D369', image: ASSET_PATHS.images.sports.tennis },
+  { id: 'basketball', name: 'Baloncesto', text: 'NBA con ganador, marcador y diferencia.', tournaments: 1, activeEvents: 14, accent: '#F97316', image: ASSET_PATHS.images.sports.basketball },
+  { id: 'baseball', name: 'Beisbol', text: 'MLB con carreras y ganador por juego.', tournaments: 1, activeEvents: 12, accent: '#38BDF8', image: ASSET_PATHS.images.sports.baseball },
+  { id: 'american-football', name: 'Futbol Americano', text: 'NFL con picks por semana y playoffs.', tournaments: 1, activeEvents: 16, accent: '#A78BFA', image: ASSET_PATHS.images.sports.americanFootball },
+  { id: 'mma', name: 'UFC / MMA', text: 'Ganador, metodo y round por cartelera.', tournaments: 1, activeEvents: 9, accent: '#EF4444', image: ASSET_PATHS.images.sports.mma },
 ];
 
 const footballTournaments = [
@@ -807,7 +808,7 @@ function PublicFooter() {
       <div className="max-w-6xl mx-auto flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <img
-            src="/logos/kas-logo.png"
+            src={ASSET_PATHS.logos.brand.kas}
             alt="King Arthur Sports"
             className="h-12 w-12 rounded-xl object-cover border border-[#EA7301]/50"
           />

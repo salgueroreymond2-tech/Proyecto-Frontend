@@ -1,6 +1,6 @@
 import { Match, StageType } from '../types';
 import { TEAMS } from './teams';
-import unafutCalendar from '../../calendario_unafut.json';
+import unafutCalendar from '../../data/calendario_unafut.json';
 
 const UNAFUT_TEAM_IDS: Record<string, string> = {
   'Puntarenas F.C.': 'pfc',

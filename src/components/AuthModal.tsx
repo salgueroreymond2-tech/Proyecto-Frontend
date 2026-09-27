@@ -3,6 +3,7 @@ import { useTournament } from '../context/TournamentContext';
 import { TEAMS, getTeamById } from '../data/teams';
 import { TeamBadge } from './TeamBadge';
 import { PasionLogo } from './PasionLogo';
+import { ASSET_PATHS } from '../config/assets';
 import { Mail, Lock, ArrowRight, X, User, Camera, Eye, EyeOff } from 'lucide-react';
 
 export const AuthModal: React.FC = () => {
@@ -119,7 +120,7 @@ export const AuthModal: React.FC = () => {
         {/* Logo Icon */}
         <div className="flex flex-col items-center text-center space-y-1">
           <div className="w-14 h-14 rounded-2xl bg-[#bf00ff]/20 border border-[#bf00ff] flex items-center justify-center glow-purple overflow-hidden">
-            <img src="/logo-pasion-simplificado.png" alt="Quiniela Pasión" className="w-full h-full object-cover" />
+            <img src={ASSET_PATHS.logos.brand.pasionSimplified} alt="Quiniela Pasión" className="w-full h-full object-cover" />
           </div>
           <h2 className="flex justify-center">
             <PasionLogo size="md" />

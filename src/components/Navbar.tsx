@@ -20,6 +20,7 @@ import {
   BadgeDollarSign,
   Users,
 } from 'lucide-react';
+import { ASSET_PATHS } from '../config/assets';
 
 interface NavbarProps {
   onOpenAdmin: () => void;
@@ -90,7 +91,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           aria-label="Ir a la pagina principal"
         >
           <img
-            src="/logos/kas-logo.png"
+            src={ASSET_PATHS.logos.brand.kas}
             alt="King Arthur Sports"
             className="h-14 w-14 rounded-xl object-cover border border-[#EA7301]/60 shadow-md"
           />

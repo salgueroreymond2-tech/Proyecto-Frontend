@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
 import { TeamBadge } from './TeamBadge';
-import { getTeamById } from '../data/teams';
+import { TEAMS } from '../data/teams';
 import {
   Heart,
   MessageCircle,
@@ -16,6 +16,10 @@ import {
 export const SocialView: React.FC = () => {
   const { socialPosts, toggleLikePost, addSocialPost, currentUser } = useTournament();
   const [newPostText, setNewPostText] = useState('');
+  const resolveTeam = (value: string) =>
+    TEAMS.find((team) =>
+      [team.id, team.code, team.shortName, team.name].some((item) => item.toLowerCase() === value.toLowerCase())
+    );
 
   const handleCreatePost = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,6 +68,8 @@ export const SocialView: React.FC = () => {
       {/* Posts Feed (Matching Screenshot 7) */}
       <div className="space-y-4">
         {socialPosts.map((post) => {
+          const homeTeam = post.matchInfo ? resolveTeam(post.matchInfo.homeTeam) : undefined;
+          const awayTeam = post.matchInfo ? resolveTeam(post.matchInfo.awayTeam) : undefined;
           return (
             <div
               key={post.id}
@@ -105,7 +111,7 @@ export const SocialView: React.FC = () => {
                 <div className="p-4 rounded-xl bg-[#19101c] border border-[#bf00ff]/30 glow-purple-sm space-y-3">
                   <div className="flex items-center justify-between px-4">
                     <div className="flex flex-col items-center">
-                      <TeamBadge teamId="sap" size="md" className="mb-1" />
+                      <TeamBadge team={homeTeam} size="md" className="mb-1" />
                       <span className="text-xs font-heading font-bold text-white">
                         {post.matchInfo.homeTeam}
                       </span>
@@ -119,7 +125,7 @@ export const SocialView: React.FC = () => {
                     </span>
 
                     <div className="flex flex-col items-center">
-                      <TeamBadge teamId="lda" size="md" className="mb-1" />
+                      <TeamBadge team={awayTeam} size="md" className="mb-1" />
                       <span className="text-xs font-heading font-bold text-white">
                         {post.matchInfo.awayTeam}
                       </span>

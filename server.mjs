@@ -7,7 +7,7 @@ const app = express();
 const port = Number(process.env.SPORTS_API_PORT || 3100);
 const cache = new Map();
 const allowedCompetitions = new Set(['CL', 'PL', 'PD', 'SA', 'PPL']);
-const databasePath = new URL('./db.json', import.meta.url);
+const databasePath = new URL('./data/db.json', import.meta.url);
 
 app.use(express.json());
 

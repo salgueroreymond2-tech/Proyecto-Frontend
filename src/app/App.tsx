@@ -82,9 +82,9 @@ const sports: Sport[] = [
   { id: 'basketball', name: 'Baloncesto', text: 'NBA con ganador, marcador y diferencia.', tournaments: 1, activeEvents: 14, accent: '#F97316', image: ASSET_PATHS.images.sports.basketball },
   { id: 'baseball', name: 'Beisbol', text: 'MLB con carreras y ganador por juego.', tournaments: 1, activeEvents: 12, accent: '#38BDF8', image: ASSET_PATHS.images.sports.baseball },
   { id: 'american-football', name: 'Futbol Americano', text: 'NFL con picks por semana y playoffs.', tournaments: 1, activeEvents: 16, accent: '#A78BFA', image: ASSET_PATHS.images.sports.americanFootball },
-  { id: 'f1', name: 'F1', text: 'Grandes premios, pole, podio y campeonatos.', tournaments: 3, activeEvents: 24, accent: '#EF4444', image: ASSET_PATHS.images.sports.americanFootball },
-  { id: 'cycling', name: 'Ciclismo', text: 'Grand Tours, etapas, maillots y clasificaciones.', tournaments: 4, activeEvents: 21, accent: '#22C55E', image: ASSET_PATHS.images.sports.tennis },
-  { id: 'golf', name: 'Golf', text: 'Majors, rondas, liderato y match play.', tournaments: 3, activeEvents: 12, accent: '#16A34A', image: ASSET_PATHS.images.sports.football },
+  { id: 'f1', name: 'F1', text: 'Campeonato mundial con 24 Grand Prix.', tournaments: 1, activeEvents: 24, accent: '#EF4444', image: ASSET_PATHS.images.sports.f1 },
+  { id: 'cycling', name: 'Ciclismo', text: 'Grand Tours, etapas, maillots y clasificaciones.', tournaments: 4, activeEvents: 21, accent: '#22C55E', image: ASSET_PATHS.images.sports.cycling },
+  { id: 'golf', name: 'Golf', text: 'Majors, rondas, liderato y match play.', tournaments: 3, activeEvents: 12, accent: '#16A34A', image: ASSET_PATHS.images.sports.golf },
   { id: 'mma', name: 'UFC / MMA', text: 'Ganador, metodo y round por cartelera.', tournaments: 1, activeEvents: 9, accent: '#EF4444', image: ASSET_PATHS.images.sports.mma },
 ];
 
@@ -99,6 +99,33 @@ const sportIconById: Record<string, React.ComponentType<{ className?: string; st
   golf: Trophy,
   mma: SportsMma,
 };
+
+const f1GrandPrix = [
+  'Bahrain Grand Prix',
+  'Saudi Arabian Grand Prix',
+  'Australian Grand Prix',
+  'Japanese Grand Prix',
+  'Chinese Grand Prix',
+  'Miami Grand Prix',
+  'Emilia Romagna Grand Prix',
+  'Monaco Grand Prix',
+  'Canadian Grand Prix',
+  'Spanish Grand Prix',
+  'Austrian Grand Prix',
+  'British Grand Prix',
+  'Hungarian Grand Prix',
+  'Belgian Grand Prix',
+  'Dutch Grand Prix',
+  'Italian Grand Prix',
+  'Azerbaijan Grand Prix',
+  'Singapore Grand Prix',
+  'United States Grand Prix',
+  'Mexico City Grand Prix',
+  'Sao Paulo Grand Prix',
+  'Las Vegas Grand Prix',
+  'Qatar Grand Prix',
+  'Abu Dhabi Grand Prix',
+];
 
 const footballTournaments = [
   { id: 'cr-apertura-2026', name: 'Campeonato Nacional de Costa Rica', season: 'Apertura 2026', status: 'Activo', price: '$9.99', enabled: true },
@@ -180,11 +207,9 @@ const sportDashboards = {
     description: 'Quinielas de Grand Prix con pole position, podio, vuelta rapida y campeonato.',
     prediction: 'Pole, podio, ganador y vuelta rapida',
     featured: 'Formula 1 World Championship 2027',
-    events: ['Gran Premio de Bahrain', 'Gran Premio de Monaco', 'Gran Premio de Brasil'],
+    events: f1GrandPrix,
     tournaments: [
       { name: 'F1 World Championship', season: '2027', status: 'Activo', price: '$12.99' },
-      { name: 'F1 Sprint Series', season: '2027', status: 'Preparacion', price: '$8.99' },
-      { name: 'F1 Constructors Cup', season: '2027', status: 'Premium', price: '$9.99' },
     ],
   },
   cycling: {
@@ -404,43 +429,29 @@ const tournamentDetails: Record<string, {
     coverage: ['Final NFL', 'MVP', 'Campeon', 'Halftime props'],
   },
   'f1-world-championship': {
-    overview: 'Temporada completa de Formula 1 con predicciones por gran premio y tabla de pilotos.',
-    teams: ['Red Bull Racing', 'Ferrari', 'Mercedes', 'McLaren', 'Aston Martin', 'Alpine', 'Williams', 'RB', 'Sauber', 'Haas'],
-    format: 'F1 2027 - calendario mundial de grandes premios.',
+    overview: 'Temporada completa de Formula 1 con un unico campeonato y 24 Grand Prix como eventos del calendario.',
+    teams: ['Red Bull Racing', 'Ferrari', 'Mercedes', 'McLaren', 'Aston Martin', 'Alpine', 'Williams', 'Racing Bulls', 'Audi', 'Haas F1 Team', 'Cadillac'],
+    format: 'F1 2027 - campeonato mundial con 24 grandes premios.',
     predictionRules: ['Pole position', 'Ganador', 'Podio', 'Vuelta rapida'],
     coverage: ['Clasificacion', 'Carrera', 'Pilotos', 'Constructores'],
   },
-  'f1-sprint-series': {
-    overview: 'Formato sprint de F1 con puntos cortos, pole sprint y ganador de fin de semana.',
-    teams: ['Red Bull Racing', 'Ferrari', 'Mercedes', 'McLaren', 'Aston Martin', 'Alpine', 'Williams', 'RB', 'Sauber', 'Haas'],
-    format: 'Sprint Series 2027 - fines de semana seleccionados.',
-    predictionRules: ['Sprint winner', 'Pole sprint', 'Top 3', 'Ganador GP'],
-    coverage: ['Sprint', 'Qualy', 'Carrera', 'Puntos extra'],
-  },
-  'f1-constructors-cup': {
-    overview: 'Competencia premium centrada en puntos por escuderia y campeonato de constructores.',
-    teams: ['Red Bull Racing', 'Ferrari', 'Mercedes', 'McLaren', 'Aston Martin', 'Alpine', 'Williams', 'RB', 'Sauber', 'Haas'],
-    format: 'Constructors Cup 2027 - acumulado por escuderia.',
-    predictionRules: ['Equipo ganador', 'Doble podio', 'Puntos por carrera', 'Campeon constructores'],
-    coverage: ['Escuderias', 'Pilotos', 'Puntos', 'Campeonato'],
-  },
   'tour-de-france': {
     overview: 'Grand Tour frances con predicciones por etapa, general, montana y puntos.',
-    teams: ['UAE Team Emirates', 'Visma Lease a Bike', 'Soudal Quick-Step', 'INEOS Grenadiers', 'Bora Hansgrohe', 'Lidl-Trek', 'Alpecin-Deceuninck', 'Movistar Team', 'EF Education-EasyPost', 'Groupama-FDJ'],
+    teams: ['UAE Team Emirates-XRG', 'Team Visma-Lease a Bike', 'Soudal Quick-Step', 'Netcompany INEOS Cycling Team', 'Red Bull-BORA-hansgrohe', 'Lidl-Trek', 'Alpecin-Premier Tech', 'Movistar Team', 'EF Education-EasyPost', 'Groupama-FDJ United'],
     format: 'Tour de France 2027 - 21 etapas.',
     predictionRules: ['Ganador de etapa', 'Maillot amarillo', 'Montana', 'Puntos'],
     coverage: ['Etapas llanas', 'Montana', 'Contrarreloj', 'Clasificacion general'],
   },
   'giro-d-italia': {
     overview: 'Grand Tour italiano con clasificacion general, sprints y etapas de montana.',
-    teams: ['UAE Team Emirates', 'Visma Lease a Bike', 'Soudal Quick-Step', 'INEOS Grenadiers', 'Bora Hansgrohe', 'Lidl-Trek', 'Alpecin-Deceuninck', 'Movistar Team', 'EF Education-EasyPost', 'Groupama-FDJ'],
+    teams: ['UAE Team Emirates-XRG', 'Team Visma-Lease a Bike', 'Soudal Quick-Step', 'Netcompany INEOS Cycling Team', 'Red Bull-BORA-hansgrohe', 'Lidl-Trek', 'Alpecin-Premier Tech', 'Movistar Team', 'EF Education-EasyPost', 'Groupama-FDJ United'],
     format: 'Giro d Italia 2027 - 21 etapas.',
     predictionRules: ['Ganador de etapa', 'Maglia rosa', 'Montana', 'Joven destacado'],
     coverage: ['Etapas', 'General', 'Montana', 'Sprint'],
   },
   'la-vuelta': {
     overview: 'Grand Tour espanol con finales en alto, general y etapas explosivas.',
-    teams: ['UAE Team Emirates', 'Visma Lease a Bike', 'Soudal Quick-Step', 'INEOS Grenadiers', 'Bora Hansgrohe', 'Lidl-Trek', 'Alpecin-Deceuninck', 'Movistar Team', 'EF Education-EasyPost', 'Groupama-FDJ'],
+    teams: ['UAE Team Emirates-XRG', 'Team Visma-Lease a Bike', 'Soudal Quick-Step', 'Netcompany INEOS Cycling Team', 'Red Bull-BORA-hansgrohe', 'Lidl-Trek', 'Alpecin-Premier Tech', 'Movistar Team', 'EF Education-EasyPost', 'Groupama-FDJ United'],
     format: 'La Vuelta 2027 - 21 etapas.',
     predictionRules: ['Ganador de etapa', 'Maillot rojo', 'Montana', 'Equipo lider'],
     coverage: ['Finales en alto', 'Contrarreloj', 'General', 'Puntos'],
@@ -491,6 +502,10 @@ function toTournamentId(name: string) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
+}
+
+function findF1GrandPrix(grandPrixId: string) {
+  return f1GrandPrix.find((name) => toTournamentId(name) === grandPrixId);
 }
 
 function getTournamentAccessPath(id: string) {
@@ -638,6 +653,7 @@ function KasShell() {
           <Route path="/sports/football" element={isLoggedIn ? <FootballDashboard /> : <Navigate to="/login" replace />} />
           <Route path="/sports/:sportId" element={isLoggedIn ? <SportPlaceholder /> : <Navigate to="/login" replace />} />
           <Route path="/tournaments/:tournamentId/membership" element={<TournamentMembershipLogin />} />
+          <Route path="/tournaments/:tournamentId/grand-prix/:grandPrixId" element={<GrandPrixDashboard />} />
           <Route path="/tournaments/:tournamentId" element={<TournamentDashboard />} />
           <Route path="/tournaments/cr-apertura-2026/login" element={<LoginPage onSuccess={() => navigate('/tournaments/cr-apertura-2026/predictions')} onFavoriteTeamPreview={setPreviewTeamId} />} />
           <Route path="/tournaments/:tournamentId/predictions" element={<CostaRicaOnly><DashboardView onOpenScorerModal={(id) => setActiveScorerMatchId(id)} onOpenAdmin={() => setAdminModalOpen(true)} /></CostaRicaOnly>} />
@@ -674,6 +690,21 @@ function getActiveTab(pathname: string): NavTab {
   if (pathname === '/login') return 'login';
   return 'dashboard';
 }
+
+const normalizeTickerEntity = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+
+const getStandaloneTickerName = (event: NormalizedSportEvent) => {
+  if (event.sportId === 'f1') return 'Lider: McLaren';
+  if (event.sportId === 'cycling') return 'Lider: UAE Team Emirates-XRG';
+  if (event.sportId === 'golf') return '1: Scottie Scheffler';
+  return event.title;
+};
 
 function HomePage() {
   const { matches, standings, leaderboard } = useTournament();
@@ -713,8 +744,34 @@ function HomePage() {
         provider: 'KAS',
         href: undefined,
       }));
+  const usedTickerTeams = new Set<string>();
+  const uniqueScoreboard = scoreboard.filter((match) => {
+    const home = normalizeTickerEntity(getTeamById(match.homeTeamId).code);
+    const away = normalizeTickerEntity(getTeamById(match.awayTeamId).code);
+    if (usedTickerTeams.has(home) || usedTickerTeams.has(away)) return false;
+    usedTickerTeams.add(home);
+    usedTickerTeams.add(away);
+    return true;
+  });
+  const usedStandaloneSports = new Set<string>();
+  const uniqueExternalTickerEvents = homeEvents.filter((event) => {
+    if (event.sportId === 'f1' || event.sportId === 'cycling' || event.sportId === 'golf') {
+      if (usedStandaloneSports.has(event.sportId)) return false;
+      usedStandaloneSports.add(event.sportId);
+      return true;
+    }
+    const matchup = splitMatchupTitle(event.title);
+    if (!matchup) return true;
+
+    const home = normalizeTickerEntity(matchup.home);
+    const away = normalizeTickerEntity(matchup.away);
+    if (usedTickerTeams.has(home) || usedTickerTeams.has(away)) return false;
+    usedTickerTeams.add(home);
+    usedTickerTeams.add(away);
+    return true;
+  });
   const liveTickerItems = [
-    ...scoreboard.map((match) => {
+    ...uniqueScoreboard.map((match) => {
       const home = getTeamById(match.homeTeamId);
       const away = getTeamById(match.awayTeamId);
       return {
@@ -728,11 +785,11 @@ function HomePage() {
         localAway: away,
       };
     }),
-    ...homeEvents.slice(0, 10).map((event) => ({
+    ...uniqueExternalTickerEvents.slice(0, 10).map((event) => ({
       id: event.id,
       label: event.league,
       status: event.score ? 'Marcador' : event.status,
-      title: event.title,
+      title: getStandaloneTickerName(event),
       score: event.score || (event.startsAt ? new Date(event.startsAt).toLocaleDateString() : ''),
       path: event.sourceUrl || '/login',
     })),
@@ -751,14 +808,9 @@ function HomePage() {
     const controller = new AbortController();
     setHomeEventsStatus('loading');
 
-    Promise.all([
-      getSportEvents('football', controller.signal),
-      getSportEvents('basketball', controller.signal),
-      getSportEvents('baseball', controller.signal),
-      getSportEvents('american-football', controller.signal),
-    ]).then((results) => {
+    Promise.all(sports.map((sport) => getSportEvents(sport.id, controller.signal))).then((results) => {
       if (controller.signal.aborted) return;
-      const events = results.flatMap((result) => result.data.slice(0, 2)).slice(0, 6);
+      const events = results.flatMap((result) => result.data.slice(0, 2)).slice(0, 14);
       const usingFallback = results.some((result) => result.fromFallback);
       setHomeEvents(events);
       setHomeEventsStatus(usingFallback ? 'fallback' : 'ready');
@@ -809,7 +861,7 @@ function HomePage() {
                     <Link
                       key={`${item.id}-${index}`}
                       to={item.path.startsWith('http') ? '/login' : item.path}
-                      className="min-w-[184px] rounded-lg border border-white/10 bg-black/25 px-3 py-2 hover:border-[#EA7301]/70 transition-colors"
+                      className="min-w-[220px] rounded-lg border border-white/10 bg-black/25 px-3 py-2 hover:border-[#EA7301]/70 transition-colors"
                     >
                       <div className="flex items-center justify-between text-[10px] font-mono text-[#d5c0d7]">
                         <span className="max-w-[120px] truncate">{item.label}</span>
@@ -821,7 +873,7 @@ function HomePage() {
                         {isLocalMatch ? (
                           <>
                             <span className="flex min-w-0 items-center gap-1.5 truncate"><TeamBadge team={item.localHome} size="xs" />{item.localHome.code}</span>
-                            <span className="text-[#d5c0d7]">@</span>
+                            <span className="text-[#d5c0d7]">vs</span>
                             <span className="flex min-w-0 items-center gap-1.5 truncate"><TeamBadge team={item.localAway} size="xs" />{item.localAway.code}</span>
                           </>
                         ) : (
@@ -1338,7 +1390,7 @@ function SportsDashboard() {
                       <h3 className="mt-2 flex items-center gap-2 font-heading text-xl font-black text-white">
                         <TeamBadge team={matchup.home} size="sm" />
                         <span className="truncate">{matchup.home.code}</span>
-                        <span className="text-sm text-[#d5c0d7]">@</span>
+                        <span className="text-sm text-[#d5c0d7]">vs</span>
                         <TeamBadge team={matchup.away} size="sm" />
                         <span className="truncate">{matchup.away.code}</span>
                       </h3>
@@ -1402,7 +1454,7 @@ function MatchupTitleWithLogos({ title, size = 'sm' }: { title: string; size?: '
         <UniversalTeamLogo name={matchup.home} size={size} />
         <span className="truncate">{matchup.home}</span>
       </span>
-      <span className="text-sm text-[#d5c0d7]">@</span>
+      <span className="text-sm text-[#d5c0d7]">vs</span>
       <span className="flex min-w-0 items-center gap-1.5">
         <UniversalTeamLogo name={matchup.away} size={size} />
         <span className="truncate">{matchup.away}</span>
@@ -1535,6 +1587,90 @@ function TournamentMembershipLogin() {
   );
 }
 
+function GrandPrixDashboard() {
+  const { tournamentId, grandPrixId } = useParams();
+  const tournament = tournamentId ? findTournamentSummary(tournamentId) : undefined;
+  const grandPrix = grandPrixId ? findF1GrandPrix(grandPrixId) : undefined;
+  const detail = tournamentId ? tournamentDetails[tournamentId] : undefined;
+
+  if (!tournament || tournament.id !== 'f1-world-championship' || !grandPrix) {
+    return <Navigate to="/sports/f1" replace />;
+  }
+
+  const roundNumber = f1GrandPrix.findIndex((item) => item === grandPrix) + 1;
+  const teams = detail?.teams || [];
+
+  return (
+    <div className="space-y-6 pb-24 px-4 pt-4 max-w-6xl mx-auto">
+      <section className="rounded-2xl border border-[#EA7301]/40 bg-[#19101c] p-5 sm:p-7 overflow-hidden relative">
+        <div className="absolute inset-y-0 right-0 w-1/2 opacity-20 bg-[radial-gradient(circle_at_center,#ef4444,transparent_58%)]" />
+        <div className="relative grid lg:grid-cols-[1.1fr_0.9fr] gap-6 items-end">
+          <div>
+            <p className="text-sm font-mono text-[#EA7301]">DASHBOARD GRAND PRIX</p>
+            <h1 className="mt-2 text-4xl sm:text-5xl font-heading font-black text-white">{grandPrix}</h1>
+            <p className="mt-3 text-[#d5c0d7]">
+              {tournament.name} · Ronda {roundNumber} de {f1GrandPrix.length} · Membresia {tournament.price}
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Metric label="Torneo" value="F1" />
+            <Metric label="Ronda" value={String(roundNumber)} />
+            <Metric label="Prediccion" value="Pole" />
+            <Metric label="Eventos" value="Carrera" />
+          </div>
+        </div>
+      </section>
+
+      <section className="grid lg:grid-cols-[0.95fr_1.05fr] gap-4">
+        <div className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">
+          <p className="text-sm font-mono text-[#EA7301]">FORMATO DEL GRAND PRIX</p>
+          <h2 className="mt-2 text-3xl font-heading font-black text-white">Picks de carrera</h2>
+          <p className="mt-3 text-sm text-[#d5c0d7]">
+            Cada Grand Prix vive dentro del torneo F1 y tiene sus propias predicciones, ranking por carrera y puntaje acumulado.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {['Pole position', 'Ganador', 'Podio', 'Vuelta rapida', 'Top 10'].map((rule) => (
+              <span key={rule} className="rounded-full border border-white/10 bg-black/25 px-3 py-1 text-xs text-[#eeddee]">{rule}</span>
+            ))}
+          </div>
+          <Link to={`/tournaments/${tournament.id}`} className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/15 px-5 py-3 font-heading font-bold text-white hover:border-[#EA7301]">
+            <ChevronLeft className="w-4 h-4" /> Volver al torneo
+          </Link>
+        </div>
+
+        <div className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-mono text-[#EA7301]">ESCUDERIAS</p>
+              <h2 className="text-3xl font-heading font-black text-white">Parrilla 2026</h2>
+            </div>
+            <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{teams.length} equipos</span>
+          </div>
+          <div className="mt-5 grid sm:grid-cols-2 gap-3">
+            {teams.map((team) => (
+              <div key={team} className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <UniversalTeamLogo name={team} size="sm" />
+                  <div className="min-w-0">
+                    <p className="truncate font-heading text-lg font-black text-white">{team}</p>
+                    <p className="text-xs text-[#d5c0d7]">Formula 1</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="grid md:grid-cols-3 gap-4">
+        <InfoCard className="kas-dark-card" icon={<CalendarDays />} title="Agenda" text="Practicas, qualy y carrera agrupadas para este Grand Prix." />
+        <InfoCard className="kas-dark-card" icon={<BarChart3 />} title="Ranking GP" text="Puntos separados por carrera y acumulados al campeonato F1." />
+        <InfoCard className="kas-dark-card" icon={<Shield />} title="Acceso" text="Disponible con la membresia del torneo F1 World Championship." />
+      </section>
+    </div>
+  );
+}
+
 function TournamentDashboard() {
   const { tournamentId } = useParams();
   const tournament = tournamentId ? findTournamentSummary(tournamentId) : undefined;
@@ -1582,6 +1718,7 @@ function TournamentDashboard() {
   const liveTournamentEvents = tournamentApiEvents.length > 0 ? tournamentApiEvents : [];
   const enabledPath = primaryPath;
   const leagueLogo = getLeagueLogo(tournament.id);
+  const isFormulaOne = tournament.id === 'f1-world-championship';
 
   return (
     <div className="space-y-6 pb-24 px-4 pt-4 max-w-6xl mx-auto">
@@ -1682,8 +1819,8 @@ function TournamentDashboard() {
         <div className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-mono text-[#EA7301]">EVENTOS DEL TORNEO</p>
-              <h2 className="text-3xl font-heading font-black text-white">Actividad destacada</h2>
+              <p className="text-sm font-mono text-[#EA7301]">{isFormulaOne ? 'GRAND PRIX DEL TORNEO' : 'EVENTOS DEL TORNEO'}</p>
+              <h2 className="text-3xl font-heading font-black text-white">{isFormulaOne ? 'Calendario F1' : 'Actividad destacada'}</h2>
             </div>
             <span className={`rounded-full px-3 py-1 text-xs font-mono ${tournamentApiStatus === 'ready' ? 'bg-emerald-400/15 text-emerald-300' : tournamentApiStatus === 'loading' ? 'bg-[#EA7301]/15 text-[#EA7301]' : 'bg-amber-400/15 text-amber-200'}`}>
               {tournamentApiStatus === 'ready' ? tournamentProvider === 'openligadb' ? 'OpenLigaDB' : 'Football-Data' : tournamentApiStatus === 'loading' ? 'Cargando' : 'Fallback'}
@@ -1694,7 +1831,22 @@ function TournamentDashboard() {
               <div key={item} className="h-16 animate-pulse rounded-xl border border-white/10 bg-black/25" />
             ))}
 
-            {tournamentApiStatus !== 'loading' && liveTournamentEvents.map((event) => (
+            {isFormulaOne && tournamentApiStatus !== 'loading' && liveTournamentEvents.map((event) => (
+              <Link key={event.id} to={`/tournaments/${tournament.id}/grand-prix/${toTournamentId(event.title)}`} className="block rounded-xl border border-white/10 bg-black/25 px-4 py-3 transition-colors hover:border-[#EA7301]/70">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="min-w-0 font-heading text-lg font-bold text-white">
+                    <span className="truncate">{event.title}</span>
+                  </span>
+                  <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">Dashboard</span>
+                </div>
+                <div className="mt-1 flex flex-wrap gap-2 text-xs text-[#d5c0d7]">
+                  <span>{event.league}</span>
+                  <span>Pole · Podio · Ganador · Vuelta rapida</span>
+                </div>
+              </Link>
+            ))}
+
+            {!isFormulaOne && tournamentApiStatus !== 'loading' && liveTournamentEvents.map((event) => (
               <div key={event.id} className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
                 <div className="flex items-center justify-between gap-4">
                   <span className="flex min-w-0 items-center gap-3 font-heading text-lg font-bold text-white">
@@ -1788,18 +1940,27 @@ function SportPlaceholder() {
         </div>
 
         <div className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
-          <p className="text-xs font-mono text-[#EA7301]">PROXIMOS EVENTOS</p>
-          <div className="mt-4 space-y-3">
-            {dashboard.events.map((event) => (
-              <div key={event} className="flex items-center justify-between rounded-xl bg-black/25 border border-white/10 px-4 py-3">
-                <span className="flex min-w-0 items-center gap-3 font-heading text-lg font-bold text-white">
-                  <MatchupLogoRow title={event} />
-                  <span className="truncate">{event}</span>
-                </span>
-                <span className="text-xs font-mono text-[#EA7301]">Picks</span>
-              </div>
-            ))}
-          </div>
+          <p className="text-xs font-mono text-[#EA7301]">{sport.id === 'f1' ? 'ESTRUCTURA' : 'PROXIMOS EVENTOS'}</p>
+          {sport.id === 'f1' ? (
+            <div className="mt-4 rounded-xl bg-black/25 border border-white/10 px-4 py-4">
+              <p className="font-heading text-xl font-black text-white">Los 24 Grand Prix viven dentro del torneo.</p>
+              <p className="mt-2 text-sm text-[#d5c0d7]">
+                Entra a F1 World Championship para ver Bahrain, Monaco, Las Vegas, Abu Dhabi y el resto del calendario como dashboards internos.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-4 space-y-3">
+              {dashboard.events.map((event) => (
+                <div key={event} className="flex items-center justify-between rounded-xl bg-black/25 border border-white/10 px-4 py-3">
+                  <span className="flex min-w-0 items-center gap-3 font-heading text-lg font-bold text-white">
+                    <MatchupLogoRow title={event} />
+                    <span className="truncate">{event}</span>
+                  </span>
+                  <span className="text-xs font-mono text-[#EA7301]">Picks</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

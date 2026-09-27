@@ -18,6 +18,9 @@ export const ASSET_PATHS = {
       basketball: '/assets/images/sports/basketball.png',
       baseball: '/assets/images/sports/baseball.png',
       americanFootball: '/assets/images/sports/american-football.png',
+      f1: '/assets/images/sports/f1.png',
+      cycling: '/assets/images/sports/cycling.png',
+      golf: '/assets/images/sports/golf.png',
       mma: '/assets/images/sports/mma.png',
     },
     generated: {

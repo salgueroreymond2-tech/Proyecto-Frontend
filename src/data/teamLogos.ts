@@ -26,6 +26,33 @@ const entityBadgeLogo = (name: string, color = '#EA7301') => {
   return kasBadgeLogo(label || name.slice(0, 3).toUpperCase(), color);
 };
 
+const f1TeamLogos: LogoEntry[] = [
+  { name: 'Red Bull Racing', logoUrl: 'https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/redbullracing/2025redbullracinglogowhite.webp', aliases: ['Red Bull'] },
+  { name: 'Ferrari', logoUrl: 'https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/ferrari/2025ferrarilogolight.webp', aliases: ['Scuderia Ferrari'] },
+  { name: 'Mercedes', logoUrl: 'https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/mercedes/2025mercedeslogowhite.webp', aliases: ['Mercedes-AMG'] },
+  { name: 'McLaren', logoUrl: 'https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/mclaren/2025mclarenlogowhite.webp' },
+  { name: 'Aston Martin', logoUrl: 'https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/astonmartin/2025astonmartinlogowhite.webp' },
+  { name: 'Alpine', logoUrl: 'https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/alpine/2025alpinelogowhite.webp' },
+  { name: 'Williams', logoUrl: 'https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/williams/2025williamslogowhite.webp' },
+  { name: 'Racing Bulls', logoUrl: 'https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/racingbulls/2025racingbullslogowhite.webp', aliases: ['RB'] },
+  { name: 'Audi', logoUrl: 'https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2026/audi/2026audilogowhite.webp', aliases: ['Sauber'] },
+  { name: 'Haas F1 Team', logoUrl: 'https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/haas/2025haaslogowhite.webp', aliases: ['Haas'] },
+  { name: 'Cadillac', logoUrl: 'https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2026/cadillac/2026cadillaclogowhite.webp' },
+];
+
+const cyclingTeamLogos: LogoEntry[] = [
+  { name: 'UAE Team Emirates-XRG', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2020/01/Br13mQAe2bAGOJM74TNm_010226-114202.png?v=20260201114202', aliases: ['UAE Team Emirates'] },
+  { name: 'Team Visma-Lease a Bike', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2026/05/WdIWiiUROUQwbjt6xbUB_070526-015633.png?v=20260507135633', aliases: ['Visma Lease a Bike'] },
+  { name: 'Soudal Quick-Step', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2020/01/tuaiS5vUPToBBMb2TMJS_010526-103232.png?v=20260501103232' },
+  { name: 'Netcompany INEOS Cycling Team', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2026/05/tc8nsVjopJPZxNVN53J9_070526-043213.png?v=20260507163214', aliases: ['INEOS Grenadiers'] },
+  { name: 'Red Bull-BORA-hansgrohe', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2026/05/THge03Zv7d8UGWgsSZal_070526-015438.png?v=20260507135438', aliases: ['Bora Hansgrohe'] },
+  { name: 'Lidl-Trek', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2020/01/p5eDSBqpSwRdyoEqf6qO_010226-112259.png?v=20260201112259' },
+  { name: 'Alpecin-Premier Tech', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2020/01/hdUPyRCqIUYvQG8PCWxO_010226-111813.png?v=20260201111813', aliases: ['Alpecin-Deceuninck'] },
+  { name: 'Movistar Team', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2020/01/6WnyZezJoaEEiRloNDg1_010226-113223.png?v=20260201113223' },
+  { name: 'EF Education-EasyPost', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2020/01/jA8ivHjkkQ1Y1IgeAbk7_070526-085228.png?v=20260507085228' },
+  { name: 'Groupama-FDJ United', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2020/01/oZJXaVRIVw1br3HVacoI_010226-112130.png?v=20260201112130', aliases: ['Groupama-FDJ'] },
+];
+
 const generatedLogoEntries: LogoEntry[] = [
   'Alemania', 'Argentina', 'Australia', 'Austria', 'Belgica', 'Bolivia', 'Brasil', 'Canada', 'Chile', 'Colombia',
   'Costa Rica', 'Croacia', 'Curazao', 'Dinamarca', 'Ecuador', 'El Salvador', 'Escocia', 'Eslovenia', 'Espana',
@@ -72,14 +99,12 @@ export const LEAGUE_LOGOS: Record<string, string> = {
   'copa-america': kasBadgeLogo('CA', '#22c55e'),
   eurocopa: kasBadgeLogo('EURO', '#3b82f6'),
   'f1-world-championship': kasBadgeLogo('F1', '#ef4444'),
-  'f1-sprint-series': kasBadgeLogo('F1S', '#f97316'),
-  'f1-constructors-cup': kasBadgeLogo('F1C', '#a855f7'),
-  'tour-de-france': kasBadgeLogo('TDF', '#facc15'),
-  'giro-d-italia': kasBadgeLogo('GIRO', '#ec4899'),
-  'la-vuelta': kasBadgeLogo('VTA', '#ef4444'),
-  'uci-world-championships': kasBadgeLogo('UCI', '#22c55e'),
-  'pga-tour': kasBadgeLogo('PGA', '#2563eb'),
-  'the-masters': kasBadgeLogo('MAST', '#16a34a'),
+  'tour-de-france': 'https://www.letour.fr/img/global/logo@2x.png',
+  'giro-d-italia': 'https://components2.rcsobjects.it/rcs_sport_giro2020-layout/v0/assets/img/ext/logo-giro.svg?v=6ed7fe7486dde17350b8838c3f5a9407',
+  'la-vuelta': 'https://www.lavuelta.es/img/global/logo-reversed@2x.png',
+  'uci-world-championships': 'https://r2.thesportsdb.com/images/media/league/badge/igahc11535183469.png/tiny',
+  'pga-tour': 'https://r2.thesportsdb.com/images/media/league/badge/quvqqr1423564787.png/tiny',
+  'the-masters': 'https://www.masters.com/assets/images/nav/footer_masters_logo.png',
   'ryder-cup': kasBadgeLogo('RC', '#ef4444'),
 };
 
@@ -145,6 +170,24 @@ export const MLB_TEAMS = [
 
 const logoEntries: LogoEntry[] = [
   ...generatedLogoEntries,
+  ...f1TeamLogos,
+  ...cyclingTeamLogos,
+  { name: 'Australian Open', logoUrl: 'https://ausopen.com/sites/default/files/styles/medium/public/ao_blue_1.png?itok=dcy08jHH' },
+  { name: 'Roland Garros', logoUrl: 'https://images.prismic.io/fft-rg-site%2F95765448-c7fa-428b-b565-8368dba90b17_logo.svg?auto=compress,format', aliases: ['Roland-Garros'] },
+  { name: 'Wimbledon', logoUrl: 'https://www.wimbledon.com/_next/static/media/Logo-Wimbledon.2wyelfplbl7j4.svg?dpl=v0_118_1' },
+  { name: 'US Open', logoUrl: 'https://www.usopen.org/assets/images/header/usopen-header-logo-white.svg', aliases: ['US Open tenis'] },
+  { name: 'ATP Masters', logoUrl: 'https://r2.thesportsdb.com/images/media/league/badge/q7aej51769857150.png/tiny', aliases: ['ATP Tour', 'ATP Masters 1000'] },
+  { name: 'WTA Masters', logoUrl: 'https://r2.thesportsdb.com/images/media/league/badge/bddhun1768230678.png/tiny', aliases: ['WTA Tour', 'WTA 1000'] },
+  { name: 'PGA Tour', logoUrl: 'https://r2.thesportsdb.com/images/media/league/badge/quvqqr1423564787.png/tiny' },
+  { name: 'The Masters', logoUrl: 'https://www.masters.com/assets/images/nav/footer_masters_logo.png' },
+  { name: 'Islam Makhachev', logoUrl: 'https://a.espncdn.com/i/headshots/mma/players/full/3332412.png' },
+  { name: 'Ilia Topuria', logoUrl: 'https://a.espncdn.com/i/headshots/mma/players/full/4350812.png' },
+  { name: 'Alex Pereira', logoUrl: 'https://a.espncdn.com/i/headshots/mma/players/full/4705658.png' },
+  { name: 'Tom Aspinall', logoUrl: 'https://a.espncdn.com/i/headshots/mma/players/full/4010976.png' },
+  { name: 'Alexander Volkanovski', logoUrl: 'https://a.espncdn.com/i/headshots/mma/players/full/3949584.png' },
+  { name: 'Jon Jones', logoUrl: 'https://a.espncdn.com/i/headshots/mma/players/full/2335639.png' },
+  { name: 'Valentina Shevchenko', logoUrl: 'https://a.espncdn.com/i/headshots/mma/players/full/2554705.png' },
+  { name: 'Zhang Weili', logoUrl: 'https://a.espncdn.com/i/headshots/mma/players/full/4350762.png' },
   { name: 'Bologna', logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/107.png' },
   { name: 'Cagliari', logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/2925.png' },
   { name: 'Como', logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/2572.png' },

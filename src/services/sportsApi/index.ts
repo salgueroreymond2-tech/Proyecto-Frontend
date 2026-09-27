@@ -4,6 +4,33 @@ import { fetchFootballDataMatches } from './secureProxyClient';
 import { fetchSportsDbLeagues, fetchSportsDbSportVisuals } from './theSportsDbClient';
 import type { NormalizedLeague, NormalizedSportEvent, NormalizedSportVisual, SportProvider, SportsApiResult } from './types';
 
+const formulaOneGrandPrix = [
+  'Bahrain Grand Prix',
+  'Saudi Arabian Grand Prix',
+  'Australian Grand Prix',
+  'Japanese Grand Prix',
+  'Chinese Grand Prix',
+  'Miami Grand Prix',
+  'Emilia Romagna Grand Prix',
+  'Monaco Grand Prix',
+  'Canadian Grand Prix',
+  'Spanish Grand Prix',
+  'Austrian Grand Prix',
+  'British Grand Prix',
+  'Hungarian Grand Prix',
+  'Belgian Grand Prix',
+  'Dutch Grand Prix',
+  'Italian Grand Prix',
+  'Azerbaijan Grand Prix',
+  'Singapore Grand Prix',
+  'United States Grand Prix',
+  'Mexico City Grand Prix',
+  'Sao Paulo Grand Prix',
+  'Las Vegas Grand Prix',
+  'Qatar Grand Prix',
+  'Abu Dhabi Grand Prix',
+];
+
 const localEvents: NormalizedSportEvent[] = [
   {
     id: 'local-cr-apertura',
@@ -45,9 +72,62 @@ const localEvents: NormalizedSportEvent[] = [
     status: 'Preparacion',
     provider: 'local',
   },
+  {
+    id: 'local-tennis',
+    sportId: 'tennis',
+    league: 'ATP / WTA',
+    title: 'Carlos Alcaraz vs Jannik Sinner',
+    status: 'Agenda',
+    provider: 'local',
+  },
+  ...formulaOneGrandPrix.map((title, index) => ({
+    id: `local-f1-${index + 1}`,
+    sportId: 'f1',
+    league: 'Formula 1 World Championship',
+    title,
+    status: 'Agenda',
+    provider: 'local' as const,
+  })),
+  {
+    id: 'local-cycling',
+    sportId: 'cycling',
+    league: 'Tour de France',
+    title: 'Etapa reina',
+    status: 'Agenda',
+    provider: 'local',
+  },
+  {
+    id: 'local-golf',
+    sportId: 'golf',
+    league: 'PGA Tour',
+    title: 'The Masters - Ronda final',
+    status: 'Agenda',
+    provider: 'local',
+  },
+  {
+    id: 'local-mma',
+    sportId: 'mma',
+    league: 'UFC',
+    title: 'Main Event',
+    status: 'Agenda',
+    provider: 'local',
+  },
 ];
 
 export async function getTournamentEvents(tournamentId: string, signal?: AbortSignal): Promise<SportsApiResult<NormalizedSportEvent[]>> {
+  const localSportByTournament: Record<string, string> = {
+    'f1-world-championship': 'f1',
+  };
+
+  const localSportId = localSportByTournament[tournamentId];
+  if (localSportId) {
+    return {
+      data: localEvents.filter((event) => event.sportId === localSportId),
+      provider: 'local',
+      fromFallback: true,
+    };
+  }
+
   const footballDataCompetitionByTournament: Record<string, string> = {
     'champions-league': 'CL',
     'premier-league': 'PL',

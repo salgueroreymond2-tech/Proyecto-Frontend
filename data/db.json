@@ -94,6 +94,11 @@
       "token": "91e451752ef2a58ee61b9cd656e8a0a44bc4d0fce36ccc2c4ec72d43fc83d298",
       "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
       "expiresAt": "2026-10-04T00:10:34.967Z"
+    },
+    {
+      "token": "e28b0d0662ec59ad102ed3cc5f84e361f51e165da0153f0a5ebb935eab4ea9cc",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-04T03:06:14.950Z"
     }
   ],
   "memberships": [
@@ -216,6 +221,36 @@
       "status": "captured",
       "createdAt": "2026-09-27T00:34:09.846Z",
       "capturedAt": "2026-09-27T00:34:09.867Z"
+    },
+    {
+      "id": "SIM-1ce2b574-904e-4a2a-8f42-38e86ab83799",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "champions-league",
+      "amount": "$14.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-27T03:06:35.474Z",
+      "capturedAt": "2026-09-27T03:06:35.537Z"
+    },
+    {
+      "id": "SIM-6662bf69-0962-4998-a510-b5efd40abd79",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "champions-league",
+      "amount": "$14.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-27T03:06:39.416Z",
+      "capturedAt": "2026-09-27T03:06:39.437Z"
+    },
+    {
+      "id": "SIM-ad50c948-398d-4738-93e1-010021eb8f0e",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "premier-league",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-27T03:06:55.641Z",
+      "capturedAt": "2026-09-27T03:06:55.667Z"
     }
   ]
 }

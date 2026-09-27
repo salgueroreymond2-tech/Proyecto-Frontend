@@ -42,7 +42,18 @@ import { TeamBadge } from '../components/TeamBadge';
 import { UniversalTeamLogo } from '../components/UniversalTeamLogo';
 import { ASSET_PATHS } from '../config/assets';
 import { TEAMS, getTeamById } from '../data/teams';
-import { splitMatchupTitle } from '../data/teamLogos';
+import {
+  BUNDESLIGA_TEAMS,
+  LALIGA_TEAMS,
+  MLB_TEAMS,
+  NBA_TEAMS,
+  NFL_TEAMS,
+  PREMIER_LEAGUE_TEAMS,
+  PRIMEIRA_LIGA_TEAMS,
+  SERIE_A_TEAMS,
+  getLeagueLogo,
+  splitMatchupTitle,
+} from '../data/teamLogos';
 import { getSportEvents, getSportVisuals, getTournamentEvents, type NormalizedSportEvent, type SportProvider } from '../services/sportsApi';
 import { signIn, signUp, simulatePayPalCheckout } from '../services/authApi';
 
@@ -72,7 +83,7 @@ const footballTournaments = [
   { id: 'laliga', name: 'LaLiga', season: '2026-2027', status: 'Preparacion', price: '$12.99', enabled: false },
   { id: 'serie-a', name: 'Serie A', season: '2026-2027', status: 'Preparacion', price: '$11.99', enabled: false },
   { id: 'bundesliga', name: 'Bundesliga', season: '2026-2027', status: 'Preparacion', price: '$11.99', enabled: false },
-  { id: 'primeira-liga', name: 'Primeira Liga', season: '2026-2027', status: 'Preparacion', price: '$9.99', enabled: false },
+  { id: 'primeira-liga', name: 'Liga Portugal', season: '2026-2027', status: 'Preparacion', price: '$9.99', enabled: false },
   { id: 'europa-league', name: 'UEFA Europa League', season: '2026-2027', status: 'Preparacion', price: '$10.99', enabled: false },
 ];
 
@@ -172,94 +183,115 @@ const tournamentDetails: Record<string, {
   },
   'champions-league': {
     overview: 'Competicion europea premium con clubes elite, fase de liga, rondas eliminatorias y final continental.',
-    teams: ['Real Madrid', 'Manchester City', 'Bayern Munich', 'PSG', 'Barcelona', 'Liverpool', 'Inter', 'Arsenal'],
+    teams: ['Real Madrid', 'Manchester City', 'Bayern Munich', 'Barcelona', 'Liverpool', 'Internazionale', 'Arsenal', 'Atletico Madrid', 'Juventus', 'Napoli', 'Borussia Dortmund', 'Bayer Leverkusen', 'Benfica', 'FC Porto', 'Sporting CP', 'Chelsea', 'Manchester United', 'Tottenham Hotspur', 'Sevilla', 'Real Sociedad'],
     format: 'Temporada 2026-2027 · fase de liga y eliminatorias.',
     predictionRules: ['Ganador', 'Marcador exacto', 'Clasificados por ronda', 'Campeon'],
     coverage: ['Fixture europeo', 'Octavos a final', 'Ranking continental', 'Clubes favoritos'],
   },
   'premier-league': {
     overview: 'Liga inglesa con jornadas semanales, tabla acumulada y quiniela por fecha.',
-    teams: ['Manchester City', 'Arsenal', 'Liverpool', 'Chelsea', 'Manchester United', 'Tottenham', 'Newcastle', 'Aston Villa'],
+    teams: PREMIER_LEAGUE_TEAMS,
     format: 'Temporada 2026-2027 · todos contra todos.',
     predictionRules: ['Ganador', 'Marcador', 'Diferencia de goles', 'Top 4'],
     coverage: ['Calendario de liga', 'Tabla general', 'Derbis', 'Carrera al titulo'],
   },
   laliga: {
     overview: 'Competicion espanola con seguimiento de clubes principales, jornadas y lucha por puestos europeos.',
-    teams: ['Real Madrid', 'Barcelona', 'Atletico Madrid', 'Sevilla', 'Real Sociedad', 'Villarreal', 'Athletic Club', 'Valencia'],
+    teams: LALIGA_TEAMS,
     format: 'Temporada 2026-2027 · liga regular.',
     predictionRules: ['Ganador', 'Marcador', 'Porteria a cero', 'Campeon'],
     coverage: ['Jornadas', 'Clasico', 'Tabla', 'Puestos europeos'],
   },
   'serie-a': {
     overview: 'Liga italiana con pronosticos de resultados, ranking de usuarios y seguimiento de candidatos al Scudetto.',
-    teams: ['Inter', 'Milan', 'Juventus', 'Napoli', 'Roma', 'Lazio', 'Atalanta', 'Fiorentina'],
+    teams: SERIE_A_TEAMS,
     format: 'Temporada 2026-2027 · liga regular.',
     predictionRules: ['Ganador', 'Marcador', 'Resultado doble oportunidad', 'Campeon'],
     coverage: ['Jornadas', 'Tabla', 'Clasicos italianos', 'Zona europea'],
   },
   bundesliga: {
     overview: 'Liga alemana con foco en marcadores, liderato y rendimiento ofensivo.',
-    teams: ['Bayern Munich', 'Borussia Dortmund', 'RB Leipzig', 'Bayer Leverkusen', 'Stuttgart', 'Eintracht Frankfurt', 'Wolfsburg', 'Freiburg'],
+    teams: BUNDESLIGA_TEAMS,
     format: 'Temporada 2026-2027 · liga regular.',
     predictionRules: ['Ganador', 'Marcador', 'Total de goles', 'Campeon'],
     coverage: ['Jornadas', 'Tabla', 'Carrera al titulo', 'Goleadores'],
   },
   'primeira-liga': {
     overview: 'Liga portuguesa con predicciones por fecha y seguimiento de clubes historicos.',
-    teams: ['Benfica', 'Porto', 'Sporting CP', 'Braga', 'Vitoria SC', 'Boavista', 'Casa Pia', 'Famalicao'],
+    teams: PRIMEIRA_LIGA_TEAMS,
     format: 'Temporada 2026-2027 · liga regular.',
     predictionRules: ['Ganador', 'Marcador', 'Diferencia de goles', 'Campeon'],
     coverage: ['Jornadas', 'Tabla', 'Clasicos', 'Puestos europeos'],
   },
   'europa-league': {
     overview: 'Torneo europeo de eliminatorias con clubes internacionales y alto valor de prediccion.',
-    teams: ['Roma', 'Sevilla', 'Bayer Leverkusen', 'Tottenham', 'Porto', 'Lyon', 'Ajax', 'Benfica'],
+    teams: ['AS Roma', 'Sevilla', 'Bayer Leverkusen', 'Tottenham Hotspur', 'FC Porto', 'Benfica', 'Sporting CP', 'Real Betis', 'Athletic Club', 'Lazio', 'Fiorentina', 'Villarreal', 'Aston Villa', 'Newcastle United', 'SC Freiburg', 'RB Leipzig', 'Atalanta', 'Braga', 'Real Sociedad', 'Valencia'],
     format: 'Temporada 2026-2027 · fase de liga y eliminatorias.',
     predictionRules: ['Ganador', 'Marcador', 'Clasificados', 'Campeon'],
     coverage: ['Fase de liga', 'Eliminatorias', 'Final', 'Ranking europeo'],
   },
   'nba-temporada-regular': {
     overview: 'Temporada regular NBA con partidos diarios, marcadores y ranking por aciertos.',
-    teams: ['Boston Celtics', 'Los Angeles Lakers', 'Denver Nuggets', 'Dallas Mavericks', 'Golden State Warriors', 'Phoenix Suns', 'Miami Heat', 'Milwaukee Bucks'],
+    teams: NBA_TEAMS,
     format: 'Temporada 2026-2027 · conferencia Este y Oeste.',
     predictionRules: ['Ganador', 'Marcador', 'Diferencia de puntos', 'Equipo con mas puntos'],
     coverage: ['Calendario NBA', 'Conferencias', 'Rachas', 'Play-in'],
   },
   'nba-playoffs': {
     overview: 'Playoffs NBA con series al mejor de siete y predicciones por ronda.',
-    teams: ['Clasificados Este', 'Clasificados Oeste', 'Semifinalistas', 'Finalistas de conferencia'],
+    teams: NBA_TEAMS,
     format: 'Playoffs 2027 · series eliminatorias.',
     predictionRules: ['Ganador de juego', 'Ganador de serie', 'Resultado de serie', 'Campeon de conferencia'],
     coverage: ['Primera ronda', 'Semifinales', 'Finales de conferencia', 'Finales NBA'],
   },
   'nba-finals': {
     overview: 'Serie final NBA con predicciones premium por partido, MVP y campeon.',
-    teams: ['Campeon del Este', 'Campeon del Oeste'],
+    teams: NBA_TEAMS,
     format: 'Finales NBA 2027 · mejor de siete.',
     predictionRules: ['Ganador', 'Marcador', 'MVP', 'Resultado de serie'],
     coverage: ['Finales', 'MVP', 'Marcadores', 'Campeon'],
   },
   'mlb-temporada-regular': {
     overview: 'Temporada MLB con picks por juego, carreras y series.',
-    teams: ['New York Yankees', 'Boston Red Sox', 'Los Angeles Dodgers', 'San Diego Padres', 'Houston Astros', 'Texas Rangers', 'Atlanta Braves', 'Chicago Cubs'],
+    teams: MLB_TEAMS,
     format: 'Temporada 2027 · liga Americana y Nacional.',
     predictionRules: ['Ganador', 'Carreras totales', 'Ganador de serie', 'Diferencia de carreras'],
     coverage: ['Temporada regular', 'Divisiones', 'Series', 'Wild Card'],
   },
   'mlb-postseason': {
     overview: 'Postemporada MLB con series eliminatorias y predicciones por ronda.',
-    teams: ['Wild Cards', 'Campeones divisionales', 'Finalistas Liga Americana', 'Finalistas Liga Nacional'],
+    teams: MLB_TEAMS,
     format: 'Postseason 2027 · series eliminatorias.',
     predictionRules: ['Ganador de juego', 'Ganador de serie', 'Carreras', 'Campeon de liga'],
     coverage: ['Wild Card', 'Division Series', 'Championship Series', 'World Series'],
   },
   'world-series': {
     overview: 'Final de MLB con predicciones de campeon, marcador y MVP.',
-    teams: ['Campeon Liga Americana', 'Campeon Liga Nacional'],
-    format: 'World Series 2027 · mejor de siete.',
+    teams: MLB_TEAMS,
+    format: 'World Series 2027 - mejor de siete.',
     predictionRules: ['Ganador', 'Carreras', 'Resultado de serie', 'MVP'],
     coverage: ['Serie final', 'MVP', 'Campeon', 'Juego decisivo'],
+  },
+  'nfl-temporada-regular': {
+    overview: 'Temporada NFL con picks semanales, marcadores proyectados y ranking por conferencia.',
+    teams: NFL_TEAMS,
+    format: 'Temporada 2026-2027 Â· AFC y NFC.',
+    predictionRules: ['Ganador', 'Marcador', 'Diferencia de puntos', 'Equipo con mas yardas'],
+    coverage: ['Semana regular', 'Divisiones', 'Conferencias', 'Playoffs'],
+  },
+  'nfl-playoffs': {
+    overview: 'Playoffs NFL con rondas eliminatorias y predicciones por conferencia.',
+    teams: NFL_TEAMS,
+    format: 'Playoffs 2027 Â· eliminatorias AFC y NFC.',
+    predictionRules: ['Ganador', 'Marcador', 'Campeon de conferencia', 'Total de puntos'],
+    coverage: ['Wild Card', 'Divisional', 'Finales de conferencia', 'Super Bowl'],
+  },
+  'super-bowl': {
+    overview: 'Final NFL premium con predicciones de campeon, marcador, MVP y jugadas clave.',
+    teams: NFL_TEAMS,
+    format: 'Super Bowl 2027 - final unica por el campeonato.',
+    predictionRules: ['Ganador', 'Marcador', 'MVP', 'Total de puntos'],
+    coverage: ['Final NFL', 'MVP', 'Campeon', 'Halftime props'],
   },
 };
 
@@ -1137,6 +1169,18 @@ function MatchupLogoRow({ title, size = 'sm' }: { title: string; size?: 'xs' | '
   );
 }
 
+function LeagueLogo({ tournamentId, name, className = '' }: { tournamentId: string; name: string; className?: string }) {
+  const logoUrl = getLeagueLogo(tournamentId);
+
+  if (!logoUrl) return null;
+
+  return (
+    <span className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white p-1 ${className}`}>
+      <img src={logoUrl} alt={name} className="h-full w-full object-contain" loading="lazy" referrerPolicy="no-referrer" />
+    </span>
+  );
+}
+
 function FootballDashboard() {
   return (
     <div className="space-y-6 pb-24 px-4 pt-4">
@@ -1153,7 +1197,10 @@ function FootballDashboard() {
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h2 className="font-heading text-2xl font-black text-white">{tournament.name}</h2>
+                <div className="flex min-w-0 items-center gap-3">
+                  <LeagueLogo tournamentId={tournament.id} name={tournament.name} />
+                  <h2 className="truncate font-heading text-2xl font-black text-white">{tournament.name}</h2>
+                </div>
                 <p className="text-sm text-[#d5c0d7]">{tournament.season} · {tournament.status}</p>
               </div>
               <div className="flex items-center gap-3">
@@ -1292,6 +1339,7 @@ function TournamentDashboard() {
   ];
   const liveTournamentEvents = tournamentApiEvents.length > 0 ? tournamentApiEvents : [];
   const enabledPath = primaryPath;
+  const leagueLogo = getLeagueLogo(tournament.id);
 
   return (
     <div className="space-y-6 pb-24 px-4 pt-4 max-w-6xl mx-auto">
@@ -1300,6 +1348,11 @@ function TournamentDashboard() {
         <div className="relative grid lg:grid-cols-[1.1fr_0.9fr] gap-6 items-end">
           <div>
             <p className="text-sm font-mono text-[#EA7301]">DASHBOARD DEL TORNEO</p>
+            {leagueLogo && (
+              <span className="mt-3 inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white p-2">
+                <img src={leagueLogo} alt={tournament.name} className="h-full w-full object-contain" loading="lazy" referrerPolicy="no-referrer" />
+              </span>
+            )}
             <h1 className="mt-2 text-4xl sm:text-5xl font-heading font-black text-white">{tournament.name}</h1>
             <p className="mt-3 text-[#d5c0d7]">
               {tournament.sportName} · {tournament.season} · {tournament.status} · Membresia {tournament.price}
@@ -1514,20 +1567,26 @@ function SportPlaceholder() {
           <h2 className="text-3xl font-heading font-black text-white">Competiciones de {sport.name}</h2>
         </div>
         <div className="grid md:grid-cols-2 gap-4">
-          {dashboard.tournaments.map((tournament) => (
-            <Link key={tournament.name} to={getTournamentAccessPath(toTournamentId(tournament.name))} className="rounded-xl border border-[#3c313e] bg-[#221824]/90 p-5 hover:border-[#EA7301] transition-colors">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="font-heading text-2xl font-black text-white">{tournament.name}</h3>
-                  <p className="text-sm text-[#d5c0d7]">{tournament.season} · {tournament.status}</p>
+          {dashboard.tournaments.map((tournament) => {
+            const tournamentAccessId = toTournamentId(tournament.name);
+            return (
+              <Link key={tournament.name} to={getTournamentAccessPath(tournamentAccessId)} className="rounded-xl border border-[#3c313e] bg-[#221824]/90 p-5 hover:border-[#EA7301] transition-colors">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <LeagueLogo tournamentId={tournamentAccessId} name={tournament.name} />
+                    <div className="min-w-0">
+                      <h3 className="truncate font-heading text-2xl font-black text-white">{tournament.name}</h3>
+                      <p className="text-sm text-[#d5c0d7]">{tournament.season} - {tournament.status}</p>
+                    </div>
+                  </div>
+                  <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{tournament.price}</span>
                 </div>
-                <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{tournament.price}</span>
-              </div>
-              <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#EA7301]">
-                Acceder con membresia <ArrowRight className="w-4 h-4" />
-              </span>
-            </Link>
-          ))}
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#EA7301]">
+                  Acceder con membresia <ArrowRight className="w-4 h-4" />
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </section>
     </div>
@@ -1549,3 +1608,7 @@ export default function App() {
     </TournamentProvider>
   );
 }
+
+
+
+

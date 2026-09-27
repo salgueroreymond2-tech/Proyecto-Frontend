@@ -14,6 +14,7 @@ import {
   Sun,
   Moon,
   ChevronDown,
+  ChevronLeft,
   Menu,
   Dumbbell,
   Trophy,
@@ -81,30 +82,50 @@ export const Navbar: React.FC<NavbarProps> = ({
     community: Users,
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
+    onNavigateHome?.();
+  };
+
   return (
     <header className="sticky top-0 z-40 bg-[#140b16]/95 backdrop-blur-md border-b border-[#3c313e]/60 px-4 py-3">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         {/* Left: Logo */}
-        <button
-          type="button"
-          onClick={onNavigateHome}
-          className="flex items-center gap-2.5 rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EA7301]"
-          aria-label="Ir a la pagina principal"
-        >
-          <img
-            src={ASSET_PATHS.logos.brand.kas}
-            alt="King Arthur Sports"
-            className="h-14 w-14 rounded-xl object-cover border border-[#EA7301]/60 shadow-md"
-          />
-          <div className="hidden sm:block leading-none">
-            <span className="block text-xl font-heading font-black tracking-wide text-[#EA7301]">
-              KAS
-            </span>
-            <span className="block text-[10px] font-mono tracking-[0.24em] text-white/70">
-              KING ARTHUR SPORTS
-            </span>
-          </div>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleBack}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white hover:border-[#EA7301]/60 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EA7301]"
+            aria-label="Volver atras"
+            title="Atras"
+          >
+            <ChevronLeft className="h-5 w-5 text-[#EA7301]" />
+          </button>
+          <button
+            type="button"
+            onClick={onNavigateHome}
+            className="flex items-center gap-2.5 rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EA7301]"
+            aria-label="Ir a la pagina principal"
+          >
+            <img
+              src={ASSET_PATHS.logos.brand.kas}
+              alt="King Arthur Sports"
+              className="h-14 w-14 rounded-xl object-cover border border-[#EA7301]/60 shadow-md"
+            />
+            <div className="hidden sm:block leading-none">
+              <span className="block text-xl font-heading font-black tracking-wide text-[#EA7301]">
+                KAS
+              </span>
+              <span className="block text-[10px] font-mono tracking-[0.24em] text-white/70">
+                KING ARTHUR SPORTS
+              </span>
+            </div>
+          </button>
+        </div>
 
         {publicMode ? (
           <div className="flex items-center gap-2">

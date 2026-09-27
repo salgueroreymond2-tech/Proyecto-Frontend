@@ -20,6 +20,14 @@ import {
   Lock,
   Mail,
   Shield,
+  DirectionsBike,
+  SportsBaseball,
+  SportsBasketball,
+  SportsFootball,
+  SportsMma,
+  SportsMotorsports,
+  SportsSoccer,
+  SportsTennis,
   Trophy,
   Users,
 } from '../components/Icon';
@@ -45,6 +53,7 @@ import { TEAMS, getTeamById } from '../data/teams';
 import {
   BUNDESLIGA_TEAMS,
   LALIGA_TEAMS,
+  LIGUE_1_TEAMS,
   MLB_TEAMS,
   NBA_TEAMS,
   NFL_TEAMS,
@@ -75,8 +84,21 @@ const sports: Sport[] = [
   { id: 'american-football', name: 'Futbol Americano', text: 'NFL con picks por semana y playoffs.', tournaments: 1, activeEvents: 16, accent: '#A78BFA', image: ASSET_PATHS.images.sports.americanFootball },
   { id: 'f1', name: 'F1', text: 'Grandes premios, pole, podio y campeonatos.', tournaments: 3, activeEvents: 24, accent: '#EF4444', image: ASSET_PATHS.images.sports.americanFootball },
   { id: 'cycling', name: 'Ciclismo', text: 'Grand Tours, etapas, maillots y clasificaciones.', tournaments: 4, activeEvents: 21, accent: '#22C55E', image: ASSET_PATHS.images.sports.tennis },
+  { id: 'golf', name: 'Golf', text: 'Majors, rondas, liderato y match play.', tournaments: 3, activeEvents: 12, accent: '#16A34A', image: ASSET_PATHS.images.sports.football },
   { id: 'mma', name: 'UFC / MMA', text: 'Ganador, metodo y round por cartelera.', tournaments: 1, activeEvents: 9, accent: '#EF4444', image: ASSET_PATHS.images.sports.mma },
 ];
+
+const sportIconById: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
+  football: SportsSoccer,
+  tennis: SportsTennis,
+  basketball: SportsBasketball,
+  baseball: SportsBaseball,
+  'american-football': SportsFootball,
+  f1: SportsMotorsports,
+  cycling: DirectionsBike,
+  golf: Trophy,
+  mma: SportsMma,
+};
 
 const footballTournaments = [
   { id: 'cr-apertura-2026', name: 'Campeonato Nacional de Costa Rica', season: 'Apertura 2026', status: 'Activo', price: '$9.99', enabled: true },
@@ -85,6 +107,7 @@ const footballTournaments = [
   { id: 'laliga', name: 'LaLiga', season: '2026-2027', status: 'Preparacion', price: '$12.99', enabled: false },
   { id: 'serie-a', name: 'Serie A', season: '2026-2027', status: 'Preparacion', price: '$11.99', enabled: false },
   { id: 'bundesliga', name: 'Bundesliga', season: '2026-2027', status: 'Preparacion', price: '$11.99', enabled: false },
+  { id: 'ligue-1', name: 'Ligue 1', season: '2026-2027', status: 'Preparacion', price: '$10.99', enabled: false },
   { id: 'primeira-liga', name: 'Liga Portugal', season: '2026-2027', status: 'Preparacion', price: '$9.99', enabled: false },
   { id: 'europa-league', name: 'UEFA Europa League', season: '2026-2027', status: 'Preparacion', price: '$10.99', enabled: false },
   { id: 'nations-league', name: 'UEFA Nations League', season: '2026-2027', status: 'Preparacion', price: '$9.99', enabled: false },
@@ -178,6 +201,19 @@ const sportDashboards = {
       { name: 'UCI World Championships', season: '2027', status: 'Premium', price: '$8.99' },
     ],
   },
+  golf: {
+    eyebrow: 'GOLF',
+    title: 'Dashboard Golf',
+    description: 'Pronostica lideres por ronda, ganador final, top 10 y matchups de golfistas.',
+    prediction: 'Ganador, top 10 y lider por ronda',
+    featured: 'PGA Tour 2027',
+    events: ['The Masters - Ronda final', 'PGA Tour Championship', 'Ryder Cup Singles'],
+    tournaments: [
+      { name: 'PGA Tour', season: '2027', status: 'Activo', price: '$9.99' },
+      { name: 'The Masters', season: '2027', status: 'Premium', price: '$11.99' },
+      { name: 'Ryder Cup', season: '2027', status: 'Preparacion', price: '$8.99' },
+    ],
+  },
   mma: {
     eyebrow: 'UFC / MMA',
     title: 'Dashboard UFC',
@@ -250,7 +286,13 @@ const tournamentDetails: Record<string, {
     predictionRules: ['Ganador', 'Marcador', 'Total de goles', 'Campeon'],
     coverage: ['Jornadas', 'Tabla', 'Carrera al titulo', 'Goleadores'],
   },
-  'primeira-liga': {
+  'ligue-1': {
+    overview: 'Liga francesa con seguimiento de clubes historicos, jornada regular y carrera europea.',
+    teams: LIGUE_1_TEAMS,
+    format: 'Temporada 2026-2027 - liga regular.',
+    predictionRules: ['Ganador', 'Marcador', 'Diferencia de goles', 'Campeon'],
+    coverage: ['Jornadas', 'Tabla', 'Clasicos franceses', 'Zona europea'],
+  },  'primeira-liga': {
     overview: 'Liga portuguesa con predicciones por fecha y seguimiento de clubes historicos.',
     teams: PRIMEIRA_LIGA_TEAMS,
     format: 'Temporada 2026-2027 · liga regular.',
@@ -409,6 +451,27 @@ const tournamentDetails: Record<string, {
     format: 'UCI World Championships 2027 - seleccion nacional y pruebas elite.',
     predictionRules: ['Campeon ruta', 'Campeon CRI', 'Podio', 'Pais ganador'],
     coverage: ['Ruta elite', 'Contrarreloj', 'Sub-23', 'Ranking paises'],
+  },
+  'pga-tour': {
+    overview: 'Circuito PGA con predicciones por ronda, top 10, ganador y desempates.',
+    teams: ['Scottie Scheffler', 'Rory McIlroy', 'Jon Rahm', 'Xander Schauffele', 'Collin Morikawa', 'Viktor Hovland', 'Ludvig Aberg', 'Tommy Fleetwood', 'Hideki Matsuyama', 'Jordan Spieth'],
+    format: 'PGA Tour 2027 - eventos por semana.',
+    predictionRules: ['Ganador', 'Top 10', 'Lider por ronda', 'Corte superado'],
+    coverage: ['Ronda 1', 'Ronda 2', 'Moving day', 'Final'],
+  },
+  'the-masters': {
+    overview: 'Major premium en Augusta con picks por ronda, ganador y chaqueta verde.',
+    teams: ['Scottie Scheffler', 'Rory McIlroy', 'Jon Rahm', 'Xander Schauffele', 'Collin Morikawa', 'Viktor Hovland', 'Ludvig Aberg', 'Tommy Fleetwood', 'Hideki Matsuyama', 'Jordan Spieth'],
+    format: 'The Masters 2027 - 4 rondas.',
+    predictionRules: ['Ganador', 'Top 5', 'Lider final', 'Mejor ronda'],
+    coverage: ['Augusta', 'Amen Corner', 'Corte', 'Chaqueta verde'],
+  },
+  'ryder-cup': {
+    overview: 'Competencia por equipos con match play, parejas y singles.',
+    teams: ['Team USA', 'Team Europe', 'Scottie Scheffler', 'Rory McIlroy', 'Jon Rahm', 'Xander Schauffele', 'Tommy Fleetwood', 'Collin Morikawa'],
+    format: 'Ryder Cup 2027 - foursomes, four-ball y singles.',
+    predictionRules: ['Ganador de match', 'Punto por equipo', 'Marcador global', 'MVP'],
+    coverage: ['Foursomes', 'Four-ball', 'Singles', 'Marcador global'],
   },
 };
 
@@ -650,6 +713,39 @@ function HomePage() {
         provider: 'KAS',
         href: undefined,
       }));
+  const liveTickerItems = [
+    ...scoreboard.map((match) => {
+      const home = getTeamById(match.homeTeamId);
+      const away = getTeamById(match.awayTeamId);
+      return {
+        id: match.id,
+        label: `J${match.round}`,
+        status: match.status === 'live' ? `${match.minute}'` : 'Final',
+        title: `${home.code} @ ${away.code}`,
+        score: `${match.homeScore ?? 0} - ${match.awayScore ?? 0}`,
+        path: '/tournaments/cr-apertura-2026/predictions',
+        localHome: home,
+        localAway: away,
+      };
+    }),
+    ...homeEvents.slice(0, 10).map((event) => ({
+      id: event.id,
+      label: event.league,
+      status: event.score ? 'Marcador' : event.status,
+      title: event.title,
+      score: event.score || (event.startsAt ? new Date(event.startsAt).toLocaleDateString() : ''),
+      path: event.sourceUrl || '/login',
+    })),
+  ];
+  const tickerItems = liveTickerItems.length > 0 ? liveTickerItems : homeFallbackEvents.map((event) => ({
+    id: event.id,
+    label: event.league,
+    status: event.status,
+    title: event.title,
+    score: '',
+    path: event.path,
+  }));
+  const animatedTickerItems = [...tickerItems, ...tickerItems];
 
   useEffect(() => {
     const controller = new AbortController();
@@ -705,30 +801,38 @@ function HomePage() {
               <span className="shrink-0 rounded-md bg-[#EA7301] px-2 py-1 text-[10px] font-heading font-black uppercase tracking-wide text-black">
                 Marcadores
               </span>
-              <div className="flex gap-2 overflow-x-auto scrollbar-none">
-                {scoreboard.map((match) => {
-                  const home = getTeamById(match.homeTeamId);
-                  const away = getTeamById(match.awayTeamId);
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <div className="kas-score-ticker flex w-max gap-2">
+                {animatedTickerItems.map((item, index) => {
+                  const isLocalMatch = 'localHome' in item && item.localHome && item.localAway;
                   return (
                     <Link
-                      key={match.id}
-                      to="/tournaments/cr-apertura-2026/predictions"
+                      key={`${item.id}-${index}`}
+                      to={item.path.startsWith('http') ? '/login' : item.path}
                       className="min-w-[184px] rounded-lg border border-white/10 bg-black/25 px-3 py-2 hover:border-[#EA7301]/70 transition-colors"
                     >
                       <div className="flex items-center justify-between text-[10px] font-mono text-[#d5c0d7]">
-                        <span>J{match.round}</span>
-                        <span className={match.status === 'live' ? 'text-[#00f0ff]' : 'text-emerald-300'}>
-                          {match.status === 'live' ? `${match.minute}'` : 'Final'}
+                        <span className="max-w-[120px] truncate">{item.label}</span>
+                        <span className={item.status.includes("'") ? 'text-[#00f0ff]' : 'text-emerald-300'}>
+                          {item.status}
                         </span>
                       </div>
-                      <div className="mt-1 grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-sm font-heading font-bold text-white">
-                        <span className="flex min-w-0 items-center gap-1.5 truncate"><TeamBadge team={home} size="xs" />{home.code}</span>
-                        <span className="font-black">{match.homeScore ?? 0} - {match.awayScore ?? 0}</span>
-                        <span className="flex min-w-0 items-center justify-end gap-1.5 truncate text-right">{away.code}<TeamBadge team={away} size="xs" /></span>
+                      <div className="mt-1 flex items-center gap-2 text-sm font-heading font-bold text-white">
+                        {isLocalMatch ? (
+                          <>
+                            <span className="flex min-w-0 items-center gap-1.5 truncate"><TeamBadge team={item.localHome} size="xs" />{item.localHome.code}</span>
+                            <span className="text-[#d5c0d7]">@</span>
+                            <span className="flex min-w-0 items-center gap-1.5 truncate"><TeamBadge team={item.localAway} size="xs" />{item.localAway.code}</span>
+                          </>
+                        ) : (
+                          <MatchupTitleWithLogos title={item.title} size="xs" />
+                        )}
+                        {item.score && <span className="ml-auto shrink-0 font-black">{item.score}</span>}
                       </div>
                     </Link>
                   );
                 })}
+                </div>
               </div>
             </div>
           </div>
@@ -1132,17 +1236,20 @@ function SportsDashboard() {
           </Link>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {sports.map((sport) => (
+          {sports.map((sport) => {
+            const SportIcon = sportIconById[sport.id] || Dumbbell;
+            return (
             <Link key={sport.id} to={`/sports/${sport.id}`} className="rounded-xl border border-[#3c313e] bg-[#221824] p-5 hover:border-[#EA7301] transition-colors">
               <div className="flex items-center justify-between">
-                <Dumbbell className="w-7 h-7" style={{ color: sport.accent }} />
+                <SportIcon className="w-7 h-7" style={{ color: sport.accent }} />
                 <span className="rounded-full bg-black/30 px-3 py-1 text-xs font-mono text-white/70">{sport.activeEvents} eventos</span>
               </div>
               <h3 className="mt-5 font-heading text-2xl font-black text-white">{sport.name}</h3>
               <p className="mt-2 text-sm text-[#d5c0d7]">{sport.text}</p>
               <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#EA7301]">Entrar <ArrowRight className="w-4 h-4" /></span>
             </Link>
-          ))}
+          );
+          })}
         </div>
       </section>
 
@@ -1205,11 +1312,8 @@ function SportsDashboard() {
             <p className="text-sm font-mono text-[#EA7301]">ACTUALIDAD DEPORTIVA</p>
             <h2 className="text-3xl font-heading font-black text-white">Noticias y agenda</h2>
           </div>
-          <span className={`rounded-full px-3 py-1 text-xs font-mono ${apiStatus === 'ready' ? 'bg-emerald-400/15 text-emerald-300' : apiStatus === 'loading' ? 'bg-[#EA7301]/15 text-[#EA7301]' : 'bg-amber-400/15 text-amber-200'}`}>
-            {apiStatus === 'loading' ? 'Cargando' : apiStatus === 'ready' ? 'ESPN activo' : 'Fallback local'}
-          </span>
         </div>
-        <p className="mt-2 text-sm text-[#d5c0d7]">{apiMessage} La agenda se actualiza desde los proveedores disponibles y se identifica claramente cuando se usa un respaldo local.</p>
+        <p className="mt-2 text-sm text-[#d5c0d7]">Agenda deportiva conectada con marcadores, fechas y actividad destacada de torneos KAS.</p>
 
         <div className="mt-5 grid md:grid-cols-2 gap-3">
           {apiStatus === 'loading' && [1, 2, 3, 4].map((item) => (
@@ -1239,10 +1343,11 @@ function SportsDashboard() {
                         <span className="truncate">{matchup.away.code}</span>
                       </h3>
                     ) : (
-                      <h3 className="mt-1 font-heading text-xl font-black text-white">{event.title}</h3>
+                      <h3 className="mt-2 flex min-w-0 items-center gap-2 font-heading text-xl font-black text-white">
+                        <MatchupTitleWithLogos title={event.title} size="sm" />
+                      </h3>
                     )}
                   </div>
-                  <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-mono text-white/65">{event.provider}</span>
                 </div>
                 <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[#d5c0d7]">
                   <span>{event.status}</span>
@@ -1282,6 +1387,26 @@ function MatchupLogoRow({ title, size = 'sm' }: { title: string; size?: 'xs' | '
     <span className="flex shrink-0 items-center -space-x-1">
       <UniversalTeamLogo name={matchup.home} size={size} className="rounded-full bg-black/30" />
       <UniversalTeamLogo name={matchup.away} size={size} className="rounded-full bg-black/30" />
+    </span>
+  );
+}
+
+function MatchupTitleWithLogos({ title, size = 'sm' }: { title: string; size?: 'xs' | 'sm' | 'md' }) {
+  const matchup = splitMatchupTitle(title);
+
+  if (!matchup) return <span className="truncate">{title}</span>;
+
+  return (
+    <span className="flex min-w-0 items-center gap-2">
+      <span className="flex min-w-0 items-center gap-1.5">
+        <UniversalTeamLogo name={matchup.home} size={size} />
+        <span className="truncate">{matchup.home}</span>
+      </span>
+      <span className="text-sm text-[#d5c0d7]">@</span>
+      <span className="flex min-w-0 items-center gap-1.5">
+        <UniversalTeamLogo name={matchup.away} size={size} />
+        <span className="truncate">{matchup.away}</span>
+      </span>
     </span>
   );
 }
@@ -1725,6 +1850,7 @@ export default function App() {
     </TournamentProvider>
   );
 }
+
 
 
 

@@ -622,3 +622,20 @@ input[type=number] {
   text-shadow: 0 0 12px color-mix(in srgb, var(--theme-primary) 55%, transparent) !important;
 }
 
+@keyframes kas-score-ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.kas-score-ticker {
+  animation: kas-score-ticker 38s linear infinite;
+}
+
+.kas-score-ticker:hover {
+  animation-play-state: paused;
+}
+

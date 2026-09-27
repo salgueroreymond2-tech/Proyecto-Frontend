@@ -14,11 +14,47 @@ const kasBadgeLogo = (label: string, color: string) =>
     </svg>
   `)}`;
 
+const entityBadgeLogo = (name: string, color = '#EA7301') => {
+  const label = name
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 4)
+    .toUpperCase();
+
+  return kasBadgeLogo(label || name.slice(0, 3).toUpperCase(), color);
+};
+
+const generatedLogoEntries: LogoEntry[] = [
+  'Alemania', 'Argentina', 'Australia', 'Austria', 'Belgica', 'Bolivia', 'Brasil', 'Canada', 'Chile', 'Colombia',
+  'Costa Rica', 'Croacia', 'Curazao', 'Dinamarca', 'Ecuador', 'El Salvador', 'Escocia', 'Eslovenia', 'Espana',
+  'Estados Unidos', 'Francia', 'Gales', 'Guatemala', 'Haiti', 'Honduras', 'Hungria', 'Inglaterra', 'Italia',
+  'Jamaica', 'Martinica', 'Mexico', 'Nicaragua', 'Noruega', 'Paises Bajos', 'Panama', 'Paraguay', 'Peru',
+  'Polonia', 'Portugal', 'Qatar', 'Reino Unido', 'Republica Checa', 'Rumania', 'Serbia', 'Suecia', 'Suiza',
+  'Surinam', 'Trinidad y Tobago', 'Turquia', 'Ucrania', 'Uruguay', 'Venezuela',
+].map((name) => ({ name, logoUrl: entityBadgeLogo(name, '#2563eb') }));
+
+generatedLogoEntries.push(
+  ...[
+    'Red Bull Racing', 'Ferrari', 'Mercedes', 'McLaren', 'Aston Martin', 'Alpine', 'Williams', 'RB', 'Sauber', 'Haas',
+  ].map((name) => ({ name, logoUrl: entityBadgeLogo(name, '#ef4444') })),
+  ...[
+    'UAE Team Emirates', 'Visma Lease a Bike', 'Soudal Quick-Step', 'INEOS Grenadiers', 'Bora Hansgrohe',
+    'Lidl-Trek', 'Alpecin-Deceuninck', 'Movistar Team', 'EF Education-EasyPost', 'Groupama-FDJ',
+  ].map((name) => ({ name, logoUrl: entityBadgeLogo(name, '#22c55e') })),
+  ...[
+    'Scottie Scheffler', 'Rory McIlroy', 'Jon Rahm', 'Xander Schauffele', 'Collin Morikawa', 'Viktor Hovland',
+    'Ludvig Aberg', 'Tommy Fleetwood', 'Hideki Matsuyama', 'Jordan Spieth', 'Team USA', 'Team Europe',
+  ].map((name) => ({ name, logoUrl: entityBadgeLogo(name, '#16a34a') }))
+);
+
 export const LEAGUE_LOGOS: Record<string, string> = {
   'serie-a': 'https://a.espncdn.com/i/leaguelogos/soccer/500/12.png',
   bundesliga: 'https://a.espncdn.com/i/leaguelogos/soccer/500/10.png',
   laliga: 'https://a.espncdn.com/i/leaguelogos/soccer/500/15.png',
   'premier-league': 'https://a.espncdn.com/i/leaguelogos/soccer/500/23.png',
+  'ligue-1': kasBadgeLogo('L1', '#1d4ed8'),
   'primeira-liga': 'https://a.espncdn.com/i/leaguelogos/soccer/500/14.png',
   'liga-portugal': 'https://a.espncdn.com/i/leaguelogos/soccer/500/14.png',
   'nba-temporada-regular': 'https://a.espncdn.com/i/teamlogos/leagues/500/nba.png',
@@ -42,6 +78,9 @@ export const LEAGUE_LOGOS: Record<string, string> = {
   'giro-d-italia': kasBadgeLogo('GIRO', '#ec4899'),
   'la-vuelta': kasBadgeLogo('VTA', '#ef4444'),
   'uci-world-championships': kasBadgeLogo('UCI', '#22c55e'),
+  'pga-tour': kasBadgeLogo('PGA', '#2563eb'),
+  'the-masters': kasBadgeLogo('MAST', '#16a34a'),
+  'ryder-cup': kasBadgeLogo('RC', '#ef4444'),
 };
 
 export function getLeagueLogo(tournamentId: string) {
@@ -75,6 +114,11 @@ export const PRIMEIRA_LIGA_TEAMS = [
   'FC Famalicao', 'FC Porto', 'Gil Vicente', 'Maritimo', 'Moreirense', 'Rio Ave', 'Santa Clara', 'Sporting CP', 'Vitoria de Guimaraes',
 ];
 
+export const LIGUE_1_TEAMS = [
+  'Paris Saint-Germain', 'Marseille', 'Lyon', 'Monaco', 'Lille', 'Nice', 'Rennes', 'Lens', 'Strasbourg',
+  'Nantes', 'Toulouse', 'Montpellier', 'Brest', 'Reims', 'Auxerre', 'Angers', 'Le Havre', 'Metz',
+];
+
 export const NBA_TEAMS = [
   'Atlanta Hawks', 'Boston Celtics', 'Brooklyn Nets', 'Charlotte Hornets', 'Chicago Bulls', 'Cleveland Cavaliers', 'Dallas Mavericks',
   'Denver Nuggets', 'Detroit Pistons', 'Golden State Warriors', 'Houston Rockets', 'Indiana Pacers', 'LA Clippers',
@@ -100,6 +144,7 @@ export const MLB_TEAMS = [
 ];
 
 const logoEntries: LogoEntry[] = [
+  ...generatedLogoEntries,
   { name: 'Bologna', logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/107.png' },
   { name: 'Cagliari', logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/2925.png' },
   { name: 'Como', logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/2572.png' },
@@ -196,21 +241,21 @@ const logoEntries: LogoEntry[] = [
   { name: 'Santa Clara', logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/12215.png' },
   { name: 'Sporting CP', logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/2250.png' },
   { name: 'Vitória de Guimaraes', logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/5309.png', aliases: ['Vitoria SC', 'Vitória SC'] },
-  { name: 'Atlanta Hawks', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/atl.png' },
-  { name: 'Boston Celtics', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/bos.png' },
-  { name: 'Brooklyn Nets', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/bkn.png' },
-  { name: 'Charlotte Hornets', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/cha.png' },
-  { name: 'Chicago Bulls', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/chi.png' },
-  { name: 'Cleveland Cavaliers', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/cle.png' },
-  { name: 'Dallas Mavericks', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/dal.png' },
-  { name: 'Denver Nuggets', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/den.png' },
-  { name: 'Detroit Pistons', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/det.png' },
-  { name: 'Golden State Warriors', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/gs.png' },
-  { name: 'Houston Rockets', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/hou.png' },
-  { name: 'Indiana Pacers', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/ind.png' },
-  { name: 'LA Clippers', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/lac.png' },
-  { name: 'Los Angeles Lakers', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/lal.png' },
-  { name: 'Miami Heat', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/mia.png' },
+  { name: 'Atlanta Hawks', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/atl.png', aliases: ['ATL'] },
+  { name: 'Boston Celtics', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/bos.png', aliases: ['BOS'] },
+  { name: 'Brooklyn Nets', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/bkn.png', aliases: ['BKN'] },
+  { name: 'Charlotte Hornets', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/cha.png', aliases: ['CHA'] },
+  { name: 'Chicago Bulls', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/chi.png', aliases: ['CHI'] },
+  { name: 'Cleveland Cavaliers', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/cle.png', aliases: ['CLE'] },
+  { name: 'Dallas Mavericks', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/dal.png', aliases: ['DAL'] },
+  { name: 'Denver Nuggets', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/den.png', aliases: ['DEN'] },
+  { name: 'Detroit Pistons', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/det.png', aliases: ['DET'] },
+  { name: 'Golden State Warriors', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/gs.png', aliases: ['GS', 'GSW'] },
+  { name: 'Houston Rockets', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/hou.png', aliases: ['HOU'] },
+  { name: 'Indiana Pacers', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/ind.png', aliases: ['IND'] },
+  { name: 'LA Clippers', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/lac.png', aliases: ['LAC'] },
+  { name: 'Los Angeles Lakers', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/lal.png', aliases: ['LAL'] },
+  { name: 'Miami Heat', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/mia.png', aliases: ['MIA'] },
   { name: 'Milwaukee Bucks', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/mil.png' },
   { name: 'Memphis Grizzlies', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/mem.png' },
   { name: 'Minnesota Timberwolves', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/min.png' },
@@ -223,9 +268,9 @@ const logoEntries: LogoEntry[] = [
   { name: 'Portland Trail Blazers', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/por.png' },
   { name: 'Sacramento Kings', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/sac.png' },
   { name: 'San Antonio Spurs', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/sa.png' },
-  { name: 'Toronto Raptors', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/tor.png' },
+  { name: 'Toronto Raptors', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/tor.png', aliases: ['TOR'] },
   { name: 'Utah Jazz', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/utah.png' },
-  { name: 'Washington Wizards', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/wsh.png' },
+  { name: 'Washington Wizards', logoUrl: 'https://a.espncdn.com/i/teamlogos/nba/500/wsh.png', aliases: ['WSH'] },
   { name: 'Arizona Diamondbacks', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/ari.png' },
   { name: 'Atlanta Braves', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/atl.png' },
   { name: 'Athletics', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/ath.png' },
@@ -236,7 +281,7 @@ const logoEntries: LogoEntry[] = [
   { name: 'Cincinnati Reds', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/cin.png' },
   { name: 'Cleveland Guardians', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/cle.png' },
   { name: 'Colorado Rockies', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/col.png' },
-  { name: 'Detroit Tigers', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/det.png' },
+  { name: 'Detroit Tigers', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/det.png', aliases: ['DET'] },
   { name: 'Houston Astros', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/hou.png' },
   { name: 'Kansas City Royals', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/kc.png' },
   { name: 'Los Angeles Angels', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/laa.png' },
@@ -244,10 +289,10 @@ const logoEntries: LogoEntry[] = [
   { name: 'Miami Marlins', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/mia.png' },
   { name: 'Milwaukee Brewers', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/mil.png' },
   { name: 'Minnesota Twins', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/min.png' },
-  { name: 'New York Mets', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/nym.png' },
+  { name: 'New York Mets', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/nym.png', aliases: ['NYM'] },
   { name: 'New York Yankees', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png' },
   { name: 'Philadelphia Phillies', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/phi.png' },
-  { name: 'Pittsburgh Pirates', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/pit.png' },
+  { name: 'Pittsburgh Pirates', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/pit.png', aliases: ['PIT'] },
   { name: 'San Diego Padres', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/sd.png' },
   { name: 'San Francisco Giants', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/sf.png' },
   { name: 'Seattle Mariners', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/sea.png' },
@@ -255,11 +300,11 @@ const logoEntries: LogoEntry[] = [
   { name: 'Tampa Bay Rays', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/tb.png' },
   { name: 'Texas Rangers', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/tex.png' },
   { name: 'Toronto Blue Jays', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/tor.png' },
-  { name: 'Washington Nationals', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/wsh.png' },
+  { name: 'Washington Nationals', logoUrl: 'https://a.espncdn.com/i/teamlogos/mlb/500/wsh.png', aliases: ['WSH'] },
   { name: 'Arizona Cardinals', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/ari.png' },
   { name: 'Atlanta Falcons', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/atl.png' },
   { name: 'Baltimore Ravens', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/bal.png' },
-  { name: 'Buffalo Bills', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/buf.png' },
+  { name: 'Buffalo Bills', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/buf.png', aliases: ['BUF'] },
   { name: 'Carolina Panthers', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/car.png' },
   { name: 'Chicago Bears', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/chi.png' },
   { name: 'Cincinnati Bengals', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/cin.png' },
@@ -273,7 +318,7 @@ const logoEntries: LogoEntry[] = [
   { name: 'Jacksonville Jaguars', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/jax.png' },
   { name: 'Kansas City Chiefs', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/kc.png' },
   { name: 'Las Vegas Raiders', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/lv.png' },
-  { name: 'Los Angeles Chargers', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/lac.png' },
+  { name: 'Los Angeles Chargers', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/lac.png', aliases: ['LAC'] },
   { name: 'Los Angeles Rams', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/lar.png' },
   { name: 'Miami Dolphins', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/mia.png' },
   { name: 'Minnesota Vikings', logoUrl: 'https://a.espncdn.com/i/teamlogos/nfl/500/min.png' },

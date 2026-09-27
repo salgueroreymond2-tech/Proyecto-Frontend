@@ -54,6 +54,14 @@ const iconNames = {
   Sliders: 'tune',
   SlidersHorizontal: 'tune',
   Sparkles: 'auto_awesome',
+  DirectionsBike: 'directions_bike',
+  SportsBaseball: 'sports_baseball',
+  SportsBasketball: 'sports_basketball',
+  SportsFootball: 'sports_football',
+  SportsMma: 'sports_mma',
+  SportsMotorsports: 'sports_motorsports',
+  SportsSoccer: 'sports_soccer',
+  SportsTennis: 'sports_tennis',
   Sun: 'light_mode',
   Swords: 'swords',
   Target: 'my_location',
@@ -138,6 +146,14 @@ export const ShieldCheck = createMaterialIcon('ShieldCheck');
 export const Sliders = createMaterialIcon('Sliders');
 export const SlidersHorizontal = createMaterialIcon('SlidersHorizontal');
 export const Sparkles = createMaterialIcon('Sparkles');
+export const DirectionsBike = createMaterialIcon('DirectionsBike');
+export const SportsBaseball = createMaterialIcon('SportsBaseball');
+export const SportsBasketball = createMaterialIcon('SportsBasketball');
+export const SportsFootball = createMaterialIcon('SportsFootball');
+export const SportsMma = createMaterialIcon('SportsMma');
+export const SportsMotorsports = createMaterialIcon('SportsMotorsports');
+export const SportsSoccer = createMaterialIcon('SportsSoccer');
+export const SportsTennis = createMaterialIcon('SportsTennis');
 export const Sun = createMaterialIcon('Sun');
 export const Swords = createMaterialIcon('Swords');
 export const Target = createMaterialIcon('Target');

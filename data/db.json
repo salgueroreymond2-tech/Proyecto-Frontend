@@ -223,6 +223,30 @@
       "paymentId": "SIM-da954516-67d4-4735-974d-17a06d033aea",
       "status": "active",
       "grantedAt": "2026-09-27T03:42:38.998Z"
+    },
+    {
+      "id": "c58038bb-5855-49a4-bb3d-7e8ccf1fad59",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "f1-sprint-series",
+      "paymentId": "SIM-05618f53-a845-4ab7-b1f9-82f8ff1e046e",
+      "status": "active",
+      "grantedAt": "2026-09-27T04:02:20.749Z"
+    },
+    {
+      "id": "f8bfe060-954e-4c67-bbb4-1fd82b96134c",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "tour-de-france",
+      "paymentId": "SIM-0c1a8b31-24f5-4875-88b8-4ceb17a93146",
+      "status": "active",
+      "grantedAt": "2026-09-27T04:03:44.677Z"
+    },
+    {
+      "id": "ba6800d9-ac72-46c7-8e4f-cdb718059251",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "pga-tour",
+      "paymentId": "SIM-42a86f82-4876-41fe-8e99-ee9c1f724250",
+      "status": "active",
+      "grantedAt": "2026-09-27T04:05:08.550Z"
     }
   ],
   "payments": [
@@ -435,6 +459,56 @@
       "status": "captured",
       "createdAt": "2026-09-27T03:42:38.974Z",
       "capturedAt": "2026-09-27T03:42:38.997Z"
+    },
+    {
+      "id": "SIM-ea4bebe6-bbd1-41c3-a49d-82d4aa03862a",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "f1-world-championship",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-27T03:59:10.790Z",
+      "capturedAt": "2026-09-27T03:59:10.837Z"
+    },
+    {
+      "id": "SIM-05618f53-a845-4ab7-b1f9-82f8ff1e046e",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "f1-sprint-series",
+      "amount": "$8.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-27T04:02:20.726Z",
+      "capturedAt": "2026-09-27T04:02:20.749Z"
+    },
+    {
+      "id": "SIM-0c1a8b31-24f5-4875-88b8-4ceb17a93146",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "tour-de-france",
+      "amount": "$10.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-27T04:03:44.648Z",
+      "capturedAt": "2026-09-27T04:03:44.677Z"
+    },
+    {
+      "id": "SIM-42a86f82-4876-41fe-8e99-ee9c1f724250",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "pga-tour",
+      "amount": "$9.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-27T04:05:08.527Z",
+      "capturedAt": "2026-09-27T04:05:08.550Z"
+    },
+    {
+      "id": "SIM-7e72df16-7b4a-4b57-91aa-ff6adb4d4992",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "ufc-fight-night",
+      "amount": "$7.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-27T04:05:23.128Z",
+      "capturedAt": "2026-09-27T04:05:23.151Z"
     }
   ]
 }

@@ -11,7 +11,7 @@ export interface Team {
   founded: number;
   titles: number;
   starPlayers: string[];
-  logoType: 'saprissa' | 'alajuelense' | 'herediano' | 'cartagines' | 'sancarlos' | 'puntarenas' | 'sporting' | 'perezzeledon' | 'escorpiones' | 'intersancarlos' | 'guanacasteca' | 'liberia';
+  logoType: 'saprissa' | 'alajuelense' | 'herediano' | 'cartagines' | 'sancarlos' | 'puntarenas' | 'sporting' | 'perezzeledon' | 'escorpiones' | 'intersancarlos';
   logoUrl?: string;
 }
 

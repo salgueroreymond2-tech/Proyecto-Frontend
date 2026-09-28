@@ -36,6 +36,7 @@ interface NavbarProps {
   showPublicLogin?: boolean;
   showUserProfile?: boolean;
   showSimulator?: boolean;
+  isAdminRoute?: boolean;
   publicNavigation?: {
     sports: { id: string; label: string; path: string; accent: string }[];
     services: { id: string; label: string; detail: string; path: string; icon: 'trophy' | 'payment' | 'community' }[];
@@ -55,6 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   showPublicLogin = true,
   showUserProfile = true,
   showSimulator = true,
+  isAdminRoute = false,
   publicNavigation,
   onNavigateToPath,
 }) => {

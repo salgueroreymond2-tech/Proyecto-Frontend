@@ -458,29 +458,6 @@ export const TeamBadge: React.FC<TeamBadgeProps> = ({
           </svg>
         );
 
-      // AD GUANACASTECA (Fallback)
-      case 'adg':
-        return (
-          <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-md select-none" fill="none">
-            <circle cx="50" cy="50" r="48" fill="#128038" stroke="#f7b928" strokeWidth="4" />
-            <circle cx="50" cy="50" r="40" fill="#e31b23" stroke="#ffffff" strokeWidth="2" />
-            <text x="50" y="56" textAnchor="middle" fill="#ffffff" fontSize="20" fontWeight="900" fontFamily="sans-serif">
-              ADG
-            </text>
-          </svg>
-        );
-
-      // MUNICIPAL LIBERIA (Fallback)
-      case 'lib':
-        return (
-          <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-md select-none" fill="none">
-            <circle cx="50" cy="50" r="48" fill="#ffd700" stroke="#111111" strokeWidth="4" />
-            <text x="50" y="56" textAnchor="middle" fill="#111111" fontSize="20" fontWeight="900" fontFamily="sans-serif">
-              LIB
-            </text>
-          </svg>
-        );
-
       default:
         return (
           <div className="w-full h-full rounded-full bg-[#bf00ff]/20 border border-[#bf00ff] flex items-center justify-center">

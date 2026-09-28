@@ -77,7 +77,7 @@ type Sport = {
 };
 
 const sports: Sport[] = [
-  { id: 'football', name: 'Futbol', text: 'Jornadas, marcadores, rankings y finales.', tournaments: 13, activeEvents: 64, accent: '#EA7301', image: ASSET_PATHS.images.sports.football },
+  { id: 'football', name: 'Futbol', text: 'Jornadas, marcadores, rankings y finales.', tournaments: 11, activeEvents: 64, accent: '#EA7301', image: ASSET_PATHS.images.sports.football },
   { id: 'tennis', name: 'Tenis', text: 'Rondas, sets y prestigio por torneo.', tournaments: 7, activeEvents: 18, accent: '#46D369', image: ASSET_PATHS.images.sports.tennis },
   { id: 'basketball', name: 'Baloncesto', text: 'NBA con ganador, marcador y diferencia.', tournaments: 1, activeEvents: 14, accent: '#F97316', image: ASSET_PATHS.images.sports.basketball },
   { id: 'baseball', name: 'Beisbol', text: 'MLB con carreras y ganador por juego.', tournaments: 1, activeEvents: 12, accent: '#38BDF8', image: ASSET_PATHS.images.sports.baseball },
@@ -141,6 +141,9 @@ const footballTournaments = [
   { id: 'europa-league', name: 'UEFA Europa League', season: '2026-2027', status: 'Preparacion', price: '$10.99', enabled: false },
   { id: 'nations-league', name: 'UEFA Nations League', season: '2026-2027', status: 'Preparacion', price: '$9.99', enabled: false },
   { id: 'concacaf-nations-league', name: 'Concacaf Nations League', season: '2026-2027', status: 'Preparacion', price: '$8.99', enabled: false },
+];
+
+const upcomingFootballTournaments = [
   { id: 'copa-oro', name: 'Copa Oro', season: '2027', status: 'Preparacion', price: '$9.99', enabled: false },
   { id: 'copa-america', name: 'Copa America', season: '2028', status: 'Preparacion', price: '$11.99', enabled: false },
   { id: 'eurocopa', name: 'Eurocopa', season: '2028', status: 'Preparacion', price: '$12.99', enabled: false },
@@ -286,7 +289,7 @@ const tournamentDetails: Record<string, {
 }> = {
   'cr-apertura-2026': {
     overview: 'Torneo base de la quiniela nacional con clubes de Primera Division de Costa Rica, jornadas activas, ranking y comunidad local.',
-    teams: ['Saprissa', 'Alajuelense', 'Herediano', 'Cartagines', 'Sporting FC', 'Puntarenas FC', 'Perez Zeledon', 'San Carlos', 'Guanacasteca', 'Liberia'],
+    teams: ['Saprissa', 'Alajuelense', 'Herediano', 'Cartagines', 'Sporting FC', 'Puntarenas FC', 'Perez Zeledon', 'San Carlos', 'Escorpiones', 'Inter San Carlos'],
     format: 'Apertura 2026 · fase regular, semifinales y final nacional.',
     predictionRules: ['Marcador exacto', 'Ganador del partido', 'Campeon del torneo', 'Goleador destacado'],
     coverage: ['Jornadas nacionales', 'Tabla de posiciones', 'Playoffs', 'Ranking Promerica'],
@@ -545,11 +548,11 @@ function findF1GrandPrix(grandPrixId: string) {
 }
 
 function getTournamentAccessPath(id: string) {
-  return id === 'cr-apertura-2026' ? '/tournaments/cr-apertura-2026/login' : `/tournaments/${id}/membership`;
+  return `/tournaments/${id}/membership`;
 }
 
 function findTournamentSummary(tournamentId: string) {
-  const football = footballTournaments.find((item) => item.id === tournamentId);
+  const football = [...footballTournaments, ...upcomingFootballTournaments].find((item) => item.id === tournamentId);
   if (football) return { ...football, sportId: 'football', sportName: 'Futbol' };
 
   for (const sport of sports) {
@@ -653,13 +656,19 @@ function KasShell() {
   const favoriteTeam = getTeamById(themeTeamId);
   const loginThemeTeam = themeTeamId === 'csh' ? getTeamById('esc') : favoriteTeam;
   const activeThemeTeam = themeTeamId === 'csh' ? getTeamById('esc') : favoriteTeam;
-  const usesTeamTheme = isLoggedIn && (location.pathname.includes('/tournaments/cr-apertura-2026') || location.pathname === '/profile');
+  const isCostaRicaQuinielaRoute = [
+    '/tournaments/cr-apertura-2026/predictions',
+    '/tournaments/cr-apertura-2026/ranking',
+    '/tournaments/cr-apertura-2026/playoffs',
+    '/tournaments/cr-apertura-2026/forum',
+  ].some((path) => location.pathname.startsWith(path));
+  const usesTeamTheme = isLoggedIn && (isCostaRicaQuinielaRoute || location.pathname === '/profile');
   const usesLoginTeamTheme = !isLoggedIn && location.pathname === '/login';
   const isAdmin = isLoggedIn && (currentUser.role === 'admin' || currentUser.isAdmin === true);
   const activeTab = getActiveTab(location.pathname);
   const isKasPublic = location.pathname === '/' || location.pathname === '/dashboard' || location.pathname.startsWith('/sports');
   const isAdminRoute = location.pathname.startsWith('/admin');
-  const showBottomNav = location.pathname.includes('/tournaments/cr-apertura-2026') || location.pathname === '/profile' || location.pathname.startsWith('/admin');
+  const showBottomNav = isCostaRicaQuinielaRoute || location.pathname === '/profile' || location.pathname.startsWith('/admin');
 
   useEffect(() => {
     localStorage.setItem('kas_color_mode', colorMode);
@@ -687,7 +696,7 @@ function KasShell() {
         publicMode={isKasPublic}
         showPublicLogin={location.pathname === '/'}
         showUserProfile={location.pathname !== '/login'}
-        showSimulator={isLoggedIn && !isAdmin && location.pathname.includes('/tournaments/cr-apertura-2026')}
+        showSimulator={isLoggedIn && !isAdmin && location.pathname === '/tournaments/cr-apertura-2026/predictions'}
         publicNavigation={{
           sports: sports.map((sport) => ({ id: sport.id, label: sport.name, path: '/login', accent: sport.accent })),
           services: [
@@ -1069,6 +1078,32 @@ function HomePage() {
                     </Link>
                   );
                 })}
+
+                {homeEventsStatus !== 'loading' && (
+                  <div className="sm:col-span-2 rounded-xl border border-[#EA7301]/30 bg-[#EA7301]/10 p-4">
+                    <div className="flex items-center gap-2">
+                      <CalendarDays className="h-4 w-4 text-[#EA7301]" />
+                      <h3 className="font-heading text-lg font-black text-white">Proximos torneos</h3>
+                    </div>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                      {upcomingFootballTournaments.map((tournament) => (
+                        <Link
+                          key={tournament.id}
+                          to="/sports/football"
+                          className="rounded-xl border border-white/10 bg-black/25 p-3 hover:border-[#EA7301]/70 transition-colors"
+                        >
+                          <div className="flex items-center gap-3">
+                            <LeagueLogo tournamentId={tournament.id} name={tournament.name} className="h-10 w-10 rounded-lg" />
+                            <div className="min-w-0">
+                              <p className="truncate font-heading text-base font-black text-white">{tournament.name}</p>
+                              <p className="text-xs text-[#d5c0d7]">{tournament.season} - {tournament.status}</p>
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </section>
           </div>
@@ -1592,7 +1627,6 @@ function TournamentMembershipLogin() {
   const [paymentError, setPaymentError] = useState('');
 
   if (!tournament || !tournamentId) return <Navigate to="/sports" replace />;
-  if (tournamentId === 'cr-apertura-2026') return <Navigate to="/tournaments/cr-apertura-2026/login" replace />;
 
   const handleCheckout = async () => {
     setPaymentError('');
@@ -1645,7 +1679,7 @@ function TournamentMembershipLogin() {
                 {isPaying ? 'Procesando pago...' : `Pagar con PayPal simulado ${tournament.price}`}
               </button>
             ) : (
-              <Link to="/login" className="block w-full rounded-xl bg-[#EA7301] py-3.5 text-center font-heading font-black uppercase tracking-wide text-black hover:bg-orange-400">
+              <Link to={tournamentId === 'cr-apertura-2026' ? '/tournaments/cr-apertura-2026/login' : '/login'} className="block w-full rounded-xl bg-[#EA7301] py-3.5 text-center font-heading font-black uppercase tracking-wide text-black hover:bg-orange-400">
                 Iniciar sesion para continuar
               </Link>
             )}
@@ -1748,6 +1782,7 @@ function GrandPrixDashboard() {
 function TournamentDashboard() {
   const { tournamentId } = useParams();
   const tournament = tournamentId ? findTournamentSummary(tournamentId) : undefined;
+  const { standings, matches, userPredictions, currentUser } = useTournament();
   const [tournamentApiEvents, setTournamentApiEvents] = useState<NormalizedSportEvent[]>([]);
   const [tournamentApiStatus, setTournamentApiStatus] = useState<'loading' | 'ready' | 'fallback'>('loading');
   const [tournamentProvider, setTournamentProvider] = useState<SportProvider>('local');
@@ -1776,7 +1811,7 @@ function TournamentDashboard() {
   const sport = sports.find((item) => item.id === tournament.sportId);
   const dashboard = sportDashboards[tournament.sportId];
   const isCostaRica = tournament.id === 'cr-apertura-2026';
-  const primaryPath = isCostaRica ? '/tournaments/cr-apertura-2026/predictions' : getTournamentAccessPath(tournament.id);
+  const primaryPath = isCostaRica ? '/tournaments/cr-apertura-2026/login' : getTournamentAccessPath(tournament.id);
   const detail = tournamentDetails[tournament.id] || {
     overview: dashboard?.description || `Dashboard de ${tournament.name} con informacion del torneo, participantes y formato de quiniela.`,
     teams: eventsFromDashboard(dashboard?.events, tournament.sportName),
@@ -1793,9 +1828,89 @@ function TournamentDashboard() {
   const enabledPath = primaryPath;
   const leagueLogo = getLeagueLogo(tournament.id);
   const isFormulaOne = tournament.id === 'f1-world-championship';
+  const leaderStanding = standings[0];
+  const leaderTeam = getTeamById(leaderStanding?.teamId || 'sap');
+  const favoriteTeam = getTeamById(currentUser.favoriteTeamId || 'sap');
+  const favoriteStanding = standings.find((standing) => standing.teamId === favoriteTeam.id);
+  const currentRound = 5;
+  const currentRoundMatches = matches.filter((match) => match.round === currentRound);
+  const predictedCurrentRound = currentRoundMatches.filter((match) => {
+    const prediction = userPredictions[match.id];
+    return prediction?.homeScore !== null && prediction?.homeScore !== undefined && prediction?.awayScore !== null && prediction?.awayScore !== undefined;
+  }).length;
+  const predictionProgress = currentRoundMatches.length > 0 ? Math.round((predictedCurrentRound / currentRoundMatches.length) * 100) : 0;
+  const classificationZone = standings.slice(0, 4);
 
   return (
     <div className="space-y-6 pb-24 px-4 pt-4 max-w-6xl mx-auto">
+      {isCostaRica && (
+        <section className="overflow-hidden rounded-2xl border border-[#EA7301]/45 bg-[#19101c] shadow-2xl">
+          <div className="relative p-5 sm:p-7">
+            <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_top_right,#EA7301,transparent_42%),radial-gradient(circle_at_bottom_left,#00f0ff,transparent_38%)]" />
+            <div className="relative grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+              <div>
+                <p className="text-xs font-mono tracking-[0.28em] text-[#EA7301]">CAMPEONATO NACIONAL</p>
+                <h1 className="mt-2 font-heading text-4xl font-black leading-none text-white sm:text-5xl">Costa Rica Apertura 2026</h1>
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#eeddee]/80 sm:text-base">
+                  Dashboard central para seguir la jornada, revisar tabla UNAFUT y entrar a la quiniela del torneo.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <span className="rounded-full border border-[#EA7301]/35 bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">Activo</span>
+                  <span className="rounded-full border border-white/10 bg-black/25 px-3 py-1 text-xs font-mono text-[#d5c0d7]">18 jornadas + playoffs</span>
+                  <Link to="/tournaments/cr-apertura-2026/login" className="inline-flex items-center gap-2 rounded-full bg-[#EA7301] px-4 py-1 text-xs font-heading font-black text-black hover:bg-orange-400">
+                    Quiniela <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <p className="text-[10px] font-mono uppercase text-[#d5c0d7]">Lider UNAFUT</p>
+                  <div className="mt-3 flex items-center gap-3">
+                    <TeamBadge team={leaderTeam} size="sm" />
+                    <div className="min-w-0">
+                      <p className="truncate font-heading text-lg font-black text-white">{leaderTeam.shortName}</p>
+                      <p className="text-xs text-[#EA7301]">{leaderStanding?.points ?? 0} pts</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <p className="text-[10px] font-mono uppercase text-[#d5c0d7]">Tu equipo</p>
+                  <div className="mt-3 flex items-center gap-3">
+                    <TeamBadge team={favoriteTeam} size="sm" />
+                    <div className="min-w-0">
+                      <p className="truncate font-heading text-lg font-black text-white">{favoriteTeam.shortName}</p>
+                      <p className="text-xs text-[#EA7301]">{favoriteStanding ? `${favoriteStanding.points} pts` : 'Sin puntos'}</p>
+                    </div>
+                  </div>
+                </div>
+                <Metric label="Jornada actual" value={`J${currentRound}`} />
+                <Metric label="Tus picks" value={`${predictionProgress}%`} />
+              </div>
+            </div>
+
+            <div className="relative mt-6 grid gap-3 md:grid-cols-4">
+              {classificationZone.map((standing, index) => {
+                const team = getTeamById(standing.teamId);
+                return (
+                  <div key={standing.teamId} className="rounded-xl border border-white/10 bg-black/25 p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-mono text-[#d5c0d7]">#{index + 1}</span>
+                      <span className="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[10px] font-mono text-emerald-300">Clasifica</span>
+                    </div>
+                    <div className="mt-3 flex items-center gap-2">
+                      <TeamBadge team={team} size="xs" />
+                      <p className="min-w-0 truncate font-heading text-base font-black text-white">{team.shortName}</p>
+                    </div>
+                    <p className="mt-1 text-xs text-[#d5c0d7]">{standing.points} pts - DG {standing.goalDifference}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
       <section className="rounded-2xl border border-[#EA7301]/40 bg-[#19101c] p-5 sm:p-7 overflow-hidden relative">
         <div className="absolute inset-y-0 right-0 w-1/2 opacity-20 bg-[radial-gradient(circle_at_center,#EA7301,transparent_58%)]" />
         <div className="relative grid lg:grid-cols-[1.1fr_0.9fr] gap-6 items-end">
@@ -1886,7 +2001,7 @@ function TournamentDashboard() {
             Este torneo tiene su propio espacio de picks, ranking, comunidad y control de membresia.
           </p>
           <Link to={primaryPath} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#EA7301] px-5 py-3 font-heading font-bold text-black hover:bg-orange-400">
-            {isCostaRica ? 'Entrar a quiniela' : 'Gestionar membresia'} <ArrowRight className="w-4 h-4" />
+            {isCostaRica ? 'Quiniela' : 'Gestionar membresia'} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 

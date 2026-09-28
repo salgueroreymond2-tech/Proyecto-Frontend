@@ -90,7 +90,7 @@ generatedLogoEntries.push(
 
 export const LEAGUE_LOGOS: Record<string, string> = {
   'cr-apertura-2026': kasBadgeLogo('CR', '#ea7301'),
-  'champions-league': 'https://www.thesportsdb.com/images/media/league/badge/rwqrrq1476547146.png',
+  'champions-league': '/assets/logos/leagues/champions-league-logo.jpg',
   'europa-league': kasBadgeLogo('UEL', '#f97316'),
   'serie-a': 'https://a.espncdn.com/i/leaguelogos/soccer/500/12.png',
   bundesliga: 'https://a.espncdn.com/i/leaguelogos/soccer/500/10.png',

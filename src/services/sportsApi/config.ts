@@ -39,5 +39,5 @@ export const sportsDbSportNames: Record<string, string> = {
   'american-football': 'American Football',
   tennis: 'Tennis',
   mma: 'Fighting',
+  boxing: 'Fighting',
 };
-

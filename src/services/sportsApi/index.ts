@@ -112,6 +112,30 @@ const localEvents: NormalizedSportEvent[] = [
     status: 'Agenda',
     provider: 'local',
   },
+  {
+    id: 'local-boxing-1',
+    sportId: 'boxing',
+    league: 'Boxeo Campeonatos Mundiales',
+    title: 'Canelo Alvarez vs David Benavidez',
+    status: 'Agenda',
+    provider: 'local',
+  },
+  {
+    id: 'local-boxing-2',
+    sportId: 'boxing',
+    league: 'Boxeo PPV Series',
+    title: 'Naoya Inoue vs Junto Nakatani',
+    status: 'Agenda',
+    provider: 'local',
+  },
+  {
+    id: 'local-boxing-3',
+    sportId: 'boxing',
+    league: 'Boxeo P4P Stars',
+    title: 'Oleksandr Usyk vs Tyson Fury',
+    status: 'Agenda',
+    provider: 'local',
+  },
 ];
 
 export async function getTournamentEvents(tournamentId: string, signal?: AbortSignal): Promise<SportsApiResult<NormalizedSportEvent[]>> {

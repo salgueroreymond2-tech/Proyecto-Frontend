@@ -86,6 +86,7 @@ const sports: Sport[] = [
   { id: 'cycling', name: 'Ciclismo', text: 'Grand Tours, etapas, maillots y clasificaciones.', tournaments: 4, activeEvents: 21, accent: '#22C55E', image: ASSET_PATHS.images.sports.cycling },
   { id: 'golf', name: 'Golf', text: 'Majors, rondas, liderato y match play.', tournaments: 3, activeEvents: 12, accent: '#16A34A', image: ASSET_PATHS.images.sports.golf },
   { id: 'mma', name: 'UFC / MMA', text: 'Ganador, metodo y round por cartelera.', tournaments: 1, activeEvents: 9, accent: '#EF4444', image: ASSET_PATHS.images.sports.mma },
+  { id: 'boxing', name: 'Boxeo', text: 'Carteleras, campeonatos mundiales, metodo y round.', tournaments: 3, activeEvents: 10, accent: '#FACC15', image: ASSET_PATHS.images.sports.mma },
 ];
 
 const sportIconById: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
@@ -98,6 +99,7 @@ const sportIconById: Record<string, React.ComponentType<{ className?: string; st
   cycling: DirectionsBike,
   golf: Trophy,
   mma: SportsMma,
+  boxing: SportsMma,
 };
 
 const f1GrandPrix = [
@@ -250,6 +252,19 @@ const sportDashboards = {
       { name: 'UFC Fight Night', season: '2027', status: 'Activo', price: '$7.99' },
       { name: 'UFC PPV Series', season: '2027', status: 'Activo', price: '$12.99' },
       { name: 'UFC Championship Events', season: '2027', status: 'Premium', price: '$14.99' },
+    ],
+  },
+  boxing: {
+    eyebrow: 'BOXEO',
+    title: 'Dashboard Boxeo',
+    description: 'Quinielas de carteleras profesionales con campeones, estrellas P4P, metodo de victoria y round.',
+    prediction: 'Ganador, metodo, round y decision',
+    featured: 'Campeonatos mundiales 2027',
+    events: ['Canelo Alvarez vs David Benavidez', 'Naoya Inoue vs Junto Nakatani', 'Oleksandr Usyk vs Tyson Fury'],
+    tournaments: [
+      { name: 'Boxeo Campeonatos Mundiales', season: '2027', status: 'Activo', price: '$11.99' },
+      { name: 'Boxeo PPV Series', season: '2027', status: 'Premium', price: '$12.99' },
+      { name: 'Boxeo P4P Stars', season: '2027', status: 'Preparacion', price: '$8.99' },
     ],
   },
 } satisfies Record<string, {
@@ -483,6 +498,27 @@ const tournamentDetails: Record<string, {
     format: 'Ryder Cup 2027 - foursomes, four-ball y singles.',
     predictionRules: ['Ganador de match', 'Punto por equipo', 'Marcador global', 'MVP'],
     coverage: ['Foursomes', 'Four-ball', 'Singles', 'Marcador global'],
+  },
+  'boxeo-campeonatos-mundiales': {
+    overview: 'Carteleras de titulo mundial conectadas a los cuatro organismos mayores, The Ring y campeones lineales.',
+    teams: ['Naoya Inoue', 'Canelo Alvarez', 'Oleksandr Usyk', 'Tyson Fury', 'Terence Crawford', 'Gervonta Davis', 'Shakur Stevenson', 'Dmitry Bivol', 'Artur Beterbiev', 'Jaron Ennis'],
+    format: 'Temporada 2027 - peleas titulares por division y organismo.',
+    predictionRules: ['Ganador', 'Metodo de victoria', 'Round exacto', 'Decision o KO/TKO'],
+    coverage: ['WBC', 'WBA', 'IBF', 'WBO', 'The Ring'],
+  },
+  'boxeo-ppv-series': {
+    overview: 'Eventos PPV de grandes promotoras como Matchroom, Top Rank, PBC, Golden Boy y Queensberry.',
+    teams: ['Canelo Alvarez', 'Ryan Garcia', 'Anthony Joshua', 'Tyson Fury', 'Deontay Wilder', 'David Benavidez', 'Devin Haney', 'Teofimo Lopez'],
+    format: 'Carteleras premium 2027 - main event, co-main y peleas soporte.',
+    predictionRules: ['Ganador del combate', 'Metodo', 'Round', 'Pelea de la noche'],
+    coverage: ['Main event', 'Co-main', 'PPV', 'Promociones', 'Odds'],
+  },
+  'boxeo-p4p-stars': {
+    overview: 'Circuito de estrellas libra por libra y atracciones globales del boxeo profesional.',
+    teams: ['Naoya Inoue', 'Terence Crawford', 'Oleksandr Usyk', 'Canelo Alvarez', 'Gervonta Davis', 'Shakur Stevenson', 'Devin Haney', 'Dmitry Bivol', 'Artur Beterbiev', 'Jaron Ennis'],
+    format: 'Ranking P4P 2027 - peleas destacadas y defensa de estatus.',
+    predictionRules: ['Ganador', 'Dominio por tarjetas', 'KO/TKO', 'Sube o baja ranking'],
+    coverage: ['P4P', 'Estrellas PPV', 'Divisiones', 'Promotoras'],
   },
 };
 
@@ -876,6 +912,18 @@ function HomePage() {
                             <span className="text-[#d5c0d7]">vs</span>
                             <span className="flex min-w-0 items-center gap-1.5 truncate"><TeamBadge team={item.localAway} size="xs" />{item.localAway.code}</span>
                           </>
+                        ) : parseCostaRicaMatchup(item.title) ? (
+                          (() => {
+                            const matchup = parseCostaRicaMatchup(item.title);
+                            if (!matchup) return null;
+                            return (
+                              <>
+                                <span className="flex min-w-0 items-center gap-1.5 truncate"><TeamBadge team={matchup.home} size="xs" />{matchup.home.code}</span>
+                                <span className="text-[#d5c0d7]">vs</span>
+                                <span className="flex min-w-0 items-center gap-1.5 truncate"><TeamBadge team={matchup.away} size="xs" />{matchup.away.code}</span>
+                              </>
+                            );
+                          })()
                         ) : (
                           <MatchupTitleWithLogos title={item.title} size="xs" />
                         )}
@@ -973,18 +1021,16 @@ function HomePage() {
                             <h3 className="mt-2 flex items-center gap-2 font-heading text-lg font-black leading-tight text-white">
                               <TeamBadge team={matchup.home} size="xs" />
                               <span className="truncate">{matchup.home.code}</span>
-                              <span className="text-xs text-[#d5c0d7]">@</span>
+                              <span className="text-xs text-[#d5c0d7]">vs</span>
                               <TeamBadge team={matchup.away} size="xs" />
                               <span className="truncate">{matchup.away.code}</span>
                             </h3>
                           ) : (
                             <h3 className="mt-1 flex min-w-0 items-center gap-2 font-heading text-lg font-black leading-tight text-white">
-                              <MatchupLogoRow title={event.title} size="xs" />
-                              <span className="truncate">{event.title}</span>
+                              <MatchupTitleWithLogos title={event.title} size="xs" />
                             </h3>
                           )}
                         </div>
-                        <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-mono text-white/65">{event.provider}</span>
                       </div>
                       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[#d5c0d7]">
                         <span>{sport?.name || 'KAS'}</span>
@@ -1114,7 +1160,10 @@ function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: () 
   };
 
   return (
-    <div className="min-h-[82vh] px-4 py-10 flex items-center justify-center kas-login-bg">
+    <div
+      className="min-h-[82vh] px-4 py-10 flex items-center justify-center kas-login-bg"
+      style={{ '--kas-login-logo': `url(${ASSET_PATHS.logos.brand.kas})` } as React.CSSProperties}
+    >
       <div className="w-full max-w-5xl grid lg:grid-cols-[1.05fr_0.95fr] gap-8 items-center">
         <section className="space-y-5">
           <p className="text-sm font-mono tracking-[0.35em] text-[#EA7301]">SPORTTECH ECOSYSTEM</p>
@@ -1430,13 +1479,17 @@ function eventsFromDashboard(events: string[] | undefined, sportName: string) {
   return events.flatMap((event) => event.split(' vs ')).slice(0, 8);
 }
 
+function formatMatchupTitle(title: string) {
+  return title.replace(/\s+@\s+/g, ' vs ');
+}
+
 function MatchupLogoRow({ title, size = 'sm' }: { title: string; size?: 'xs' | 'sm' | 'md' }) {
   const matchup = splitMatchupTitle(title);
 
   if (!matchup) return null;
 
   return (
-    <span className="flex shrink-0 items-center -space-x-1">
+    <span className="flex shrink-0 items-center gap-1">
       <UniversalTeamLogo name={matchup.home} size={size} className="rounded-full bg-black/30" />
       <UniversalTeamLogo name={matchup.away} size={size} className="rounded-full bg-black/30" />
     </span>
@@ -1446,7 +1499,7 @@ function MatchupLogoRow({ title, size = 'sm' }: { title: string; size?: 'xs' | '
 function MatchupTitleWithLogos({ title, size = 'sm' }: { title: string; size?: 'xs' | 'sm' | 'md' }) {
   const matchup = splitMatchupTitle(title);
 
-  if (!matchup) return <span className="truncate">{title}</span>;
+  if (!matchup) return <span className="truncate">{formatMatchupTitle(title)}</span>;
 
   return (
     <span className="flex min-w-0 items-center gap-2">

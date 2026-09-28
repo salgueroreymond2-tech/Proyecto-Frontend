@@ -378,6 +378,20 @@
   pointer-events: none;
 }
 
+.kas-login-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--kas-login-logo);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.16;
+  filter: saturate(1.15);
+  pointer-events: none;
+}
+
 /* Custom glowing effects */
 .glow-purple {
   box-shadow: 0 0 25px rgba(191, 0, 255, 0.45);

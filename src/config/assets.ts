@@ -22,6 +22,7 @@ export const ASSET_PATHS = {
       cycling: '/assets/images/sports/cycling.png',
       golf: '/assets/images/sports/golf.png',
       mma: '/assets/images/sports/mma.png',
+      boxing: '/assets/images/sports/boxing.png',
     },
     generated: {
       hero: '/assets/images/generated/chatgpt_image_sep_21_2026_09_30_38_am.png',

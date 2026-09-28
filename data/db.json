@@ -169,6 +169,21 @@
       "token": "589858f89a582e58dbd3bb3d5ca98d7965060b8e5181d8e3d4be411beddbfb3b",
       "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
       "expiresAt": "2026-10-05T14:29:45.540Z"
+    },
+    {
+      "token": "639e62970c5f820228e27030f70836b6ecae7b4ff6fd80de9f580a7db771ac91",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-05T14:37:29.170Z"
+    },
+    {
+      "token": "c48e0b2824a78e49670dd474f7eb478e0076993138fc3756db36d39b44f84a82",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-05T14:40:56.950Z"
+    },
+    {
+      "token": "91bda2cf8c6ae5f6be86a94dbf5783d5bcc6466586b9694e934f87fda2709216",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-05T14:49:45.232Z"
     }
   ],
   "memberships": [
@@ -901,6 +916,36 @@
       "status": "captured",
       "createdAt": "2026-09-28T14:30:01.884Z",
       "capturedAt": "2026-09-28T14:30:01.917Z"
+    },
+    {
+      "id": "SIM-e6c37efd-91e5-46ae-94c1-26cdb88c0915",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "boxeo-campeonatos-mundiales",
+      "amount": "$11.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-28T14:37:34.194Z",
+      "capturedAt": "2026-09-28T14:37:34.217Z"
+    },
+    {
+      "id": "SIM-eb2fc588-bc62-40e8-acf1-7339ef6a376d",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "premier-league",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-28T14:41:13.141Z",
+      "capturedAt": "2026-09-28T14:41:13.175Z"
+    },
+    {
+      "id": "SIM-9f267155-c122-440e-9390-ef4c50e59453",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "ligue-1",
+      "amount": "$10.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-28T14:50:00.090Z",
+      "capturedAt": "2026-09-28T14:50:00.116Z"
     }
   ]
 }

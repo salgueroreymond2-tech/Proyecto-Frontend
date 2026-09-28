@@ -86,7 +86,7 @@ const sports: Sport[] = [
   { id: 'cycling', name: 'Ciclismo', text: 'Grand Tours, etapas, maillots y clasificaciones.', tournaments: 4, activeEvents: 21, accent: '#22C55E', image: ASSET_PATHS.images.sports.cycling },
   { id: 'golf', name: 'Golf', text: 'Majors, rondas, liderato y match play.', tournaments: 3, activeEvents: 12, accent: '#16A34A', image: ASSET_PATHS.images.sports.golf },
   { id: 'mma', name: 'UFC / MMA', text: 'Ganador, metodo y round por cartelera.', tournaments: 1, activeEvents: 9, accent: '#EF4444', image: ASSET_PATHS.images.sports.mma },
-  { id: 'boxing', name: 'Boxeo', text: 'Carteleras, campeonatos mundiales, metodo y round.', tournaments: 3, activeEvents: 10, accent: '#FACC15', image: ASSET_PATHS.images.sports.mma },
+  { id: 'boxing', name: 'Boxeo', text: 'Carteleras, campeonatos mundiales, metodo y round.', tournaments: 3, activeEvents: 10, accent: '#FACC15', image: ASSET_PATHS.images.sports.boxing },
 ];
 
 const sportIconById: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {

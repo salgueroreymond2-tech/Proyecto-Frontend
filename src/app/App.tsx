@@ -720,7 +720,7 @@ function KasShell() {
           <Route path="/tournaments/:tournamentId/membership" element={<TournamentMembershipLogin />} />
           <Route path="/tournaments/:tournamentId/grand-prix/:grandPrixId" element={<GrandPrixDashboard />} />
           <Route path="/tournaments/:tournamentId" element={<TournamentDashboard />} />
-          <Route path="/tournaments/cr-apertura-2026/login" element={<LoginPage onSuccess={() => navigate('/tournaments/cr-apertura-2026/predictions')} onFavoriteTeamPreview={setPreviewTeamId} />} />
+          <Route path="/tournaments/cr-apertura-2026/login" element={<LoginPage onSuccess={() => navigate('/tournaments/cr-apertura-2026/predictions', { replace: true })} onFavoriteTeamPreview={setPreviewTeamId} />} />
           <Route path="/tournaments/:tournamentId/predictions" element={<CostaRicaOnly><DashboardView onOpenScorerModal={(id) => setActiveScorerMatchId(id)} onOpenAdmin={() => setAdminModalOpen(true)} /></CostaRicaOnly>} />
           <Route path="/tournaments/:tournamentId/ranking" element={<CostaRicaOnly><RankingView /></CostaRicaOnly>} />
           <Route path="/tournaments/:tournamentId/playoffs" element={<CostaRicaOnly><PlayoffsView onOpenScorerModal={(id) => setActiveScorerMatchId(id)} /></CostaRicaOnly>} />
@@ -845,7 +845,7 @@ function HomePage() {
         status: match.status === 'live' ? `${match.minute}'` : 'Final',
         title: `${home.code} @ ${away.code}`,
         score: `${match.homeScore ?? 0} - ${match.awayScore ?? 0}`,
-        path: '/tournaments/cr-apertura-2026/predictions',
+        path: '/tournaments/cr-apertura-2026/login',
         localHome: home,
         localAway: away,
       };
@@ -999,7 +999,7 @@ function HomePage() {
                     const home = getTeamById(match.homeTeamId);
                     const away = getTeamById(match.awayTeamId);
                     return (
-                      <Link key={match.id} to="/tournaments/cr-apertura-2026/predictions" className="block rounded-lg bg-black/25 px-3 py-2 hover:bg-black/40">
+                      <Link key={match.id} to="/tournaments/cr-apertura-2026/login" className="block rounded-lg bg-black/25 px-3 py-2 hover:bg-black/40">
                         <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
                           <span>J{match.round} · {match.date}</span>
                           <span>{match.time}</span>
@@ -2187,7 +2187,9 @@ function SportPlaceholder() {
 
 function CostaRicaOnly({ children }: { children: React.ReactNode }) {
   const { tournamentId } = useParams();
+  const { isLoggedIn } = useTournament();
   if (tournamentId !== 'cr-apertura-2026') return <Navigate to={`/tournaments/${tournamentId}`} replace />;
+  if (!isLoggedIn) return <Navigate to="/tournaments/cr-apertura-2026/login" replace />;
   return <>{children}</>;
 }
 

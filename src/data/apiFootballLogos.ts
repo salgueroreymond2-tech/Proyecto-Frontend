@@ -56,6 +56,8 @@ export const API_FOOTBALL_TEAM_LOGOS = [
   { id: 0, name: 'Trinidad y Tobago', logoUrl: '/assets/logos/national-teams/trinidad-y-tobago.svg', aliases: ['Trinidad and Tobago'] },
   { id: 0, name: 'Haiti', logoUrl: '/assets/logos/national-teams/haiti.svg', aliases: ['Haití'] },
   { id: 0, name: 'Curazao', logoUrl: '/assets/logos/national-teams/curazao.svg', aliases: ['Curaçao', 'Curacao'] },
+  { id: 0, name: 'Escocia', logoUrl: '/assets/logos/national-teams/escocia.svg', aliases: ['Scotland'] },
+  { id: 0, name: 'Hungria', logoUrl: '/assets/logos/national-teams/hungria.svg', aliases: ['Hungría', 'Hungary'] },
 ] satisfies ApiFootballLogoEntry[];
 
 export const API_FOOTBALL_LEAGUE_LOGOS = {

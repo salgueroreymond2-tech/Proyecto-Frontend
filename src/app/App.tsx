@@ -247,7 +247,7 @@ const sportDashboards = {
     description: 'Carteleras por evento con ganador, metodo de victoria y round.',
     prediction: 'Ganador, metodo y round',
     featured: 'UFC Fight Night',
-    events: ['Main Event: Fighter A vs Fighter B', 'Co-Main: Contender A vs Contender B', 'Title Bout: Champion vs Challenger'],
+    events: ['Islam Makhachev vs Charles Oliveira', 'Alex Pereira vs Tom Aspinall', 'Valentina Shevchenko vs Alexa Grasso'],
     tournaments: [
       { name: 'UFC Fight Night', season: '2027', status: 'Activo', price: '$7.99' },
       { name: 'UFC PPV Series', season: '2027', status: 'Activo', price: '$12.99' },
@@ -561,6 +561,25 @@ function findTournamentSummary(tournamentId: string) {
   return undefined;
 }
 
+function getAllAdminTournaments() {
+  const football = footballTournaments.map((tournament) => ({ ...tournament, sportName: 'Futbol' }));
+  const multiSport = sports.flatMap((sport) => {
+    const dashboard = sportDashboards[sport.id];
+    if (!dashboard) return [];
+    return dashboard.tournaments.map((tournament) => ({
+      id: toTournamentId(tournament.name),
+      name: tournament.name,
+      sportName: sport.name,
+      season: tournament.season,
+      status: tournament.status,
+      price: tournament.price,
+      enabled: tournament.status === 'Activo',
+    }));
+  });
+
+  return [...football, ...multiSport];
+}
+
 function findCostaRicaTeamByName(name: string) {
   const normalizedName = name
     .toLowerCase()
@@ -639,6 +658,7 @@ function KasShell() {
   const isAdmin = isLoggedIn && (currentUser.role === 'admin' || currentUser.isAdmin === true);
   const activeTab = getActiveTab(location.pathname);
   const isKasPublic = location.pathname === '/' || location.pathname === '/dashboard' || location.pathname.startsWith('/sports');
+  const isAdminRoute = location.pathname.startsWith('/admin');
   const showBottomNav = location.pathname.includes('/tournaments/cr-apertura-2026') || location.pathname === '/profile' || location.pathname.startsWith('/admin');
 
   useEffect(() => {
@@ -679,11 +699,11 @@ function KasShell() {
         onNavigateToPath={(path) => navigate(path)}
       />
 
-      <main className={isKasPublic ? 'flex-1 w-full' : 'flex-1 w-full max-w-4xl mx-auto pt-3 px-2 sm:px-4'}>
+      <main className={isKasPublic || isAdminRoute ? 'flex-1 w-full' : 'flex-1 w-full max-w-4xl mx-auto pt-3 px-2 sm:px-4'}>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<KasLoginPage onSuccess={() => navigate('/dashboard')} />} />
-          <Route path="/register" element={<KasLoginPage onSuccess={() => navigate('/dashboard')} isRegisterDefault />} />
+          <Route path="/login" element={<KasLoginPage onSuccess={(user) => navigate(user.role === 'admin' || user.isAdmin ? '/admin' : '/dashboard')} />} />
+          <Route path="/register" element={<KasLoginPage onSuccess={(user) => navigate(user.role === 'admin' || user.isAdmin ? '/admin' : '/dashboard')} isRegisterDefault />} />
           <Route path="/dashboard" element={isLoggedIn ? <SportsDashboard /> : <Navigate to="/login" replace />} />
           <Route path="/sports" element={isLoggedIn ? <SportsDashboard /> : <Navigate to="/login" replace />} />
           <Route path="/sports/football" element={isLoggedIn ? <FootballDashboard /> : <Navigate to="/login" replace />} />
@@ -697,7 +717,7 @@ function KasShell() {
           <Route path="/tournaments/:tournamentId/playoffs" element={<CostaRicaOnly><PlayoffsView onOpenScorerModal={(id) => setActiveScorerMatchId(id)} /></CostaRicaOnly>} />
           <Route path="/tournaments/:tournamentId/forum" element={<CostaRicaOnly><SocialView /></CostaRicaOnly>} />
           <Route path="/profile" element={<ProfileView onOpenLogin={() => navigate('/login')} />} />
-          <Route path="/admin/*" element={isAdmin ? <AdminView /> : <Navigate to="/login" replace />} />
+          <Route path="/admin/*" element={isAdmin ? <AdminView tournaments={getAllAdminTournaments()} /> : <Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
@@ -1132,7 +1152,7 @@ function InfoCard({ icon, title, text, className = '' }: { icon: React.ReactNode
   );
 }
 
-function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: () => void; isRegisterDefault?: boolean }) {
+function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: (user: ReturnType<typeof useTournament>['currentUser']) => void; isRegisterDefault?: boolean }) {
   const { loginUser } = useTournament();
   const [isRegister, setIsRegister] = useState(isRegisterDefault);
   const [email, setEmail] = useState('');
@@ -1151,7 +1171,7 @@ function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: () 
         ? await signUp({ email, password, name, username, favoriteTeamId: 'sap' })
         : await signIn(email, password);
       loginUser(session.user);
-      onSuccess();
+      onSuccess(session.user);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'No se pudo iniciar sesion.');
     } finally {
@@ -1182,6 +1202,7 @@ function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: () 
           <div className="mb-6">
             <p className="text-xs font-mono text-[#EA7301]">{isRegister ? 'CREAR CUENTA' : 'LOGIN DE PLATAFORMA'}</p>
             <h2 className="text-3xl font-heading font-black text-white">Acceso KAS</h2>
+            {!isRegister && <p className="mt-2 text-xs text-[#d5c0d7]/75">Las cuentas administrativas entran al panel admin automaticamente.</p>}
           </div>
 
           <div className="grid grid-cols-2 gap-2 rounded-xl border border-white/10 bg-black/25 p-1 mb-5">

@@ -58,6 +58,11 @@ async function requireUser(request, response, next) {
   return next();
 }
 
+function requireAdmin(request, response, next) {
+  if (request.user?.role !== 'admin') return response.status(403).json({ error: 'Acceso administrativo requerido.' });
+  return next();
+}
+
 app.post('/api/auth/register', async (request, response) => {
   const { email, password, name, username, favoriteTeamId } = request.body || {};
   if (!email || !password || !name || !username || !favoriteTeamId) return response.status(400).json({ error: 'Completa todos los campos requeridos.' });
@@ -97,6 +102,34 @@ app.post('/api/auth/logout', requireUser, async (request, response) => {
 app.get('/api/memberships/:tournamentId', requireUser, (request, response) => {
   const membership = request.database.memberships.find((item) => item.userId === request.user.id && item.tournamentId === request.params.tournamentId && item.status === 'active');
   response.json({ active: Boolean(membership), membership: membership || null });
+});
+
+app.get('/api/admin/summary', requireUser, requireAdmin, (request, response) => {
+  const users = request.database.users.map(publicUser);
+  const memberships = request.database.memberships || [];
+  const payments = request.database.payments || [];
+  const sessions = request.database.sessions || [];
+  const capturedPayments = payments.filter((payment) => payment.status === 'captured');
+  const activeMemberships = memberships.filter((membership) => membership.status === 'active');
+  const revenueCents = capturedPayments.reduce((total, payment) => {
+    const numericAmount = Number(String(payment.amount || '').replace(/[^0-9.]/g, ''));
+    return total + Math.round((Number.isFinite(numericAmount) ? numericAmount : 0) * 100);
+  }, 0);
+
+  response.json({
+    users,
+    memberships,
+    payments,
+    sessions: sessions.map(({ token, ...session }) => ({ ...session, tokenPreview: `${String(token).slice(0, 8)}...` })),
+    stats: {
+      usersTotal: users.length,
+      adminsTotal: users.filter((user) => user.role === 'admin').length,
+      activeMemberships: activeMemberships.length,
+      paymentsCaptured: capturedPayments.length,
+      revenue: `$${(revenueCents / 100).toFixed(2)}`,
+      activeSessions: sessions.filter((session) => session.expiresAt > new Date().toISOString()).length,
+    },
+  });
 });
 
 app.post('/api/payments/paypal/orders', requireUser, async (request, response) => {

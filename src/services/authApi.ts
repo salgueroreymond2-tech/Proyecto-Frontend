@@ -13,6 +13,21 @@ type ApiUser = {
 
 type Session = { token: string; user: ApiUser };
 
+export type AdminSummary = {
+  users: Array<Omit<ApiUser, 'role'> & { role: 'admin' | 'user'; createdAt?: string }>;
+  memberships: Array<{ id: string; userId: string; tournamentId: string; paymentId: string; status: string; grantedAt: string }>;
+  payments: Array<{ id: string; userId: string; tournamentId: string; amount: string; provider: string; status: string; createdAt: string; capturedAt?: string }>;
+  sessions: Array<{ userId: string; expiresAt: string; tokenPreview: string }>;
+  stats: {
+    usersTotal: number;
+    adminsTotal: number;
+    activeMemberships: number;
+    paymentsCaptured: number;
+    revenue: string;
+    activeSessions: number;
+  };
+};
+
 function toProfile(user: ApiUser): UserProfile {
   return {
     id: user.id,
@@ -86,4 +101,8 @@ export async function simulatePayPalCheckout(tournamentId: string, amount: strin
     body: JSON.stringify({ tournamentId, amount }),
   });
   return request<{ membership: { tournamentId: string } }>(`/payments/paypal/orders/${order.order.id}/capture`, { method: 'POST' });
+}
+
+export async function getAdminSummary() {
+  return request<AdminSummary>('/admin/summary');
 }

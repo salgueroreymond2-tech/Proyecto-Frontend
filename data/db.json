@@ -184,6 +184,36 @@
       "token": "91bda2cf8c6ae5f6be86a94dbf5783d5bcc6466586b9694e934f87fda2709216",
       "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
       "expiresAt": "2026-10-05T14:49:45.232Z"
+    },
+    {
+      "token": "07fb4d6419cacc475d4bd9216603fc184a59c034639817ba79c37644d604be86",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-05T14:53:04.038Z"
+    },
+    {
+      "token": "10c159172b2a50b88e5bab56f9553754d8a669b2527573e60ed86e9157596e65",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-05T14:53:14.293Z"
+    },
+    {
+      "token": "5f12e9430bc3d374b63f4fda593293c9e513bd0c2b93fbc8dc79d1101e111716",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-05T14:53:28.681Z"
+    },
+    {
+      "token": "e10863444958d66a4d75e7891343ff43165f08223b2985389eeb88debe12059e",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-05T14:55:24.401Z"
+    },
+    {
+      "token": "dd2f0e2c58e40fdaf9d3f4481eb2476cace37e2c711e450c51a261c4f77899cc",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-05T15:05:21.485Z"
+    },
+    {
+      "token": "9819596563589f174cdfaa09fe7b3edb9a630e4ba0324af848bb96d70b2f6ef5",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-05T15:17:29.111Z"
     }
   ],
   "memberships": [
@@ -946,6 +976,46 @@
       "status": "captured",
       "createdAt": "2026-09-28T14:50:00.090Z",
       "capturedAt": "2026-09-28T14:50:00.116Z"
+    },
+    {
+      "id": "SIM-df2d7a86-4e6e-4dee-a257-ec9ccbd2a988",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "serie-a",
+      "amount": "$11.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-28T14:53:49.054Z",
+      "capturedAt": "2026-09-28T14:53:49.097Z"
+    },
+    {
+      "id": "SIM-966c8f3f-3c54-45be-b4c2-85be313fbc1d",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "ufc-fight-night",
+      "amount": "$7.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-28T14:54:18.216Z",
+      "capturedAt": "2026-09-28T14:54:18.244Z"
+    },
+    {
+      "id": "SIM-4e8861d7-0b1e-4136-8a7b-fe6f4770f0bf",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "nba-temporada-regular",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-28T14:54:48.730Z",
+      "capturedAt": "2026-09-28T14:54:48.761Z"
+    },
+    {
+      "id": "SIM-e6656e4f-60a5-489d-9998-adaf9034c746",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "tournamentId": "primeira-liga",
+      "amount": "$9.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-28T15:05:29.232Z",
+      "capturedAt": "2026-09-28T15:05:29.257Z"
     }
   ]
 }

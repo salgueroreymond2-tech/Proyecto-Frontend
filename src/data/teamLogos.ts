@@ -1,3 +1,5 @@
+import { API_FOOTBALL_LEAGUE_LOGOS, apiFootballLogoEntries } from './apiFootballLogos';
+
 type LogoEntry = {
   name: string;
   logoUrl: string;
@@ -89,9 +91,9 @@ generatedLogoEntries.push(
 );
 
 export const LEAGUE_LOGOS: Record<string, string> = {
-  'cr-apertura-2026': kasBadgeLogo('CR', '#ea7301'),
-  'champions-league': '/assets/logos/leagues/champions-league-logo.jpg',
-  'europa-league': kasBadgeLogo('UEL', '#f97316'),
+  'cr-apertura-2026': API_FOOTBALL_LEAGUE_LOGOS.costaRicaPrimeraDivision,
+  'champions-league': API_FOOTBALL_LEAGUE_LOGOS.championsLeague,
+  'europa-league': API_FOOTBALL_LEAGUE_LOGOS.europaLeague,
   'serie-a': 'https://a.espncdn.com/i/leaguelogos/soccer/500/12.png',
   bundesliga: 'https://a.espncdn.com/i/leaguelogos/soccer/500/10.png',
   laliga: 'https://a.espncdn.com/i/leaguelogos/soccer/500/15.png',
@@ -108,8 +110,8 @@ export const LEAGUE_LOGOS: Record<string, string> = {
   'nfl-temporada-regular': 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png',
   'nfl-playoffs': 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png',
   'super-bowl': 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png',
-  'nations-league': kasBadgeLogo('UNL', '#2563eb'),
-  'concacaf-nations-league': kasBadgeLogo('CNL', '#0ea5e9'),
+  'nations-league': API_FOOTBALL_LEAGUE_LOGOS.nationsLeague,
+  'concacaf-nations-league': API_FOOTBALL_LEAGUE_LOGOS.concacafNationsLeague,
   'copa-oro': kasBadgeLogo('ORO', '#facc15'),
   'copa-america': kasBadgeLogo('CA', '#22c55e'),
   eurocopa: kasBadgeLogo('EURO', '#3b82f6'),
@@ -199,6 +201,7 @@ export const MLB_TEAMS = [
 const logoEntries: LogoEntry[] = [
   ...generatedLogoEntries,
   ...nationalTeamLogos,
+  ...apiFootballLogoEntries,
   ...f1TeamLogos,
   ...cyclingTeamLogos,
   { name: 'Australian Open', logoUrl: 'https://ausopen.com/sites/default/files/styles/medium/public/ao_blue_1.png?itok=dcy08jHH' },

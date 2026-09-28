@@ -8,15 +8,19 @@ import {
   BadgeDollarSign,
   CalendarDays,
   Database,
+  LayoutDashboard,
+  LockKeyhole,
+  MessageSquare,
   Save,
   Server,
   ShieldCheck,
+  SlidersHorizontal,
   Trash2,
   Trophy,
   Users,
 } from './Icon';
 
-type AdminSection = 'overview' | 'analytics' | 'users' | 'memberships' | 'payments' | 'matches' | 'system';
+type AdminSection = 'overview' | 'analytics' | 'users' | 'memberships' | 'payments' | 'matches' | 'system' | 'roadmap';
 export type AdminTournament = {
   id: string;
   name: string;
@@ -26,6 +30,65 @@ export type AdminTournament = {
   price: string;
   enabled: boolean;
 };
+
+const adminSections: Array<{
+  id: AdminSection;
+  label: string;
+  detail: string;
+  icon: React.ReactNode;
+}> = [
+  { id: 'overview', label: 'Resumen', detail: 'Operacion diaria', icon: <LayoutDashboard className="h-4 w-4" /> },
+  { id: 'analytics', label: 'Analitica', detail: 'Ingresos y demanda', icon: <Activity className="h-4 w-4" /> },
+  { id: 'users', label: 'Usuarios', detail: 'Roles y cuentas', icon: <Users className="h-4 w-4" /> },
+  { id: 'memberships', label: 'Torneos', detail: 'Inventario PPT', icon: <Trophy className="h-4 w-4" /> },
+  { id: 'payments', label: 'Pagos', detail: 'Capturas y cobros', icon: <BadgeDollarSign className="h-4 w-4" /> },
+  { id: 'matches', label: 'Marcadores', detail: 'Resultados oficiales', icon: <CalendarDays className="h-4 w-4" /> },
+  { id: 'system', label: 'Sistema', detail: 'Seguridad y DB', icon: <Server className="h-4 w-4" /> },
+  { id: 'roadmap', label: 'Roadmap Admin', detail: 'Secciones recomendadas', icon: <SlidersHorizontal className="h-4 w-4" /> },
+];
+
+const recommendedAdminAreas = [
+  {
+    title: 'Operaciones del Torneo',
+    priority: 'Alta',
+    text: 'Crear temporadas, activar torneos, administrar equipos, fixture, playoffs, marcadores, reglas de puntaje y publicacion de resultados.',
+  },
+  {
+    title: 'Usuarios, Roles y Soporte',
+    priority: 'Alta',
+    text: 'Buscar usuarios, ver perfil operativo, membresias compradas, estado de cuenta, bloqueo/pausa, soporte y bitacora del usuario.',
+  },
+  {
+    title: 'Membresias y Billing',
+    priority: 'Alta',
+    text: 'Estado de membresia por torneo, pagos, reintentos, reembolsos, cupones, precios por torneo, vencimientos y conciliacion financiera.',
+  },
+  {
+    title: 'Auditoria y Seguridad',
+    priority: 'Alta',
+    text: 'Registro de acciones admin, cambios en marcadores, cambios de roles, sesiones activas, permisos por rol y alertas de actividad sensible.',
+  },
+  {
+    title: 'Contenido y Comunidad',
+    priority: 'Media',
+    text: 'Noticias, banners, proximos torneos, moderacion de foro, reportes de posts, notificaciones push/email y plantillas de comunicacion.',
+  },
+  {
+    title: 'Analitica de Producto',
+    priority: 'Media',
+    text: 'Embudo membresia -> pago -> quiniela, conversion por torneo, retencion, torneos sin ventas, usuarios activos y engagement por jornada.',
+  },
+  {
+    title: 'Integraciones Deportivas',
+    priority: 'Media',
+    text: 'Estado de proveedores, importacion de calendarios, logos, validacion de equipos, mapeo de IDs externos y fallback manual.',
+  },
+  {
+    title: 'Configuracion de Plataforma',
+    priority: 'Baja',
+    text: 'Feature flags, parametros de negocio, textos legales, terminos, mantenimiento, backups, webhooks y llaves API.',
+  },
+];
 
 export const AdminView: React.FC<{ tournaments?: AdminTournament[] }> = ({ tournaments = [] }) => {
   const {
@@ -192,45 +255,55 @@ export const AdminView: React.FC<{ tournaments?: AdminTournament[] }> = ({ tourn
           <AdminKpi icon={<Save />} label="Actividad" value={socialPosts.length} detail="posts sociales" />
         </section>
 
-        <nav className="flex gap-2 overflow-x-auto rounded-xl border border-[#3c313e] bg-[#120915] p-2">
-          {[
-            ['overview', 'Resumen'],
-            ['analytics', 'Graficas'],
-            ['users', 'Usuarios'],
-            ['memberships', 'Torneos'],
-            ['payments', 'Pagos'],
-            ['matches', 'Marcadores'],
-            ['system', 'Sistema'],
-          ].map(([id, label]) => (
-            <button
-              key={id}
-              onClick={() => setActiveSection(id as AdminSection)}
-              className={`shrink-0 rounded-lg px-4 py-2 text-xs font-mono ${
-                activeSection === id ? 'bg-[#EA7301] text-black' : 'bg-white/5 text-[#d5c0d7] hover:bg-white/10'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
+        <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
+          <aside className="lg:sticky lg:top-24 lg:self-start">
+            <div className="rounded-2xl border border-[#3c313e] bg-[#120915] p-3">
+              <div className="mb-3 px-2">
+                <p className="text-xs font-mono uppercase text-[#EA7301]">Navegacion admin</p>
+                <p className="text-sm text-[#d5c0d7]">Control operativo KAS</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-1">
+                {adminSections.map((section) => (
+                  <button
+                    key={section.id}
+                    onClick={() => setActiveSection(section.id)}
+                    className={`flex min-h-[64px] items-center gap-3 rounded-xl border px-3 py-2 text-left transition-colors ${
+                      activeSection === section.id
+                        ? 'border-[#EA7301] bg-[#EA7301] text-black'
+                        : 'border-white/10 bg-white/5 text-[#d5c0d7] hover:border-[#EA7301]/60 hover:bg-white/10'
+                    }`}
+                  >
+                    <span className="shrink-0">{section.icon}</span>
+                    <span className="min-w-0">
+                      <span className="block truncate font-heading text-sm font-black">{section.label}</span>
+                      <span className={`block truncate text-[11px] ${activeSection === section.id ? 'text-black/70' : 'text-[#d5c0d7]/70'}`}>
+                        {section.detail}
+                      </span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </aside>
 
-        <div className="rounded-xl border border-amber-400/25 bg-amber-400/10 p-3 sm:flex sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-bold text-amber-200">Calculo de puntos</p>
-            <p className="text-xs text-[#d5c0d7]">Recalcula rankings con resultados oficiales finalizados.</p>
-          </div>
-          <button onClick={handleRunCalculation} className="mt-3 rounded-lg bg-amber-400 px-4 py-2 text-xs font-bold text-black sm:mt-0">
-            Ejecutar calculo
-          </button>
-        </div>
-        {calculationResult && (
-          <div className="grid gap-3 rounded-xl border border-emerald-400/25 bg-emerald-400/10 p-3 sm:grid-cols-4">
-            <SummaryRow label="Ultimo calculo" value={calculationResult.calculatedAt} />
-            <SummaryRow label="Partidos evaluados" value={String(calculationResult.finishedMatches)} />
-            <SummaryRow label="Usuarios procesados" value={String(calculationResult.processedUsers)} />
-            <SummaryRow label="Puntos en ranking" value={calculationResult.totalPoints.toLocaleString()} />
-          </div>
-        )}
+          <div className="min-w-0 space-y-5">
+            <div className="rounded-xl border border-amber-400/25 bg-amber-400/10 p-3 sm:flex sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-bold text-amber-200">Calculo de puntos</p>
+                <p className="text-xs text-[#d5c0d7]">Recalcula rankings con resultados oficiales finalizados.</p>
+              </div>
+              <button onClick={handleRunCalculation} className="mt-3 rounded-lg bg-amber-400 px-4 py-2 text-xs font-bold text-black sm:mt-0">
+                Ejecutar calculo
+              </button>
+            </div>
+            {calculationResult && (
+              <div className="grid gap-3 rounded-xl border border-emerald-400/25 bg-emerald-400/10 p-3 sm:grid-cols-4">
+                <SummaryRow label="Ultimo calculo" value={calculationResult.calculatedAt} />
+                <SummaryRow label="Partidos evaluados" value={String(calculationResult.finishedMatches)} />
+                <SummaryRow label="Usuarios procesados" value={String(calculationResult.processedUsers)} />
+                <SummaryRow label="Puntos en ranking" value={calculationResult.totalPoints.toLocaleString()} />
+              </div>
+            )}
 
         {activeSection === 'overview' && (
           <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
@@ -485,6 +558,31 @@ export const AdminView: React.FC<{ tournaments?: AdminTournament[] }> = ({ tourn
           </Panel>
         )}
 
+        {activeSection === 'roadmap' && (
+          <Panel title="Secciones Recomendadas para KAS" eyebrow="Investigacion aplicada">
+            <div className="mb-5 rounded-xl border border-[#EA7301]/25 bg-[#EA7301]/10 p-4 text-sm text-[#eeddee]">
+              <p>
+                Para KAS, el admin debe comportarse como back-office operativo: resolver usuarios, membresias, pagos,
+                torneos, resultados, seguridad y contenido sin mezclar tareas de soporte con analitica de marketing.
+              </p>
+            </div>
+            <div className="grid gap-3 lg:grid-cols-2">
+              {recommendedAdminAreas.map((area) => (
+                <article key={area.title} className="rounded-xl border border-white/10 bg-black/25 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      {area.title.includes('Seguridad') ? <LockKeyhole className="h-4 w-4 text-[#EA7301]" /> : area.title.includes('Contenido') ? <MessageSquare className="h-4 w-4 text-[#EA7301]" /> : <SlidersHorizontal className="h-4 w-4 text-[#EA7301]" />}
+                      <h3 className="font-heading text-lg font-black text-white">{area.title}</h3>
+                    </div>
+                    <StatusPill value={area.priority} tone={area.priority === 'Alta' ? 'green' : area.priority === 'Media' ? 'amber' : 'blue'} />
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-[#d5c0d7]">{area.text}</p>
+                </article>
+              ))}
+            </div>
+          </Panel>
+        )}
+
         {activeSection === 'system' && (
           <section className="grid gap-4 lg:grid-cols-2">
             <Panel title="Sesiones Activas" eyebrow="Seguridad">
@@ -508,6 +606,8 @@ export const AdminView: React.FC<{ tournaments?: AdminTournament[] }> = ({ tourn
             </Panel>
           </section>
         )}
+          </div>
+      </div>
       </div>
     </div>
   );

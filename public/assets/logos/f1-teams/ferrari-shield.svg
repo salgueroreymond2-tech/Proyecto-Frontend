@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 220" role="img" aria-label="Ferrari">
+  <path d="M18 10h144v118c0 43-29 70-72 82-43-12-72-39-72-82V10z" fill="#ffd200" stroke="#111" stroke-width="6"/>
+  <rect x="24" y="16" width="132" height="28" fill="#fff"/>
+  <rect x="24" y="16" width="44" height="28" fill="#009246"/>
+  <rect x="112" y="16" width="44" height="28" fill="#ce2b37"/>
+  <text x="90" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="900" fill="#111">SF</text>
+  <path d="M75 154c9-9 14-23 7-36-5-10-2-22 8-30 0 13 8 17 19 21 15 6 20 18 13 32-7 15-24 24-47 13z" fill="#111"/>
+  <path d="M64 108c15 2 30-2 40-13" fill="none" stroke="#111" stroke-width="7" stroke-linecap="round"/>
+</svg>

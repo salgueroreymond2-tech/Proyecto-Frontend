@@ -54,6 +54,7 @@ const localEvents: NormalizedSportEvent[] = [
     league: 'NBA',
     title: 'Temporada regular 2026-2027',
     status: 'Preparacion',
+    score: '112 - 108 pts',
     provider: 'local',
   },
   {
@@ -62,6 +63,7 @@ const localEvents: NormalizedSportEvent[] = [
     league: 'MLB',
     title: 'Temporada 2027',
     status: 'Preparacion',
+    score: '5 - 3 carreras',
     provider: 'local',
   },
   {
@@ -70,6 +72,7 @@ const localEvents: NormalizedSportEvent[] = [
     league: 'NFL',
     title: 'Temporada 2026-2027',
     status: 'Preparacion',
+    score: '27 - 24 pts',
     provider: 'local',
   },
   {
@@ -78,6 +81,7 @@ const localEvents: NormalizedSportEvent[] = [
     league: 'ATP / WTA',
     title: 'Carlos Alcaraz vs Jannik Sinner',
     status: 'Agenda',
+    score: '2 - 1 sets',
     provider: 'local',
   },
   ...formulaOneGrandPrix.map((title, index) => ({
@@ -86,6 +90,7 @@ const localEvents: NormalizedSportEvent[] = [
     league: 'Formula 1 World Championship',
     title,
     status: 'Agenda',
+    score: index === 0 ? 'Pole: Verstappen' : undefined,
     provider: 'local' as const,
   })),
   {
@@ -94,6 +99,7 @@ const localEvents: NormalizedSportEvent[] = [
     league: 'Tour de France',
     title: 'Etapa reina',
     status: 'Agenda',
+    score: 'Lider: UAE',
     provider: 'local',
   },
   {
@@ -102,6 +108,7 @@ const localEvents: NormalizedSportEvent[] = [
     league: 'PGA Tour',
     title: 'The Masters - Ronda final',
     status: 'Agenda',
+    score: 'Lider: -12',
     provider: 'local',
   },
   {
@@ -110,6 +117,7 @@ const localEvents: NormalizedSportEvent[] = [
     league: 'UFC',
     title: 'Main Event',
     status: 'Agenda',
+    score: 'R2 TKO',
     provider: 'local',
   },
   {
@@ -118,6 +126,7 @@ const localEvents: NormalizedSportEvent[] = [
     league: 'Boxeo Campeonatos Mundiales',
     title: 'Canelo Alvarez vs David Benavidez',
     status: 'Agenda',
+    score: 'R7 KO',
     provider: 'local',
   },
   {

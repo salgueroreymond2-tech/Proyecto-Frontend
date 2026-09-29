@@ -375,6 +375,51 @@
       "token": "f703421d8d4b0daa0d66c7bcea4bb5891ddb2eb4636380f6c8d959263fbc51e6",
       "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
       "expiresAt": "2026-10-05T21:02:17.695Z"
+    },
+    {
+      "token": "ec859936b07eabb818277c808eb9206aace85aa357f1c8ea1012ffd439f57b29",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-06T02:54:44.569Z"
+    },
+    {
+      "token": "67c8c3828c615ab883cdb175c03950cac1a0f0adb6baa6e7522be02c0a564318",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-06T02:57:53.906Z"
+    },
+    {
+      "token": "7cedde31af0799eb1800735737375d899fac1b9b7e0b9fe51dcdb9c5e192bbb1",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-06T02:58:00.029Z"
+    },
+    {
+      "token": "59898b4ed46afdc03282dfb3e5e48d7202e12f04b57d0d6b9bcd398c2c42ef1b",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-06T02:58:21.052Z"
+    },
+    {
+      "token": "209e1f95d65c3ac3fccec7fc331cd1d02e5c90edd785f19e19c4f7082964fc26",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-06T02:58:26.915Z"
+    },
+    {
+      "token": "afcb704882202cb2c7ad66d0957cf46ad0e0c8ba9db4166508f9c1af8653e483",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-06T03:06:48.003Z"
+    },
+    {
+      "token": "cf394d397ece722d47d0857d486292c67966285c597c15024a772db7618e5353",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-06T03:26:36.016Z"
+    },
+    {
+      "token": "47d2579f96147cda4908fed39b35dac4d49bc99e60064f0b5f990c1187257d33",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-06T03:26:53.785Z"
+    },
+    {
+      "token": "0d9371a5c82fd9e5152d94abafa501a5fa7a2bf7055ed8e6e6d86b29e98a580f",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-06T03:33:16.373Z"
     }
   ],
   "memberships": [
@@ -1691,6 +1736,56 @@
       "status": "captured",
       "createdAt": "2026-09-28T20:34:19.545Z",
       "capturedAt": "2026-09-28T20:34:19.566Z"
+    },
+    {
+      "id": "SIM-c816731b-6ad4-483b-912e-46c24022db74",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "f1-world-championship",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-29T03:27:04.256Z",
+      "capturedAt": "2026-09-29T03:27:04.320Z"
+    },
+    {
+      "id": "SIM-fadda88e-aa36-4408-accf-eae15ef33d3c",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "f1-world-championship",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-29T03:33:24.875Z",
+      "capturedAt": "2026-09-29T03:33:24.919Z"
+    },
+    {
+      "id": "SIM-c1d1522f-d326-4264-a96d-965ea048b842",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "serie-a",
+      "amount": "$11.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-29T03:58:47.472Z",
+      "capturedAt": "2026-09-29T03:58:47.580Z"
+    },
+    {
+      "id": "SIM-eb8104ff-bdf7-4322-a9b8-cc702f65a4c1",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "serie-a",
+      "amount": "$11.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-29T03:58:49.507Z",
+      "capturedAt": "2026-09-29T03:58:49.555Z"
+    },
+    {
+      "id": "SIM-8b0d1a42-b81a-4744-83c9-3a73929e3da8",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "f1-world-championship",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-29T04:00:58.686Z",
+      "capturedAt": "2026-09-29T04:00:58.763Z"
     }
   ]
 }

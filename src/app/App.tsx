@@ -64,7 +64,7 @@ import {
   splitMatchupTitle,
 } from '../data/teamLogos';
 import { getSportEvents, getSportVisuals, getTournamentEvents, type NormalizedSportEvent, type SportProvider } from '../services/sportsApi';
-import { signIn, signUp, simulatePayPalCheckout } from '../services/authApi';
+import { getStoredSession, signIn, signUp, simulatePayPalCheckout } from '../services/authApi';
 
 type Sport = {
   id: string;
@@ -771,6 +771,26 @@ const getStandaloneTickerName = (event: NormalizedSportEvent) => {
   return event.title;
 };
 
+const getSportResultLabel = (sportId: string) => {
+  const labels: Record<string, string> = {
+    football: 'Resultado',
+    basketball: 'Puntos',
+    baseball: 'Carreras',
+    'american-football': 'Puntos',
+    tennis: 'Sets',
+    f1: 'Clasificacion',
+    cycling: 'Etapa',
+    golf: 'Tarjeta',
+    mma: 'Combate',
+    boxing: 'Combate',
+  };
+
+  return labels[sportId] || 'Resultado';
+};
+
+const formatSportResult = (event: NormalizedSportEvent) =>
+  event.score ? `${getSportResultLabel(event.sportId)} ${event.score}` : event.status;
+
 function HomePage() {
   const { matches, standings, leaderboard } = useTournament();
   const [homeEvents, setHomeEvents] = useState<NormalizedSportEvent[]>([]);
@@ -799,7 +819,7 @@ function HomePage() {
         id: event.id,
         league: event.league,
         title: event.title,
-        status: event.score ? `Marcador ${event.score}` : event.status,
+        status: formatSportResult(event),
         provider: event.provider,
         href: event.sourceUrl,
         path: '/login',
@@ -853,7 +873,7 @@ function HomePage() {
     ...uniqueExternalTickerEvents.slice(0, 10).map((event) => ({
       id: event.id,
       label: event.league,
-      status: event.score ? 'Marcador' : event.status,
+      status: event.score ? getSportResultLabel(event.sportId) : event.status,
       title: getStandaloneTickerName(event),
       score: event.score || (event.startsAt ? new Date(event.startsAt).toLocaleDateString() : ''),
       path: event.sourceUrl || '/login',
@@ -1508,7 +1528,7 @@ function SportsDashboard() {
                 </div>
                 <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[#d5c0d7]">
                   <span>{event.status}</span>
-                  {event.score && <span className="text-white">Marcador {event.score}</span>}
+                  {event.score && <span className="text-white">{formatSportResult(event)}</span>}
                   {event.startsAt && <span>{new Date(event.startsAt).toLocaleDateString()}</span>}
                 </div>
               </a>
@@ -1695,6 +1715,22 @@ function TournamentMembershipLogin() {
   );
 }
 
+function F1TeamCard({ team }: { team: string }) {
+  return (
+    <div className="select-none rounded-xl border border-white/10 bg-black/25 px-3 py-3 transition-colors hover:border-red-400/50 hover:bg-black/35">
+      <div className="flex items-center gap-3">
+        <span className="flex h-16 w-28 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-[#f7f7f7]/95 px-2 shadow-inner">
+          <UniversalTeamLogo name={team} size="md" className="h-12 w-full" />
+        </span>
+        <div className="min-w-0">
+          <p className="font-heading text-[15px] font-black leading-tight text-white sm:text-base">{team}</p>
+          <p className="text-xs text-[#d5c0d7]">Formula 1</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function GrandPrixDashboard() {
   const { tournamentId, grandPrixId } = useParams();
   const tournament = tournamentId ? findTournamentSummary(tournamentId) : undefined;
@@ -1756,15 +1792,7 @@ function GrandPrixDashboard() {
           </div>
           <div className="mt-5 grid sm:grid-cols-2 gap-3">
             {teams.map((team) => (
-              <div key={team} className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
-                <div className="flex items-center gap-3">
-                  <UniversalTeamLogo name={team} size="sm" />
-                  <div className="min-w-0">
-                    <p className="truncate font-heading text-lg font-black text-white">{team}</p>
-                    <p className="text-xs text-[#d5c0d7]">Formula 1</p>
-                  </div>
-                </div>
-              </div>
+              <F1TeamCard key={team} team={team} />
             ))}
           </div>
         </div>
@@ -1949,11 +1977,15 @@ function TournamentDashboard() {
             {detail.teams.map((team) => {
               const localTeam = findCostaRicaTeamByName(team);
               return (
-                <div key={team} className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
+                <div key={team} className={`rounded-xl border border-white/10 bg-black/25 px-4 py-3 ${isFormulaOne ? 'select-none' : ''}`}>
                   <div className="flex items-center gap-3">
-                    {localTeam ? <TeamBadge team={localTeam} size="sm" /> : <UniversalTeamLogo name={team} size="sm" />}
+                    {localTeam ? <TeamBadge team={localTeam} size="sm" /> : isFormulaOne ? (
+                      <span className="flex h-16 w-28 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-[#f7f7f7]/95 px-2 shadow-inner">
+                        <UniversalTeamLogo name={team} size="md" className="h-12 w-full" />
+                      </span>
+                    ) : <UniversalTeamLogo name={team} size="sm" />}
                     <div className="min-w-0">
-                      <p className="truncate font-heading text-lg font-black text-white">{localTeam?.shortName || team}</p>
+                      <p className={`${isFormulaOne ? 'whitespace-normal text-[15px] leading-tight sm:text-base' : 'truncate text-lg'} font-heading font-black text-white`}>{localTeam?.shortName || team}</p>
                       <p className="text-xs text-[#d5c0d7]">{localTeam?.name || tournament.sportName}</p>
                     </div>
                   </div>
@@ -2047,7 +2079,7 @@ function TournamentDashboard() {
                 <div className="mt-1 flex flex-wrap gap-2 text-xs text-[#d5c0d7]">
                   <span>{event.league}</span>
                   {event.startsAt && <span>{new Date(event.startsAt).toLocaleDateString()}</span>}
-                  {event.score && <span className="text-white">Marcador {event.score}</span>}
+                  {event.score && <span className="text-white">{formatSportResult(event)}</span>}
                 </div>
               </div>
             ))}
@@ -2189,7 +2221,7 @@ function CostaRicaOnly({ children }: { children: React.ReactNode }) {
   const { tournamentId } = useParams();
   const { isLoggedIn } = useTournament();
   if (tournamentId !== 'cr-apertura-2026') return <Navigate to={`/tournaments/${tournamentId}`} replace />;
-  if (!isLoggedIn) return <Navigate to="/tournaments/cr-apertura-2026/login" replace />;
+  if (!isLoggedIn && !getStoredSession()) return <Navigate to="/tournaments/cr-apertura-2026/login" replace />;
   return <>{children}</>;
 }
 

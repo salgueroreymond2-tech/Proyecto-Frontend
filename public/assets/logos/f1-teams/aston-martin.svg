@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" role="img" aria-label="Aston Martin">
+  <rect width="420" height="120" rx="18" fill="#ffffff"/>
+  <path d="M34 38h92l22 18 22-18h216l-42 42H198l-50-22-50 22H34l42-42z" fill="#00352f"/>
+  <path d="M78 48h50l20 16 20-16h174l-19 20H199l-51-22-51 22H58l20-20z" fill="#00a878"/>
+  <text x="210" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#00352f">ASTON MARTIN</text>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" role="img" aria-label="Ferrari">
+  <rect width="420" height="120" rx="18" fill="#ffffff"/>
+  <path d="M62 92V22h72c20 0 34 12 34 30 0 17-13 29-34 29H98v11H62zm36-41h28c4 0 7-2 7-6s-3-6-7-6H98v12z" fill="#e10600"/>
+  <path d="M194 30h134v20h-98v10h86v19h-86v13h-36V30z" fill="#111111"/>
+  <path d="M333 30h27v62h-27V30z" fill="#ffd200"/>
+  <text x="210" y="111" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="900" fill="#111111">SCUDERIA FERRARI</text>
+</svg>

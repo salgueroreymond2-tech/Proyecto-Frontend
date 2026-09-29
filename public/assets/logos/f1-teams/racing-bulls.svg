@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" role="img" aria-label="Racing Bulls">
+  <rect width="420" height="120" rx="18" fill="#102a6b"/>
+  <path d="M52 69c32-34 69-42 111-24 24 10 45 26 67 29 37 5 70-14 108-38-19 31-48 52-82 61-35 10-67 4-99-14-28-15-55-18-105-14z" fill="#f2f6ff"/>
+  <circle cx="327" cy="44" r="20" fill="#e01b2f"/>
+  <path d="M318 33l37-14-19 33z" fill="#e01b2f"/>
+  <text x="210" y="103" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="900" fill="#ffffff">RACING BULLS</text>
+</svg>

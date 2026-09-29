@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" role="img" aria-label="Williams Racing">
+  <rect width="420" height="120" rx="18" fill="#ffffff"/>
+  <path d="M42 30h42l22 45 18-45h33l18 45 22-45h42l-43 62h-39l-17-38-17 38H85L42 30z" fill="#00a3e0"/>
+  <path d="M255 33h100c18 0 29 10 29 25 0 17-13 27-32 27h-59v8h-38V33zm38 17v18h50c5 0 9-3 9-9s-4-9-9-9h-50z" fill="#102b7b"/>
+  <text x="210" y="111" text-anchor="middle" font-family="Arial, sans-serif" font-size="21" font-weight="900" fill="#111111">WILLIAMS RACING</text>
+</svg>

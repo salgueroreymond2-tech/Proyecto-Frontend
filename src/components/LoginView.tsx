@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTournament } from '../context/TournamentContext';
 import { TEAMS, getTeamById } from '../data/teams';
 import { TeamBadge } from './TeamBadge';
@@ -12,7 +12,7 @@ interface LoginViewProps {
 }
 
 export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onFavoriteTeamPreview }) => {
-  const { currentUser, loginUser } = useTournament();
+  const { currentUser, isLoggedIn, loginUser } = useTournament();
   const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,6 +26,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onFavorite
   const favoriteTeam = getTeamById(favoriteTeamId);
   const loginThemeTeam = favoriteTeamId === 'csh' ? getTeamById('esc') : favoriteTeam;
 
+  useEffect(() => {
+    if (isSubmitted && isLoggedIn) {
+      onLoginSuccess?.();
+    }
+  }, [isLoggedIn, isSubmitted, onLoginSuccess]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -36,7 +42,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onFavorite
         : await signIn(email, password);
       loginUser(session.user);
       setIsSubmitted(true);
-      window.setTimeout(() => onLoginSuccess?.(), 600);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'No se pudo iniciar sesion.');
     } finally {

@@ -41,12 +41,17 @@ function getCompetitor(event: EspnEvent, side: 'home' | 'away') {
   return event.competitions?.[0]?.competitors?.find((competitor) => competitor.homeAway === side);
 }
 
-function formatScore(event: EspnEvent) {
+function formatScore(event: EspnEvent, sportId: string) {
   const home = getCompetitor(event, 'home');
   const away = getCompetitor(event, 'away');
 
   if (!home?.score || !away?.score) return undefined;
-  return `${away.score} - ${home.score}`;
+  const score = `${away.score} - ${home.score}`;
+
+  if (sportId === 'football') return score;
+  if (sportId === 'basketball' || sportId === 'american-football') return `${score} pts`;
+  if (sportId === 'baseball') return `${score} carreras`;
+  return score;
 }
 
 export async function fetchEspnScoreboard(sportId: string, signal?: AbortSignal): Promise<NormalizedSportEvent[]> {
@@ -74,7 +79,7 @@ export async function fetchEspnScoreboard(sportId: string, signal?: AbortSignal)
       startsAt: event.date,
       status: event.status?.type?.shortDetail || event.status?.type?.description || 'Programado',
       venue: event.competitions?.[0]?.venue?.fullName,
-      score: formatScore(event),
+      score: formatScore(event, config.sportId),
       provider: 'espn',
       sourceUrl: event.links?.[0]?.href || url,
     };

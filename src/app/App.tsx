@@ -18,6 +18,7 @@ import {
   ChevronRight,
   Dumbbell,
   Lock,
+  LayoutDashboard,
   Mail,
   Shield,
   DirectionsBike,
@@ -29,6 +30,7 @@ import {
   SportsSoccer,
   SportsTennis,
   Trophy,
+  User,
   Users,
 } from '../components/Icon';
 import { TournamentProvider, useTournament } from '../context/TournamentContext';
@@ -64,7 +66,7 @@ import {
   splitMatchupTitle,
 } from '../data/teamLogos';
 import { getSportEvents, getSportVisuals, getTournamentEvents, type NormalizedSportEvent, type SportProvider } from '../services/sportsApi';
-import { getStoredSession, signIn, signUp, simulatePayPalCheckout } from '../services/authApi';
+import { cancelMembership, getMyMemberships, getStoredSession, renewMembership, signIn, signUp, simulatePayPalCheckout, type UserMembership } from '../services/authApi';
 
 type Sport = {
   id: string;
@@ -505,28 +507,28 @@ const tournamentDetails: Record<string, {
   },
   'wbc-world-boxing-council': {
     overview: 'Quiniela de peleas titulares avaladas por el World Boxing Council.',
-    teams: ['Naoya Inoue', 'Canelo Alvarez', 'Oleksandr Usyk', 'Tyson Fury', 'Terence Crawford', 'Gervonta Davis', 'Shakur Stevenson', 'Dmitry Bivol', 'Artur Beterbiev', 'Jaron Ennis'],
+    teams: ['Canelo Alvarez', 'David Benavidez', 'Shakur Stevenson', 'Dmitry Bivol', 'Artur Beterbiev', 'Naoya Inoue', 'Gervonta Davis', 'Ryan Garcia'],
     format: 'Temporada 2027 - peleas titulares WBC por division.',
     predictionRules: ['Ganador', 'Metodo de victoria', 'Round exacto', 'Decision o KO/TKO'],
     coverage: ['Titulo mundial WBC', 'Titulo interino', 'Eliminatorias', 'Defensas obligatorias'],
   },
   'wba-world-boxing-association': {
     overview: 'Quiniela de peleas titulares avaladas por la World Boxing Association.',
-    teams: ['Canelo Alvarez', 'Ryan Garcia', 'Anthony Joshua', 'Tyson Fury', 'Deontay Wilder', 'David Benavidez', 'Devin Haney', 'Teofimo Lopez'],
+    teams: ['Oleksandr Usyk', 'Anthony Joshua', 'Dmitry Bivol', 'Gervonta Davis', 'Naoya Inoue', 'Canelo Alvarez', 'Devin Haney', 'Ryan Garcia'],
     format: 'Temporada 2027 - peleas titulares WBA por division.',
     predictionRules: ['Ganador', 'Metodo', 'Round', 'Decision o KO/TKO'],
     coverage: ['Titulo mundial WBA', 'Super campeon', 'Regular', 'Eliminatorias'],
   },
   'ibf-international-boxing-federation': {
     overview: 'Quiniela de peleas titulares avaladas por la International Boxing Federation.',
-    teams: ['Naoya Inoue', 'Terence Crawford', 'Oleksandr Usyk', 'Canelo Alvarez', 'Gervonta Davis', 'Shakur Stevenson', 'Devin Haney', 'Dmitry Bivol', 'Artur Beterbiev', 'Jaron Ennis'],
+    teams: ['Jaron Ennis', 'Oleksandr Usyk', 'Artur Beterbiev', 'Anthony Joshua', 'Naoya Inoue', 'Canelo Alvarez', 'Teofimo Lopez', 'Devin Haney'],
     format: 'Temporada 2027 - peleas titulares IBF por division.',
     predictionRules: ['Ganador', 'Metodo', 'Round', 'Decision o KO/TKO'],
     coverage: ['Titulo mundial IBF', 'Eliminatorias', 'Defensas obligatorias', 'Ranking IBF'],
   },
   'wbo-world-boxing-organization': {
     overview: 'Quiniela de peleas titulares avaladas por la World Boxing Organization.',
-    teams: ['Naoya Inoue', 'Canelo Alvarez', 'Oleksandr Usyk', 'Tyson Fury', 'Terence Crawford', 'Gervonta Davis', 'Shakur Stevenson', 'Dmitry Bivol', 'Artur Beterbiev', 'Jaron Ennis'],
+    teams: ['Terence Crawford', 'Teofimo Lopez', 'Oleksandr Usyk', 'Tyson Fury', 'Shakur Stevenson', 'Naoya Inoue', 'Dmitry Bivol', 'Junto Nakatani'],
     format: 'Temporada 2027 - peleas titulares WBO por division.',
     predictionRules: ['Ganador', 'Metodo', 'Round', 'Decision o KO/TKO'],
     coverage: ['Titulo mundial WBO', 'Titulo interino', 'Global', 'Ranking WBO'],
@@ -650,6 +652,739 @@ function parseCostaRicaMatchup(title: string) {
   return { home, away };
 }
 
+function DashboardSidebar({ isAdmin }: { isAdmin: boolean }) {
+  const location = useLocation();
+  const items = [
+    { label: 'Resumen', path: '/dashboard', icon: LayoutDashboard },
+    { label: 'Calendario', path: '/dashboard/calendario', icon: CalendarDays },
+    { label: 'Membresias', path: '/dashboard/membresias', icon: BadgeDollarSign },
+    { label: 'Ranking global', path: '/dashboard/ranking-global', icon: Trophy },
+    { label: 'Soporte', path: '/dashboard/soporte', icon: Shield },
+    { label: 'Perfil', path: '/profile', icon: User },
+    ...(isAdmin ? [{ label: 'Administracion', path: '/admin', icon: Users }] : []),
+  ];
+
+  return (
+    <aside className="shrink-0 border-white/10 bg-[#120913]/95 px-3 py-3 lg:sticky lg:top-[76px] lg:h-[calc(100vh-76px)] lg:w-64 lg:border-r lg:px-4 lg:py-5">
+      <div className="hidden lg:block">
+        <p className="text-xs font-mono uppercase text-[#EA7301]">Navegacion</p>
+        <h2 className="mt-1 font-heading text-2xl font-black text-white">Dashboard KAS</h2>
+      </div>
+      <nav className="mt-0 flex gap-2 overflow-x-auto pb-1 lg:mt-6 lg:flex-col lg:overflow-visible lg:pb-0">
+        {items.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.path || (item.path !== '/dashboard' && location.pathname.startsWith(item.path));
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`inline-flex min-w-max items-center gap-2 rounded-lg border px-3 py-2 font-heading text-sm font-bold transition-colors lg:w-full lg:min-w-0 ${
+                isActive
+                  ? 'border-[#EA7301]/70 bg-[#EA7301]/15 text-white'
+                  : 'border-white/10 bg-white/[0.03] text-[#d5c0d7] hover:border-[#EA7301]/45 hover:text-white'
+              }`}
+            >
+              <Icon className={isActive ? 'text-[#EA7301]' : 'text-white/55'} size={20} />
+              <span className="truncate">{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+      <div className="mt-6 hidden rounded-lg border border-white/10 bg-black/25 p-3 lg:block">
+        <p className="text-xs font-mono uppercase text-white/45">Acceso</p>
+        <p className="mt-1 text-sm text-[#d5c0d7]">Atajos para revisar actividad, pagos, ranking y soporte sin repetir las tarjetas del dashboard.</p>
+      </div>
+    </aside>
+  );
+}
+
+const sidebarDashboards = {
+  calendario: {
+    eyebrow: 'AGENDA',
+    title: 'Calendario KAS',
+    text: 'Vista centralizada de torneos activos, proximos eventos y fechas clave de membresia.',
+    stats: [['Eventos', '42'], ['Torneos', '18'], ['Hoy', '6']],
+    rows: ['Champions League - fase de liga', 'Campeonato Nacional - jornada activa', 'F1 World Championship - proximo Grand Prix', 'Boxeo WBC - cartelera titular'],
+  },
+  membresias: {
+    eyebrow: 'PAGOS',
+    title: 'Membresias',
+    text: 'Control de accesos comprados, renovaciones y torneos disponibles por Pay-Per-Tournament.',
+    stats: [['Activas', '3'], ['Pendientes', '2'], ['Ahorro', '18%']],
+    rows: ['Campeonato Nacional de Costa Rica', 'UEFA Champions League', 'F1 World Championship', 'WBC World Boxing Council'],
+  },
+  'ranking-global': {
+    eyebrow: 'PRESTIGIO',
+    title: 'Ranking global',
+    text: 'Comparativa general de puntos, rachas y precision entre todos los deportes.',
+    stats: [['Tu puesto', '#128'], ['Puntos', '12.4K'], ['Top', '8%']],
+    rows: ['Mejor racha semanal', 'Top Costa Rica', 'Ranking por deporte', 'Historial de ascensos'],
+  },
+  soporte: {
+    eyebrow: 'AYUDA',
+    title: 'Soporte',
+    text: 'Panel para revisar accesos, problemas de membresia, pagos y estado de cuenta.',
+    stats: [['Tickets', '0'], ['Estado', 'OK'], ['Respuesta', '<24h']],
+    rows: ['Validar membresia', 'Reportar resultado incorrecto', 'Solicitar revision de pago', 'Contactar administracion'],
+  },
+} satisfies Record<string, { eyebrow: string; title: string; text: string; stats: string[][]; rows: string[] }>;
+
+const calendarEventTemplates = [
+  { label: 'Ventana de picks', dayOffset: 1 },
+  { label: 'Cierre de pronosticos', dayOffset: 3 },
+  { label: 'Jornada principal', dayOffset: 6 },
+];
+
+function getMembershipCalendarItems(memberships: UserMembership[]) {
+  const active = memberships.length > 0
+    ? memberships
+    : [{ id: 'demo-cr', userId: 'demo', tournamentId: 'cr-apertura-2026', paymentId: 'demo', status: 'active', grantedAt: new Date().toISOString() }];
+
+  return active.flatMap((membership, membershipIndex) => {
+    const tournament = findTournamentSummary(membership.tournamentId);
+    if (!tournament) return [];
+    return calendarEventTemplates.map((template, templateIndex) => {
+      const date = new Date();
+      date.setDate(date.getDate() + template.dayOffset + membershipIndex * 2 + templateIndex);
+      return {
+        id: `${membership.id}-${template.label}`,
+        tournament,
+        label: template.label,
+        date,
+      };
+    });
+  });
+}
+
+function getCalendarGridDays(baseDate: Date) {
+  const year = baseDate.getFullYear();
+  const month = baseDate.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const start = new Date(firstDay);
+  start.setDate(firstDay.getDate() - firstDay.getDay());
+  return Array.from({ length: 42 }, (_, index) => {
+    const date = new Date(start);
+    date.setDate(start.getDate() + index);
+    return date;
+  });
+}
+
+function getDateKey(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function MembershipCalendarDashboard() {
+  const [memberships, setMemberships] = useState<UserMembership[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [visibleMonth, setVisibleMonth] = useState(() => new Date());
+
+  useEffect(() => {
+    let mounted = true;
+    getMyMemberships()
+      .then((data) => {
+        if (mounted) setMemberships(data.memberships);
+      })
+      .catch(() => {
+        if (mounted) setMemberships([]);
+      })
+      .finally(() => {
+        if (mounted) setIsLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const items = getMembershipCalendarItems(memberships);
+  const paidTournaments = [...new Map(items.map((item) => [item.tournament.id, item.tournament])).values()];
+  const paidSports = [...new Set(paidTournaments.map((item) => item.sportName))];
+  const calendarDays = getCalendarGridDays(visibleMonth);
+  const currentMonth = visibleMonth.getMonth();
+  const eventsByDate = items.reduce<Record<string, typeof items>>((map, item) => {
+    const key = getDateKey(item.date);
+    map[key] = [...(map[key] || []), item];
+    return map;
+  }, {});
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-5 px-4 py-4 pb-24">
+      <section className="rounded-2xl border border-[#EA7301]/35 bg-[#19101c]/90 p-5 sm:p-7">
+        <p className="text-sm font-mono text-[#EA7301]">AGENDA</p>
+        <h1 className="mt-1 font-heading text-4xl font-black text-white">Calendario de tus membresias</h1>
+        <p className="mt-3 max-w-2xl text-sm text-[#d5c0d7]">
+          Solo se muestran deportes y torneos donde tu cuenta tiene membresia activa.
+        </p>
+      </section>
+      <section className="grid gap-3 sm:grid-cols-3">
+        <Metric label="Membresias" value={String(paidTournaments.length)} />
+        <Metric label="Deportes" value={String(paidSports.length)} />
+        <Metric label="Eventos" value={String(items.length)} />
+      </section>
+      <section className="grid gap-4 lg:grid-cols-[0.8fr_1.4fr]">
+        <div className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
+          <p className="text-xs font-mono text-[#EA7301]">DEPORTES ACTIVOS</p>
+          <h2 className="mt-1 font-heading text-2xl font-black text-white">Tus accesos</h2>
+          <div className="mt-4 space-y-3">
+            {paidSports.map((sportName) => (
+              <div key={sportName} className="rounded-lg border border-white/10 bg-black/25 px-4 py-3">
+                <p className="font-heading font-bold text-white">{sportName}</p>
+                <p className="text-xs text-[#d5c0d7]">
+                  {paidTournaments.filter((item) => item.sportName === sportName).length} torneo(s) con membresia
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-mono text-[#EA7301]">{isLoading ? 'CARGANDO' : 'CALENDARIO'}</p>
+              <h2 className="font-heading text-2xl font-black text-white">
+                {visibleMonth.toLocaleDateString('es-CR', { month: 'long', year: 'numeric' })}
+              </h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setVisibleMonth((date) => new Date(date.getFullYear(), date.getMonth() - 1, 1))}
+                className="rounded-lg border border-white/10 bg-black/25 p-2 text-white hover:border-[#EA7301]/60"
+                aria-label="Mes anterior"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setVisibleMonth((date) => new Date(date.getFullYear(), date.getMonth() + 1, 1))}
+                className="rounded-lg border border-white/10 bg-black/25 p-2 text-white hover:border-[#EA7301]/60"
+                aria-label="Mes siguiente"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </div>
+          <div className="mt-4 grid grid-cols-7 gap-2 text-center text-[11px] font-mono uppercase text-[#d5c0d7]">
+            {['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'].map((day) => (
+              <span key={day}>{day}</span>
+            ))}
+          </div>
+          <div className="mt-2 grid grid-cols-7 gap-2">
+            {calendarDays.map((date) => {
+              const key = getDateKey(date);
+              const dayEvents = eventsByDate[key] || [];
+              const isCurrentMonth = date.getMonth() === currentMonth;
+              const isToday = getDateKey(date) === getDateKey(new Date());
+              return (
+                <div
+                  key={key}
+                  className={`min-h-28 rounded-lg border p-2 text-left ${
+                    isToday
+                      ? 'border-[#EA7301]/80 bg-[#EA7301]/10'
+                      : isCurrentMonth
+                        ? 'border-white/10 bg-black/25'
+                        : 'border-white/5 bg-black/10 opacity-50'
+                  }`}
+                >
+                  <span className={`text-xs font-mono ${isToday ? 'text-[#EA7301]' : 'text-[#d5c0d7]'}`}>{date.getDate()}</span>
+                  <div className="mt-2 space-y-1">
+                    {dayEvents.slice(0, 2).map((item) => (
+                      <Link
+                        key={item.id}
+                        to={`/tournaments/${item.tournament.id}`}
+                        className="block rounded-md bg-[#EA7301]/15 px-2 py-1 text-[11px] font-bold leading-tight text-white hover:bg-[#EA7301]/25"
+                      >
+                        <span className="block truncate">{item.tournament.name}</span>
+                        <span className="block truncate font-mono text-[10px] text-[#EA7301]">{item.label}</span>
+                      </Link>
+                    ))}
+                    {dayEvents.length > 2 && (
+                      <span className="block text-[10px] font-mono text-[#d5c0d7]">+{dayEvents.length - 2} mas</span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function MembershipsDashboard() {
+  const [memberships, setMemberships] = useState<UserMembership[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  const loadMemberships = () => {
+    setIsLoading(true);
+    getMyMemberships({ includeHistory: true })
+      .then((data) => setMemberships(data.memberships))
+      .catch(() => setMemberships([]))
+      .finally(() => setIsLoading(false));
+  };
+
+  useEffect(() => {
+    loadMemberships();
+  }, []);
+
+  const activeMemberships = memberships.filter((item) => item.status === 'active');
+  const history = memberships.filter((item) => item.status !== 'active' || item.renewedAt || item.cancelledAt);
+
+  const handleAction = async (membership: UserMembership, action: 'cancel' | 'renew') => {
+    setBusyId(membership.id);
+    try {
+      if (action === 'cancel') await cancelMembership(membership.id);
+      else await renewMembership(membership.id);
+      loadMemberships();
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-5 px-4 py-4 pb-24">
+      <section className="rounded-2xl border border-[#EA7301]/35 bg-[#19101c]/90 p-5 sm:p-7">
+        <p className="text-sm font-mono text-[#EA7301]">PAGOS</p>
+        <h1 className="mt-1 font-heading text-4xl font-black text-white">Membresias</h1>
+        <p className="mt-3 max-w-2xl text-sm text-[#d5c0d7]">
+          Administra tus accesos activos, cancela membresias que ya no quieres y renueva torneos desde tu cuenta.
+        </p>
+      </section>
+      <section className="grid gap-3 sm:grid-cols-3">
+        <Metric label="Activas" value={String(activeMemberships.length)} />
+        <Metric label="Historial" value={String(history.length)} />
+        <Metric label="Estado" value={isLoading ? 'Cargando' : 'OK'} />
+      </section>
+      <section className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-mono text-[#EA7301]">ACTIVAS</p>
+            <h2 className="font-heading text-2xl font-black text-white">Tus membresias actuales</h2>
+          </div>
+          <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{activeMemberships.length} activas</span>
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-2">
+          {activeMemberships.map((membership) => {
+            const tournament = findTournamentSummary(membership.tournamentId);
+            return (
+              <article key={membership.id} className="rounded-xl border border-white/10 bg-black/25 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-xs font-mono uppercase text-[#EA7301]">{tournament?.sportName || 'Torneo'}</p>
+                    <h3 className="mt-1 truncate font-heading text-xl font-black text-white">{tournament?.name || membership.tournamentId}</h3>
+                    <p className="mt-1 text-xs text-[#d5c0d7]">Activa desde {new Date(membership.grantedAt).toLocaleDateString()}</p>
+                  </div>
+                  <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-mono text-emerald-200">Activa</span>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleAction(membership, 'cancel')}
+                    disabled={busyId === membership.id}
+                    className="rounded-lg border border-red-400/30 px-3 py-2 text-xs font-heading font-bold text-red-100 hover:bg-red-500/10 disabled:opacity-50"
+                  >
+                    {busyId === membership.id ? 'Procesando...' : 'Cancelar'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAction(membership, 'renew')}
+                    disabled={busyId === membership.id}
+                    className="rounded-lg border border-[#EA7301]/50 bg-[#EA7301]/15 px-3 py-2 text-xs font-heading font-bold text-white hover:bg-[#EA7301]/25 disabled:opacity-50"
+                  >
+                    Renovar
+                  </button>
+                </div>
+              </article>
+            );
+          })}
+          {!isLoading && activeMemberships.length === 0 && (
+            <div className="rounded-xl border border-white/10 bg-black/25 p-4 text-sm text-[#d5c0d7]">No tienes membresias activas.</div>
+          )}
+        </div>
+      </section>
+      <section className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
+        <p className="text-xs font-mono text-[#EA7301]">HISTORIAL</p>
+        <h2 className="mt-1 font-heading text-2xl font-black text-white">Movimientos de membresia</h2>
+        <div className="mt-4 overflow-hidden rounded-xl border border-white/10">
+          {memberships.map((membership) => {
+            const tournament = findTournamentSummary(membership.tournamentId);
+            const statusText = membership.status === 'active' ? 'Activa' : 'Cancelada';
+            const detailDate = membership.cancelledAt || membership.renewedAt || membership.grantedAt;
+            return (
+              <div key={membership.id} className="grid gap-2 border-b border-white/10 bg-black/20 px-4 py-3 text-sm last:border-b-0 sm:grid-cols-[1.2fr_0.7fr_0.7fr]">
+                <div>
+                  <p className="font-heading font-bold text-white">{tournament?.name || membership.tournamentId}</p>
+                  <p className="text-xs text-[#d5c0d7]">{tournament?.sportName || 'KAS'} · Pago {membership.paymentId}</p>
+                </div>
+                <p className="font-mono text-xs text-[#EA7301]">{statusText}</p>
+                <p className="font-mono text-xs text-[#d5c0d7]">{new Date(detailDate).toLocaleDateString()}</p>
+              </div>
+            );
+          })}
+          {!isLoading && memberships.length === 0 && (
+            <div className="bg-black/20 px-4 py-4 text-sm text-[#d5c0d7]">Todavia no hay historial de membresias.</div>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function GlobalRankingDashboard() {
+  const { currentUser, leaderboard } = useTournament();
+  const ranking = [...leaderboard]
+    .map((user) => (user.id === currentUser.id ? currentUser : user))
+    .sort((a, b) => b.points - a.points);
+  const currentPosition = Math.max(1, ranking.findIndex((user) => user.id === currentUser.id) + 1);
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-5 px-4 py-4 pb-24">
+      <section className="rounded-2xl border border-[#EA7301]/35 bg-[#19101c]/90 p-5 sm:p-7">
+        <p className="text-sm font-mono text-[#EA7301]">PRESTIGIO</p>
+        <h1 className="mt-1 font-heading text-4xl font-black text-white">Ranking global</h1>
+        <p className="mt-3 max-w-2xl text-sm text-[#d5c0d7]">
+          Lista general de usuarios KAS ordenada por puntos acumulados.
+        </p>
+      </section>
+      <section className="grid gap-3 sm:grid-cols-3">
+        <Metric label="Tu posicion" value={`#${currentPosition}`} />
+        <Metric label="Tus puntos" value={currentUser.points.toLocaleString()} />
+        <Metric label="Usuarios" value={String(ranking.length)} />
+      </section>
+      <section className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-mono text-[#EA7301]">TABLA</p>
+            <h2 className="font-heading text-2xl font-black text-white">Usuarios y posiciones</h2>
+          </div>
+          <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">Global</span>
+        </div>
+        <div className="mt-4 overflow-hidden rounded-xl border border-white/10">
+          {ranking.map((user, index) => {
+            const isCurrent = user.id === currentUser.id;
+            return (
+              <div
+                key={user.id}
+                className={`grid grid-cols-[44px_1fr_auto] items-center gap-3 border-b border-white/10 px-4 py-3 last:border-b-0 ${
+                  isCurrent ? 'bg-[#EA7301]/15' : 'bg-black/20'
+                }`}
+              >
+                <span className={`font-mono text-sm font-black ${isCurrent ? 'text-[#EA7301]' : 'text-[#d5c0d7]'}`}>#{index + 1}</span>
+                <div className="flex min-w-0 items-center gap-3">
+                  <img src={user.avatar} alt={user.name} className="h-10 w-10 rounded-lg border border-white/10 object-cover" />
+                  <div className="min-w-0">
+                    <p className="truncate font-heading font-bold text-white">{user.name}</p>
+                    <p className="truncate text-xs text-[#d5c0d7]">{user.username}{isCurrent ? ' · Tu posicion' : ''}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-heading text-lg font-black text-white">{user.points.toLocaleString()}</p>
+                  <p className="text-xs font-mono text-[#d5c0d7]">pts</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function SupportDashboard() {
+  const { currentUser } = useTournament();
+  const [category, setCategory] = useState('Membresia');
+  const [message, setMessage] = useState('');
+  const [tickets, setTickets] = useState<Array<{ id: string; category: string; message: string; status: string; createdAt: string }>>(() => {
+    const saved = localStorage.getItem('kas_support_tickets_v1');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('kas_support_tickets_v1', JSON.stringify(tickets));
+  }, [tickets]);
+
+  const createTicket = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!message.trim()) return;
+    setTickets((prev) => [{
+      id: `SOP-${Date.now()}`,
+      category,
+      message: message.trim(),
+      status: 'Abierto',
+      createdAt: new Date().toISOString(),
+    }, ...prev]);
+    setMessage('');
+  };
+
+  const quickActions = [
+    'Problema con membresia',
+    'Pago no reflejado',
+    'Resultado incorrecto',
+    'No puedo iniciar sesion',
+    'Solicitar cambio de correo',
+    'Reportar logo o imagen',
+  ];
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-5 px-4 py-4 pb-24">
+      <section className="rounded-2xl border border-[#EA7301]/35 bg-[#19101c]/90 p-5 sm:p-7">
+        <p className="text-sm font-mono text-[#EA7301]">AYUDA</p>
+        <h1 className="mt-1 font-heading text-4xl font-black text-white">Soporte KAS</h1>
+        <p className="mt-3 max-w-2xl text-sm text-[#d5c0d7]">
+          Centro de ayuda para membresias, pagos, resultados, cuenta y problemas visuales de la plataforma.
+        </p>
+      </section>
+      <section className="grid gap-3 sm:grid-cols-3">
+        <Metric label="Tickets abiertos" value={String(tickets.filter((item) => item.status === 'Abierto').length)} />
+        <Metric label="Respuesta" value="<24h" />
+        <Metric label="Usuario" value={currentUser.username} />
+      </section>
+      <section className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+        <form onSubmit={createTicket} className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
+          <p className="text-xs font-mono text-[#EA7301]">NUEVO TICKET</p>
+          <h2 className="mt-1 font-heading text-2xl font-black text-white">Contactar soporte</h2>
+          <label className="mt-4 block text-xs font-mono uppercase text-[#d5c0d7]">Categoria</label>
+          <select
+            value={category}
+            onChange={(event) => setCategory(event.target.value)}
+            className="mt-2 w-full rounded-lg border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#EA7301]"
+          >
+            {['Membresia', 'Pago', 'Resultado', 'Cuenta', 'Imagenes y logos', 'Error tecnico'].map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
+          <label className="mt-4 block text-xs font-mono uppercase text-[#d5c0d7]">Mensaje</label>
+          <textarea
+            value={message}
+            onChange={(event) => setMessage(event.target.value)}
+            rows={5}
+            placeholder="Describe que necesitas revisar..."
+            className="mt-2 w-full resize-none rounded-lg border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none placeholder:text-white/35 focus:border-[#EA7301]"
+          />
+          <button type="submit" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#EA7301] px-4 py-3 font-heading font-black text-black hover:bg-orange-400">
+            Enviar ticket <ArrowRight size={18} />
+          </button>
+        </form>
+        <div className="space-y-4">
+          <div className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
+            <p className="text-xs font-mono text-[#EA7301]">ATAJOS</p>
+            <h2 className="mt-1 font-heading text-2xl font-black text-white">Opciones rapidas</h2>
+            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              {quickActions.map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => {
+                    setCategory(item.includes('Pago') ? 'Pago' : item.includes('logo') || item.includes('imagen') ? 'Imagenes y logos' : item.includes('sesion') || item.includes('correo') ? 'Cuenta' : item.includes('Resultado') ? 'Resultado' : 'Membresia');
+                    setMessage(item);
+                  }}
+                  className="rounded-lg border border-white/10 bg-black/25 px-3 py-3 text-left text-sm font-heading font-bold text-white hover:border-[#EA7301]/60"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
+            <p className="text-xs font-mono text-[#EA7301]">CANALES</p>
+            <h2 className="mt-1 font-heading text-2xl font-black text-white">Contacto</h2>
+            <div className="mt-4 grid gap-3">
+              <div className="rounded-lg border border-white/10 bg-black/25 px-4 py-3">
+                <p className="font-heading font-bold text-white">Soporte por correo</p>
+                <p className="text-xs text-[#d5c0d7]">soporte@kingarthursports.local</p>
+              </div>
+              <div className="rounded-lg border border-white/10 bg-black/25 px-4 py-3">
+                <p className="font-heading font-bold text-white">Horario</p>
+                <p className="text-xs text-[#d5c0d7]">Lunes a sabado · 8:00 a.m. - 8:00 p.m.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
+        <p className="text-xs font-mono text-[#EA7301]">HISTORIAL</p>
+        <h2 className="mt-1 font-heading text-2xl font-black text-white">Tus solicitudes</h2>
+        <div className="mt-4 grid gap-3">
+          {tickets.map((ticket) => (
+            <article key={ticket.id} className="rounded-lg border border-white/10 bg-black/25 px-4 py-3">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-mono text-[#EA7301]">{ticket.id} · {ticket.category}</p>
+                  <p className="mt-1 font-heading font-bold text-white">{ticket.message}</p>
+                  <p className="mt-1 text-xs text-[#d5c0d7]">{new Date(ticket.createdAt).toLocaleString()}</p>
+                </div>
+                <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{ticket.status}</span>
+              </div>
+            </article>
+          ))}
+          {tickets.length === 0 && (
+            <div className="rounded-lg border border-white/10 bg-black/25 px-4 py-4 text-sm text-[#d5c0d7]">No tienes solicitudes abiertas.</div>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function SidebarDashboardPage({ section }: { section: keyof typeof sidebarDashboards }) {
+  const dashboard = sidebarDashboards[section];
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-5 px-4 py-4 pb-24">
+      <section className="rounded-2xl border border-[#EA7301]/35 bg-[#19101c]/90 p-5 sm:p-7">
+        <p className="text-sm font-mono text-[#EA7301]">{dashboard.eyebrow}</p>
+        <h1 className="mt-1 font-heading text-4xl font-black text-white">{dashboard.title}</h1>
+        <p className="mt-3 max-w-2xl text-sm text-[#d5c0d7]">{dashboard.text}</p>
+      </section>
+      <section className="grid gap-3 sm:grid-cols-3">
+        {dashboard.stats.map(([label, value]) => (
+          <Metric key={label} label={label} value={value} />
+        ))}
+      </section>
+      <section className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-mono text-[#EA7301]">DETALLE</p>
+            <h2 className="font-heading text-2xl font-black text-white">Actividad principal</h2>
+          </div>
+          <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">Dashboard</span>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          {dashboard.rows.map((row) => (
+            <div key={row} className="rounded-lg border border-white/10 bg-black/25 px-4 py-3">
+              <p className="font-heading font-bold text-white">{row}</p>
+              <p className="mt-1 text-xs text-[#d5c0d7]">Disponible para seguimiento dentro de KAS.</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function KasProfileDashboard() {
+  const { currentUser, updateUserProfile } = useTournament();
+  const [name, setName] = useState(currentUser.name);
+  const [username, setUsername] = useState(currentUser.username.replace(/^@/, ''));
+  const [favoriteTeamId, setFavoriteTeamId] = useState(currentUser.favoriteTeamId);
+  const [avatar, setAvatar] = useState(currentUser.avatar);
+  const [cardName, setCardName] = useState(currentUser.name);
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [savedCard, setSavedCard] = useState(() => localStorage.getItem('kas_payment_card_v1') || '');
+
+  const saveProfile = (event: React.FormEvent) => {
+    event.preventDefault();
+    updateUserProfile(name.trim() || currentUser.name, username.trim() || currentUser.username, favoriteTeamId, avatar);
+  };
+
+  const saveCard = (event: React.FormEvent) => {
+    event.preventDefault();
+    const digits = cardNumber.replace(/\D/g, '');
+    if (digits.length < 4) return;
+    const label = `${cardName || currentUser.name} · **** ${digits.slice(-4)} · ${cardExpiry || 'Sin fecha'}`;
+    localStorage.setItem('kas_payment_card_v1', label);
+    setSavedCard(label);
+    setCardNumber('');
+    setCardExpiry('');
+  };
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-5 px-4 py-4 pb-24">
+      <section className="rounded-2xl border border-[#EA7301]/35 bg-[#19101c]/90 p-5 sm:p-7">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <img src={currentUser.avatar} alt={currentUser.name} className="h-20 w-20 rounded-2xl border border-white/10 object-cover" />
+            <div>
+              <p className="text-sm font-mono text-[#EA7301]">PERFIL KAS</p>
+              <h1 className="font-heading text-4xl font-black text-white">{currentUser.name}</h1>
+              <p className="text-sm text-[#d5c0d7]">{currentUser.username}</p>
+            </div>
+          </div>
+          <span className="rounded-full bg-[#EA7301]/15 px-4 py-2 text-xs font-mono text-[#EA7301]">Nivel {currentUser.level}</span>
+        </div>
+      </section>
+      <section className="grid gap-3 sm:grid-cols-4">
+        <Metric label="Puntos KAS" value={currentUser.points.toLocaleString()} />
+        <Metric label="Precision" value={`${currentUser.accuracyRate}%`} />
+        <Metric label="Racha" value={String(currentUser.currentStreak)} />
+        <Metric label="Ranking CR" value={`Top ${currentUser.countryRankPercentile}%`} />
+      </section>
+      <section className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+        <form onSubmit={saveProfile} className="rounded-xl border border-white/10 bg-[#19101c]/90 p-5">
+          <p className="text-xs font-mono text-[#EA7301]">CUENTA</p>
+          <h2 className="mt-1 font-heading text-2xl font-black text-white">Editar perfil</h2>
+          <div className="mt-5 flex flex-col gap-4 sm:flex-row">
+            <div className="shrink-0 relative group">
+              <img src={avatar} alt={name} className="h-24 w-24 rounded-2xl border border-white/10 object-cover transition-opacity group-hover:opacity-50" />
+              <label className="absolute inset-0 flex cursor-pointer flex-col items-center justify-center rounded-2xl opacity-0 transition-opacity group-hover:opacity-100 bg-black/60">
+                <span className="text-[10px] font-bold text-white text-center px-2">Cambiar Foto</span>
+                <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setAvatar(reader.result as string);
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }} />
+              </label>
+            </div>
+            <div className="grid flex-1 gap-3">
+              <label className="text-xs font-mono uppercase text-[#d5c0d7]">URL de foto/avatar</label>
+              <input value={avatar} onChange={(event) => setAvatar(event.target.value)} className="rounded-lg border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#EA7301]" />
+            </div>
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="text-xs font-mono uppercase text-[#d5c0d7]">Nombre</label>
+              <input value={name} onChange={(event) => setName(event.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#EA7301]" />
+            </div>
+            <div>
+              <label className="text-xs font-mono uppercase text-[#d5c0d7]">Usuario</label>
+              <input value={username} onChange={(event) => setUsername(event.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#EA7301]" />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="text-xs font-mono uppercase text-[#d5c0d7]">Equipo favorito</label>
+              <select value={favoriteTeamId} onChange={(event) => setFavoriteTeamId(event.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none focus:border-[#EA7301]">
+                {TEAMS.map((team) => (
+                  <option key={team.id} value={team.id}>{team.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <button type="submit" className="mt-5 inline-flex items-center gap-2 rounded-lg bg-[#EA7301] px-4 py-3 font-heading font-black text-black hover:bg-orange-400">
+            Guardar cambios <ArrowRight size={18} />
+          </button>
+        </form>
+        <div className="space-y-4">
+          <form onSubmit={saveCard} className="rounded-xl border border-white/10 bg-[#19101c]/90 p-5">
+            <p className="text-xs font-mono text-[#EA7301]">PAGO</p>
+            <h2 className="mt-1 font-heading text-2xl font-black text-white">Tarjeta debito/credito</h2>
+            {savedCard && <p className="mt-3 rounded-lg border border-white/10 bg-black/25 px-3 py-3 text-sm text-[#d5c0d7]">{savedCard}</p>}
+            <div className="mt-4 grid gap-3">
+              <input value={cardName} onChange={(event) => setCardName(event.target.value)} placeholder="Nombre en tarjeta" className="rounded-lg border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none placeholder:text-white/35 focus:border-[#EA7301]" />
+              <input value={cardNumber} onChange={(event) => setCardNumber(event.target.value)} inputMode="numeric" placeholder="Numero de tarjeta" className="rounded-lg border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none placeholder:text-white/35 focus:border-[#EA7301]" />
+              <input value={cardExpiry} onChange={(event) => setCardExpiry(event.target.value)} placeholder="MM/AA" className="rounded-lg border border-white/10 bg-black/30 px-3 py-3 text-sm text-white outline-none placeholder:text-white/35 focus:border-[#EA7301]" />
+            </div>
+            <button type="submit" className="mt-4 rounded-lg border border-[#EA7301]/50 bg-[#EA7301]/15 px-4 py-3 font-heading font-bold text-white hover:bg-[#EA7301]/25">Guardar tarjeta</button>
+          </form>
+          <div className="rounded-xl border border-white/10 bg-[#19101c]/90 p-5">
+            <p className="text-xs font-mono text-[#EA7301]">SEGURIDAD</p>
+            <h2 className="mt-1 font-heading text-2xl font-black text-white">Opciones de cuenta</h2>
+            <div className="mt-4 grid gap-3">
+              {['Cambiar contrasena', 'Preferencias de notificaciones', 'Ver sesiones activas'].map((item) => (
+                <button key={item} type="button" className="rounded-lg border border-white/10 bg-black/25 px-4 py-3 text-left font-heading font-bold text-white hover:border-[#EA7301]/60">{item}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function KasShell() {
   const [adminModalOpen, setAdminModalOpen] = useState(false);
   const [colorMode, setColorMode] = useState<'dark' | 'light'>(() => {
@@ -670,13 +1405,18 @@ function KasShell() {
     '/tournaments/cr-apertura-2026/playoffs',
     '/tournaments/cr-apertura-2026/forum',
   ].some((path) => location.pathname.startsWith(path));
-  const usesTeamTheme = isLoggedIn && (isCostaRicaQuinielaRoute || location.pathname === '/profile');
+  const usesTeamTheme = isLoggedIn && isCostaRicaQuinielaRoute;
   const usesLoginTeamTheme = !isLoggedIn && location.pathname === '/login';
   const isAdmin = isLoggedIn && (currentUser.role === 'admin' || currentUser.isAdmin === true);
   const activeTab = getActiveTab(location.pathname);
   const isKasPublic = location.pathname === '/' || location.pathname === '/dashboard' || location.pathname.startsWith('/sports');
   const isAdminRoute = location.pathname.startsWith('/admin');
-  const showBottomNav = isCostaRicaQuinielaRoute || location.pathname === '/profile' || location.pathname.startsWith('/admin');
+  const showBottomNav = isCostaRicaQuinielaRoute;
+  const showDashboardSidebar = location.pathname !== '/'
+    && location.pathname !== '/login'
+    && location.pathname !== '/register'
+    && !location.pathname.endsWith('/login')
+    && !location.pathname.endsWith('/membership');
 
   useEffect(() => {
     localStorage.setItem('kas_color_mode', colorMode);
@@ -716,27 +1456,36 @@ function KasShell() {
         onNavigateToPath={(path) => navigate(path)}
       />
 
-      <main className={isKasPublic || isAdminRoute ? 'flex-1 w-full' : 'flex-1 w-full max-w-4xl mx-auto pt-3 px-2 sm:px-4'}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<KasLoginPage onSuccess={(user) => navigate(user.role === 'admin' || user.isAdmin ? '/admin' : '/dashboard')} />} />
-          <Route path="/register" element={<KasLoginPage onSuccess={(user) => navigate(user.role === 'admin' || user.isAdmin ? '/admin' : '/dashboard')} isRegisterDefault />} />
-          <Route path="/dashboard" element={isLoggedIn ? <SportsDashboard /> : <Navigate to="/login" replace />} />
-          <Route path="/sports" element={isLoggedIn ? <SportsDashboard /> : <Navigate to="/login" replace />} />
-          <Route path="/sports/football" element={isLoggedIn ? <FootballDashboard /> : <Navigate to="/login" replace />} />
-          <Route path="/sports/:sportId" element={isLoggedIn ? <SportPlaceholder /> : <Navigate to="/login" replace />} />
-          <Route path="/tournaments/:tournamentId/membership" element={<TournamentMembershipLogin />} />
-          <Route path="/tournaments/:tournamentId/grand-prix/:grandPrixId" element={<GrandPrixDashboard />} />
-          <Route path="/tournaments/:tournamentId" element={<TournamentDashboard />} />
-          <Route path="/tournaments/cr-apertura-2026/login" element={<LoginPage onSuccess={() => navigate('/tournaments/cr-apertura-2026/predictions', { replace: true })} onFavoriteTeamPreview={setPreviewTeamId} />} />
-          <Route path="/tournaments/:tournamentId/predictions" element={<CostaRicaOnly><DashboardView onOpenScorerModal={(id) => setActiveScorerMatchId(id)} onOpenAdmin={() => setAdminModalOpen(true)} /></CostaRicaOnly>} />
-          <Route path="/tournaments/:tournamentId/ranking" element={<CostaRicaOnly><RankingView /></CostaRicaOnly>} />
-          <Route path="/tournaments/:tournamentId/playoffs" element={<CostaRicaOnly><PlayoffsView onOpenScorerModal={(id) => setActiveScorerMatchId(id)} /></CostaRicaOnly>} />
-          <Route path="/tournaments/:tournamentId/forum" element={<CostaRicaOnly><SocialView /></CostaRicaOnly>} />
-          <Route path="/profile" element={<ProfileView onOpenLogin={() => navigate('/login')} />} />
-          <Route path="/admin/*" element={isAdmin ? <AdminView tournaments={getAllAdminTournaments()} /> : <Navigate to="/login" replace />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+      <main className={showDashboardSidebar ? 'flex-1 w-full' : isKasPublic || isAdminRoute ? 'flex-1 w-full' : 'flex-1 w-full max-w-4xl mx-auto pt-3 px-2 sm:px-4'}>
+        <div className={showDashboardSidebar ? 'flex min-h-full flex-col lg:flex-row' : ''}>
+          {showDashboardSidebar && <DashboardSidebar isAdmin={isAdmin} />}
+          <div className={showDashboardSidebar ? 'min-w-0 flex-1' : ''}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<KasLoginPage onSuccess={(user) => navigate(user.role === 'admin' || user.isAdmin ? '/admin' : '/dashboard')} />} />
+              <Route path="/register" element={<KasLoginPage onSuccess={(user) => navigate(user.role === 'admin' || user.isAdmin ? '/admin' : '/dashboard')} isRegisterDefault />} />
+              <Route path="/dashboard" element={isLoggedIn ? <SportsDashboard /> : <Navigate to="/login" replace />} />
+              <Route path="/dashboard/calendario" element={isLoggedIn ? <MembershipCalendarDashboard /> : <Navigate to="/login" replace />} />
+              <Route path="/dashboard/membresias" element={isLoggedIn ? <MembershipsDashboard /> : <Navigate to="/login" replace />} />
+              <Route path="/dashboard/ranking-global" element={isLoggedIn ? <GlobalRankingDashboard /> : <Navigate to="/login" replace />} />
+              <Route path="/dashboard/soporte" element={isLoggedIn ? <SupportDashboard /> : <Navigate to="/login" replace />} />
+              <Route path="/sports" element={isLoggedIn ? <SportsDashboard /> : <Navigate to="/login" replace />} />
+              <Route path="/sports/football" element={isLoggedIn ? <FootballDashboard /> : <Navigate to="/login" replace />} />
+              <Route path="/sports/:sportId" element={isLoggedIn ? <SportPlaceholder /> : <Navigate to="/login" replace />} />
+              <Route path="/tournaments/:tournamentId/membership" element={<TournamentMembershipLogin />} />
+              <Route path="/tournaments/:tournamentId/grand-prix/:grandPrixId" element={<GrandPrixDashboard />} />
+              <Route path="/tournaments/:tournamentId" element={<TournamentDashboard />} />
+              <Route path="/tournaments/cr-apertura-2026/login" element={<LoginPage onSuccess={() => navigate('/tournaments/cr-apertura-2026/predictions', { replace: true })} onFavoriteTeamPreview={setPreviewTeamId} />} />
+              <Route path="/tournaments/:tournamentId/predictions" element={<CostaRicaOnly><DashboardView onOpenScorerModal={(id) => setActiveScorerMatchId(id)} onOpenAdmin={() => setAdminModalOpen(true)} /></CostaRicaOnly>} />
+              <Route path="/tournaments/:tournamentId/ranking" element={<CostaRicaOnly><RankingView /></CostaRicaOnly>} />
+              <Route path="/tournaments/:tournamentId/playoffs" element={<CostaRicaOnly><PlayoffsView onOpenScorerModal={(id) => setActiveScorerMatchId(id)} /></CostaRicaOnly>} />
+              <Route path="/tournaments/:tournamentId/forum" element={<CostaRicaOnly><SocialView /></CostaRicaOnly>} />
+              <Route path="/profile" element={isLoggedIn ? <KasProfileDashboard /> : <Navigate to="/login" replace />} />
+              <Route path="/admin/*" element={isAdmin ? <AdminView tournaments={getAllAdminTournaments()} /> : <Navigate to="/login" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
+        </div>
       </main>
 
       {showBottomNav && (

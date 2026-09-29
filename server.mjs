@@ -104,6 +104,43 @@ app.get('/api/memberships/:tournamentId', requireUser, (request, response) => {
   response.json({ active: Boolean(membership), membership: membership || null });
 });
 
+app.get('/api/memberships', requireUser, (request, response) => {
+  const memberships = request.database.memberships
+    .filter((item) => item.userId === request.user.id && (request.query.all === '1' || item.status === 'active'))
+    .sort((a, b) => new Date(b.grantedAt).getTime() - new Date(a.grantedAt).getTime());
+  response.json({ memberships });
+});
+
+app.post('/api/memberships/:membershipId/cancel', requireUser, async (request, response) => {
+  try {
+    const membership = await updateDatabase((database) => {
+      const record = database.memberships.find((item) => item.id === request.params.membershipId && item.userId === request.user.id);
+      if (!record) throw new Error('Membresia no encontrada.');
+      record.status = 'cancelled';
+      record.cancelledAt = new Date().toISOString();
+      return record;
+    });
+    response.json({ membership });
+  } catch (error) {
+    response.status(404).json({ error: error instanceof Error ? error.message : 'No se pudo cancelar la membresia.' });
+  }
+});
+
+app.post('/api/memberships/:membershipId/renew', requireUser, async (request, response) => {
+  try {
+    const membership = await updateDatabase((database) => {
+      const record = database.memberships.find((item) => item.id === request.params.membershipId && item.userId === request.user.id);
+      if (!record) throw new Error('Membresia no encontrada.');
+      record.status = 'active';
+      record.renewedAt = new Date().toISOString();
+      return record;
+    });
+    response.json({ membership });
+  } catch (error) {
+    response.status(404).json({ error: error instanceof Error ? error.message : 'No se pudo renovar la membresia.' });
+  }
+});
+
 app.get('/api/admin/summary', requireUser, requireAdmin, (request, response) => {
   const users = request.database.users.map(publicUser);
   const memberships = request.database.memberships || [];

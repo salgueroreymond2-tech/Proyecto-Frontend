@@ -28,6 +28,17 @@ export type AdminSummary = {
   };
 };
 
+export type UserMembership = {
+  id: string;
+  userId: string;
+  tournamentId: string;
+  paymentId: string;
+  status: string;
+  grantedAt: string;
+  cancelledAt?: string;
+  renewedAt?: string;
+};
+
 function toProfile(user: ApiUser): UserProfile {
   return {
     id: user.id,
@@ -101,6 +112,18 @@ export async function simulatePayPalCheckout(tournamentId: string, amount: strin
     body: JSON.stringify({ tournamentId, amount }),
   });
   return request<{ membership: { tournamentId: string } }>(`/payments/paypal/orders/${order.order.id}/capture`, { method: 'POST' });
+}
+
+export async function getMyMemberships(options: { includeHistory?: boolean } = {}) {
+  return request<{ memberships: UserMembership[] }>(`/memberships${options.includeHistory ? '?all=1' : ''}`);
+}
+
+export async function cancelMembership(membershipId: string) {
+  return request<{ membership: UserMembership }>(`/memberships/${membershipId}/cancel`, { method: 'POST' });
+}
+
+export async function renewMembership(membershipId: string) {
+  return request<{ membership: UserMembership }>(`/memberships/${membershipId}/renew`, { method: 'POST' });
 }
 
 export async function getAdminSummary() {

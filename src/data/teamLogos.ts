@@ -44,10 +44,10 @@ const f1TeamLogos: LogoEntry[] = [
 
 const cyclingTeamLogos: LogoEntry[] = [
   { name: 'UAE Team Emirates-XRG', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2020/01/Br13mQAe2bAGOJM74TNm_010226-114202.png?v=20260201114202', aliases: ['UAE Team Emirates'] },
-  { name: 'Team Visma-Lease a Bike', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2026/05/WdIWiiUROUQwbjt6xbUB_070526-015633.png?v=20260507135633', aliases: ['Visma Lease a Bike'] },
+  { name: 'Team Visma-Lease a Bike', logoUrl: '/assets/logos/cycling-teams/team-visma-lease-a-bike.jpg', aliases: ['Visma Lease a Bike'] },
   { name: 'Soudal Quick-Step', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2020/01/tuaiS5vUPToBBMb2TMJS_010526-103232.png?v=20260501103232' },
-  { name: 'Netcompany INEOS Cycling Team', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2026/05/tc8nsVjopJPZxNVN53J9_070526-043213.png?v=20260507163214', aliases: ['INEOS Grenadiers'] },
-  { name: 'Red Bull-BORA-hansgrohe', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2026/05/THge03Zv7d8UGWgsSZal_070526-015438.png?v=20260507135438', aliases: ['Bora Hansgrohe'] },
+  { name: 'Netcompany INEOS Cycling Team', logoUrl: '/assets/logos/cycling-teams/ineos-grenadiers.png', aliases: ['INEOS Grenadiers'] },
+  { name: 'Red Bull-BORA-hansgrohe', logoUrl: '/assets/logos/cycling-teams/red-bull-bora-hansgrohe.jpg', aliases: ['Bora Hansgrohe'] },
   { name: 'Lidl-Trek', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2020/01/p5eDSBqpSwRdyoEqf6qO_010226-112259.png?v=20260201112259' },
   { name: 'Alpecin-Premier Tech', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2020/01/hdUPyRCqIUYvQG8PCWxO_010226-111813.png?v=20260201111813', aliases: ['Alpecin-Deceuninck'] },
   { name: 'Movistar Team', logoUrl: 'https://static2.giroditalia.it/wp-content/uploads/2020/01/6WnyZezJoaEEiRloNDg1_010226-113223.png?v=20260201113223' },

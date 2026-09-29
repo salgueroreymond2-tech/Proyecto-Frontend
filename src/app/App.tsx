@@ -265,9 +265,10 @@ const sportDashboards = {
     featured: 'Campeonatos mundiales 2027',
     events: ['Canelo Alvarez vs David Benavidez', 'Naoya Inoue vs Junto Nakatani', 'Oleksandr Usyk vs Tyson Fury'],
     tournaments: [
-      { name: 'Boxeo Campeonatos Mundiales', season: '2027', status: 'Activo', price: '$11.99' },
-      { name: 'Boxeo PPV Series', season: '2027', status: 'Premium', price: '$12.99' },
-      { name: 'Boxeo P4P Stars', season: '2027', status: 'Preparacion', price: '$8.99' },
+      { name: 'WBC World Boxing Council', season: '2027', status: 'Activo', price: '$11.99' },
+      { name: 'WBA World Boxing Association', season: '2027', status: 'Activo', price: '$11.99' },
+      { name: 'IBF International Boxing Federation', season: '2027', status: 'Activo', price: '$11.99' },
+      { name: 'WBO World Boxing Organization', season: '2027', status: 'Activo', price: '$11.99' },
     ],
   },
 } satisfies Record<string, {
@@ -502,26 +503,33 @@ const tournamentDetails: Record<string, {
     predictionRules: ['Ganador de match', 'Punto por equipo', 'Marcador global', 'MVP'],
     coverage: ['Foursomes', 'Four-ball', 'Singles', 'Marcador global'],
   },
-  'boxeo-campeonatos-mundiales': {
-    overview: 'Carteleras de titulo mundial conectadas a los cuatro organismos mayores, The Ring y campeones lineales.',
+  'wbc-world-boxing-council': {
+    overview: 'Quiniela de peleas titulares avaladas por el World Boxing Council.',
     teams: ['Naoya Inoue', 'Canelo Alvarez', 'Oleksandr Usyk', 'Tyson Fury', 'Terence Crawford', 'Gervonta Davis', 'Shakur Stevenson', 'Dmitry Bivol', 'Artur Beterbiev', 'Jaron Ennis'],
-    format: 'Temporada 2027 - peleas titulares por division y organismo.',
+    format: 'Temporada 2027 - peleas titulares WBC por division.',
     predictionRules: ['Ganador', 'Metodo de victoria', 'Round exacto', 'Decision o KO/TKO'],
-    coverage: ['WBC', 'WBA', 'IBF', 'WBO', 'The Ring'],
+    coverage: ['Titulo mundial WBC', 'Titulo interino', 'Eliminatorias', 'Defensas obligatorias'],
   },
-  'boxeo-ppv-series': {
-    overview: 'Eventos PPV de grandes promotoras como Matchroom, Top Rank, PBC, Golden Boy y Queensberry.',
+  'wba-world-boxing-association': {
+    overview: 'Quiniela de peleas titulares avaladas por la World Boxing Association.',
     teams: ['Canelo Alvarez', 'Ryan Garcia', 'Anthony Joshua', 'Tyson Fury', 'Deontay Wilder', 'David Benavidez', 'Devin Haney', 'Teofimo Lopez'],
-    format: 'Carteleras premium 2027 - main event, co-main y peleas soporte.',
-    predictionRules: ['Ganador del combate', 'Metodo', 'Round', 'Pelea de la noche'],
-    coverage: ['Main event', 'Co-main', 'PPV', 'Promociones', 'Odds'],
+    format: 'Temporada 2027 - peleas titulares WBA por division.',
+    predictionRules: ['Ganador', 'Metodo', 'Round', 'Decision o KO/TKO'],
+    coverage: ['Titulo mundial WBA', 'Super campeon', 'Regular', 'Eliminatorias'],
   },
-  'boxeo-p4p-stars': {
-    overview: 'Circuito de estrellas libra por libra y atracciones globales del boxeo profesional.',
+  'ibf-international-boxing-federation': {
+    overview: 'Quiniela de peleas titulares avaladas por la International Boxing Federation.',
     teams: ['Naoya Inoue', 'Terence Crawford', 'Oleksandr Usyk', 'Canelo Alvarez', 'Gervonta Davis', 'Shakur Stevenson', 'Devin Haney', 'Dmitry Bivol', 'Artur Beterbiev', 'Jaron Ennis'],
-    format: 'Ranking P4P 2027 - peleas destacadas y defensa de estatus.',
-    predictionRules: ['Ganador', 'Dominio por tarjetas', 'KO/TKO', 'Sube o baja ranking'],
-    coverage: ['P4P', 'Estrellas PPV', 'Divisiones', 'Promotoras'],
+    format: 'Temporada 2027 - peleas titulares IBF por division.',
+    predictionRules: ['Ganador', 'Metodo', 'Round', 'Decision o KO/TKO'],
+    coverage: ['Titulo mundial IBF', 'Eliminatorias', 'Defensas obligatorias', 'Ranking IBF'],
+  },
+  'wbo-world-boxing-organization': {
+    overview: 'Quiniela de peleas titulares avaladas por la World Boxing Organization.',
+    teams: ['Naoya Inoue', 'Canelo Alvarez', 'Oleksandr Usyk', 'Tyson Fury', 'Terence Crawford', 'Gervonta Davis', 'Shakur Stevenson', 'Dmitry Bivol', 'Artur Beterbiev', 'Jaron Ennis'],
+    format: 'Temporada 2027 - peleas titulares WBO por division.',
+    predictionRules: ['Ganador', 'Metodo', 'Round', 'Decision o KO/TKO'],
+    coverage: ['Titulo mundial WBO', 'Titulo interino', 'Global', 'Ranking WBO'],
   },
 };
 

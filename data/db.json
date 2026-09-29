@@ -774,6 +774,22 @@
       "paymentId": "SIM-db4ad52b-fea6-4173-8e4d-39882ba698c3",
       "status": "active",
       "grantedAt": "2026-09-28T20:33:32.296Z"
+    },
+    {
+      "id": "042811ae-d749-46e5-9477-f4fef13cd42f",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "boxeo-campeonatos-mundiales",
+      "paymentId": "SIM-1d58a908-17ef-4fbe-b746-b39c12d19ada",
+      "status": "active",
+      "grantedAt": "2026-09-29T04:49:00.246Z"
+    },
+    {
+      "id": "2fd5d48b-f3cf-427b-8d1f-4bd928614528",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "boxeo-p4p-stars",
+      "paymentId": "SIM-b07178f1-d680-4a6e-8b6f-79df07445eaf",
+      "status": "active",
+      "grantedAt": "2026-09-29T04:49:46.101Z"
     }
   ],
   "payments": [
@@ -1786,6 +1802,86 @@
       "status": "captured",
       "createdAt": "2026-09-29T04:00:58.686Z",
       "capturedAt": "2026-09-29T04:00:58.763Z"
+    },
+    {
+      "id": "SIM-5fd31e8f-b58f-4e25-b8e2-f930aae5b93d",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "boxeo-ppv-series",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-29T04:32:45.394Z",
+      "capturedAt": "2026-09-29T04:32:45.515Z"
+    },
+    {
+      "id": "SIM-1d58a908-17ef-4fbe-b746-b39c12d19ada",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "boxeo-campeonatos-mundiales",
+      "amount": "$11.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-29T04:49:00.168Z",
+      "capturedAt": "2026-09-29T04:49:00.246Z"
+    },
+    {
+      "id": "SIM-56e1ac32-48bd-45b5-ada8-4ae707b13635",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "boxeo-ppv-series",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-29T04:49:21.111Z",
+      "capturedAt": "2026-09-29T04:49:21.186Z"
+    },
+    {
+      "id": "SIM-933ff32a-4516-408a-a133-f137e6a152da",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "boxeo-ppv-series",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-29T04:49:23.963Z",
+      "capturedAt": "2026-09-29T04:49:24.039Z"
+    },
+    {
+      "id": "SIM-45ccd24c-94cd-4fb8-8540-37e3779df583",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "boxeo-ppv-series",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-29T04:49:25.950Z",
+      "capturedAt": "2026-09-29T04:49:26.008Z"
+    },
+    {
+      "id": "SIM-54904ab9-ceba-44a3-b5da-36bac06c31e4",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "boxeo-ppv-series",
+      "amount": "$12.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-29T04:49:28.791Z",
+      "capturedAt": "2026-09-29T04:49:28.863Z"
+    },
+    {
+      "id": "SIM-b07178f1-d680-4a6e-8b6f-79df07445eaf",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "boxeo-p4p-stars",
+      "amount": "$8.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-29T04:49:46.065Z",
+      "capturedAt": "2026-09-29T04:49:46.101Z"
+    },
+    {
+      "id": "SIM-2bf32273-a913-4818-afd2-2398e6ec55f5",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "boxeo-campeonatos-mundiales",
+      "amount": "$11.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-29T04:49:58.609Z",
+      "capturedAt": "2026-09-29T04:49:58.674Z"
     }
   ]
 }

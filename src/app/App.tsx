@@ -133,23 +133,23 @@ const f1GrandPrix = [
 ];
 
 const footballTournaments = [
-  { id: 'cr-apertura-2026', name: 'Campeonato Nacional de Costa Rica', season: 'Apertura 2026', status: 'Activo', price: '$9.99', enabled: true },
-  { id: 'champions-league', name: 'UEFA Champions League', season: '2026-2027', status: 'Preparacion', price: '$14.99', enabled: false },
-  { id: 'premier-league', name: 'Premier League', season: '2026-2027', status: 'Preparacion', price: '$12.99', enabled: false },
-  { id: 'laliga', name: 'LaLiga', season: '2026-2027', status: 'Preparacion', price: '$12.99', enabled: false },
-  { id: 'serie-a', name: 'Serie A', season: '2026-2027', status: 'Preparacion', price: '$11.99', enabled: false },
-  { id: 'bundesliga', name: 'Bundesliga', season: '2026-2027', status: 'Preparacion', price: '$11.99', enabled: false },
-  { id: 'ligue-1', name: 'Ligue 1', season: '2026-2027', status: 'Preparacion', price: '$10.99', enabled: false },
-  { id: 'primeira-liga', name: 'Liga Portugal', season: '2026-2027', status: 'Preparacion', price: '$9.99', enabled: false },
-  { id: 'europa-league', name: 'UEFA Europa League', season: '2026-2027', status: 'Preparacion', price: '$10.99', enabled: false },
-  { id: 'nations-league', name: 'UEFA Nations League', season: '2026-2027', status: 'Preparacion', price: '$9.99', enabled: false },
-  { id: 'concacaf-nations-league', name: 'Concacaf Nations League', season: '2026-2027', status: 'Preparacion', price: '$8.99', enabled: false },
+  { id: 'cr-apertura-2026', name: 'Campeonato Nacional de Costa Rica', season: 'Apertura 2026', status: 'Activo', price: '$1.99', enabled: true },
+  { id: 'champions-league', name: 'UEFA Champions League', season: '2026-2027', status: 'Preparacion', price: '$4.99', enabled: false },
+  { id: 'premier-league', name: 'Premier League', season: '2026-2027', status: 'Preparacion', price: '$3.99', enabled: false },
+  { id: 'laliga', name: 'LaLiga', season: '2026-2027', status: 'Preparacion', price: '$3.99', enabled: false },
+  { id: 'serie-a', name: 'Serie A', season: '2026-2027', status: 'Preparacion', price: '$2.99', enabled: false },
+  { id: 'bundesliga', name: 'Bundesliga', season: '2026-2027', status: 'Preparacion', price: '$2.99', enabled: false },
+  { id: 'ligue-1', name: 'Ligue 1', season: '2026-2027', status: 'Preparacion', price: '$2.99', enabled: false },
+  { id: 'primeira-liga', name: 'Liga Portugal', season: '2026-2027', status: 'Preparacion', price: '$1.99', enabled: false },
+  { id: 'europa-league', name: 'UEFA Europa League', season: '2026-2027', status: 'Preparacion', price: '$2.99', enabled: false },
+  { id: 'nations-league', name: 'UEFA Nations League', season: '2026-2027', status: 'Preparacion', price: '$1.99', enabled: false },
+  { id: 'concacaf-nations-league', name: 'Concacaf Nations League', season: '2026-2027', status: 'Preparacion', price: '$1.99', enabled: false },
 ];
 
 const upcomingFootballTournaments = [
-  { id: 'copa-oro', name: 'Copa Oro', season: '2027', status: 'Preparacion', price: '$9.99', enabled: false },
-  { id: 'copa-america', name: 'Copa America', season: '2028', status: 'Preparacion', price: '$11.99', enabled: false },
-  { id: 'eurocopa', name: 'Eurocopa', season: '2028', status: 'Preparacion', price: '$12.99', enabled: false },
+  { id: 'copa-oro', name: 'Copa Oro', season: '2027', status: 'Preparacion', price: '$1.99', enabled: false },
+  { id: 'copa-america', name: 'Copa America', season: '2028', status: 'Preparacion', price: '$2.99', enabled: false },
+  { id: 'eurocopa', name: 'Eurocopa', season: '2028', status: 'Preparacion', price: '$3.99', enabled: false },
 ];
 
 const sportDashboards = {
@@ -161,13 +161,13 @@ const sportDashboards = {
     featured: 'Wimbledon',
     events: ['Carlos Alcaraz vs Jannik Sinner', 'Iga Swiatek vs Aryna Sabalenka', 'Coco Gauff vs Elena Rybakina'],
     tournaments: [
-      { name: 'Australian Open', season: '2027', status: 'Preparacion', price: '$9.99' },
-      { name: 'Roland Garros', season: '2027', status: 'Preparacion', price: '$9.99' },
-      { name: 'Wimbledon', season: '2027', status: 'Preparacion', price: '$12.99' },
-      { name: 'US Open', season: '2027', status: 'Preparacion', price: '$11.99' },
-      { name: 'ATP Masters', season: '2027', status: 'Activo', price: '$8.99' },
-      { name: 'WTA Masters', season: '2027', status: 'Activo', price: '$8.99' },
-      { name: 'Copa del Cafe de Costa Rica', season: '2027', status: 'Local', price: '$4.99' },
+      { name: 'Australian Open', season: '2027', status: 'Preparacion', price: '$1.99' },
+      { name: 'Roland Garros', season: '2027', status: 'Preparacion', price: '$1.99' },
+      { name: 'Wimbledon', season: '2027', status: 'Preparacion', price: '$3.99' },
+      { name: 'US Open', season: '2027', status: 'Preparacion', price: '$2.99' },
+      { name: 'ATP Masters', season: '2027', status: 'Activo', price: '$1.99' },
+      { name: 'WTA Masters', season: '2027', status: 'Activo', price: '$1.99' },
+      { name: 'Copa del Cafe de Costa Rica', season: '2027', status: 'Local', price: '$0.99' },
     ],
   },
   basketball: {
@@ -178,9 +178,9 @@ const sportDashboards = {
     featured: 'NBA 2026-2027',
     events: ['Boston Celtics vs Los Angeles Lakers', 'Denver Nuggets vs Dallas Mavericks', 'Golden State Warriors vs Phoenix Suns'],
     tournaments: [
-      { name: 'NBA Temporada Regular', season: '2026-2027', status: 'Activo', price: '$12.99' },
-      { name: 'NBA Playoffs', season: '2027', status: 'Preparacion', price: '$14.99' },
-      { name: 'NBA Finals', season: '2027', status: 'Premium', price: '$9.99' },
+      { name: 'NBA Temporada Regular', season: '2026-2027', status: 'Activo', price: '$3.99' },
+      { name: 'NBA Playoffs', season: '2027', status: 'Preparacion', price: '$4.99' },
+      { name: 'NBA Finals', season: '2027', status: 'Premium', price: '$1.99' },
     ],
   },
   baseball: {
@@ -191,9 +191,9 @@ const sportDashboards = {
     featured: 'MLB 2027',
     events: ['New York Yankees vs Boston Red Sox', 'Los Angeles Dodgers vs San Diego Padres', 'Houston Astros vs Texas Rangers'],
     tournaments: [
-      { name: 'MLB Temporada Regular', season: '2027', status: 'Activo', price: '$11.99' },
-      { name: 'MLB Postseason', season: '2027', status: 'Preparacion', price: '$13.99' },
-      { name: 'World Series', season: '2027', status: 'Premium', price: '$9.99' },
+      { name: 'MLB Temporada Regular', season: '2027', status: 'Activo', price: '$2.99' },
+      { name: 'MLB Postseason', season: '2027', status: 'Preparacion', price: '$3.99' },
+      { name: 'World Series', season: '2027', status: 'Premium', price: '$1.99' },
     ],
   },
   'american-football': {
@@ -204,9 +204,9 @@ const sportDashboards = {
     featured: 'NFL 2026-2027',
     events: ['Kansas City Chiefs vs Buffalo Bills', 'Dallas Cowboys vs Philadelphia Eagles', 'San Francisco 49ers vs Seattle Seahawks'],
     tournaments: [
-      { name: 'NFL Temporada Regular', season: '2026-2027', status: 'Activo', price: '$12.99' },
-      { name: 'NFL Playoffs', season: '2027', status: 'Preparacion', price: '$14.99' },
-      { name: 'Super Bowl', season: '2027', status: 'Premium', price: '$9.99' },
+      { name: 'NFL Temporada Regular', season: '2026-2027', status: 'Activo', price: '$3.99' },
+      { name: 'NFL Playoffs', season: '2027', status: 'Preparacion', price: '$4.99' },
+      { name: 'Super Bowl', season: '2027', status: 'Premium', price: '$1.99' },
     ],
   },
   f1: {
@@ -217,7 +217,7 @@ const sportDashboards = {
     featured: 'Formula 1 World Championship 2027',
     events: f1GrandPrix,
     tournaments: [
-      { name: 'F1 World Championship', season: '2027', status: 'Activo', price: '$12.99' },
+      { name: 'F1 World Championship', season: '2027', status: 'Activo', price: '$3.99' },
     ],
   },
   cycling: {
@@ -228,10 +228,10 @@ const sportDashboards = {
     featured: 'Grand Tours 2027',
     events: ['Tour de France - Etapa reina', 'Giro d Italia - Contrarreloj', 'La Vuelta - Final en alto'],
     tournaments: [
-      { name: 'Tour de France', season: '2027', status: 'Activo', price: '$10.99' },
-      { name: 'Giro d Italia', season: '2027', status: 'Preparacion', price: '$9.99' },
-      { name: 'La Vuelta', season: '2027', status: 'Preparacion', price: '$9.99' },
-      { name: 'UCI World Championships', season: '2027', status: 'Premium', price: '$8.99' },
+      { name: 'Tour de France', season: '2027', status: 'Activo', price: '$2.99' },
+      { name: 'Giro d Italia', season: '2027', status: 'Preparacion', price: '$1.99' },
+      { name: 'La Vuelta', season: '2027', status: 'Preparacion', price: '$1.99' },
+      { name: 'UCI World Championships', season: '2027', status: 'Premium', price: '$1.99' },
     ],
   },
   golf: {
@@ -242,9 +242,9 @@ const sportDashboards = {
     featured: 'PGA Tour 2027',
     events: ['The Masters - Ronda final', 'PGA Tour Championship', 'Ryder Cup Singles'],
     tournaments: [
-      { name: 'PGA Tour', season: '2027', status: 'Activo', price: '$9.99' },
-      { name: 'The Masters', season: '2027', status: 'Premium', price: '$11.99' },
-      { name: 'Ryder Cup', season: '2027', status: 'Preparacion', price: '$8.99' },
+      { name: 'PGA Tour', season: '2027', status: 'Activo', price: '$1.99' },
+      { name: 'The Masters', season: '2027', status: 'Premium', price: '$2.99' },
+      { name: 'Ryder Cup', season: '2027', status: 'Preparacion', price: '$1.99' },
     ],
   },
   mma: {
@@ -255,9 +255,9 @@ const sportDashboards = {
     featured: 'UFC Fight Night',
     events: ['Islam Makhachev vs Charles Oliveira', 'Alex Pereira vs Tom Aspinall', 'Valentina Shevchenko vs Alexa Grasso'],
     tournaments: [
-      { name: 'UFC Fight Night', season: '2027', status: 'Activo', price: '$7.99' },
-      { name: 'UFC PPV Series', season: '2027', status: 'Activo', price: '$12.99' },
-      { name: 'UFC Championship Events', season: '2027', status: 'Premium', price: '$14.99' },
+      { name: 'UFC Fight Night', season: '2027', status: 'Activo', price: '$0.99' },
+      { name: 'UFC PPV Series', season: '2027', status: 'Activo', price: '$3.99' },
+      { name: 'UFC Championship Events', season: '2027', status: 'Premium', price: '$4.99' },
     ],
   },
   boxing: {
@@ -268,10 +268,10 @@ const sportDashboards = {
     featured: 'Campeonatos mundiales 2027',
     events: ['Canelo Alvarez vs David Benavidez', 'Naoya Inoue vs Junto Nakatani', 'Oleksandr Usyk vs Tyson Fury'],
     tournaments: [
-      { name: 'WBC World Boxing Council', season: '2027', status: 'Activo', price: '$11.99' },
-      { name: 'WBA World Boxing Association', season: '2027', status: 'Activo', price: '$11.99' },
-      { name: 'IBF International Boxing Federation', season: '2027', status: 'Activo', price: '$11.99' },
-      { name: 'WBO World Boxing Organization', season: '2027', status: 'Activo', price: '$11.99' },
+      { name: 'WBC World Boxing Council', season: '2027', status: 'Activo', price: '$2.99' },
+      { name: 'WBA World Boxing Association', season: '2027', status: 'Activo', price: '$2.99' },
+      { name: 'IBF International Boxing Federation', season: '2027', status: 'Activo', price: '$2.99' },
+      { name: 'WBO World Boxing Organization', season: '2027', status: 'Activo', price: '$2.99' },
     ],
   },
 } satisfies Record<string, {
@@ -1417,7 +1417,8 @@ function KasShell() {
     && location.pathname !== '/login'
     && location.pathname !== '/register'
     && !location.pathname.endsWith('/login')
-    && !location.pathname.endsWith('/membership');
+    && !location.pathname.endsWith('/membership')
+    && !location.pathname.startsWith('/admin');
 
   useEffect(() => {
     localStorage.setItem('kas_color_mode', colorMode);

@@ -85,7 +85,7 @@ function createMaterialIcon(name: keyof typeof iconNames) {
       className={`material-symbols-rounded inline-flex items-center justify-center leading-none select-none ${className}`}
       style={{
         fontSize: size,
-        fontVariationSettings: "'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24",
+        fontVariationSettings: "'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20",
         ...style,
       }}
       {...props}

@@ -1410,7 +1410,7 @@ function KasShell() {
   const usesLoginTeamTheme = !isLoggedIn && location.pathname === '/login';
   const isAdmin = isLoggedIn && (currentUser.role === 'admin' || currentUser.isAdmin === true);
   const activeTab = getActiveTab(location.pathname);
-  const isKasPublic = location.pathname === '/' || location.pathname === '/dashboard' || location.pathname.startsWith('/sports');
+  const isKasPublic = location.pathname === '/' || location.pathname === '/login' || location.pathname === '/register';
   const isAdminRoute = location.pathname.startsWith('/admin');
   const showBottomNav = isCostaRicaQuinielaRoute;
   const showDashboardSidebar = location.pathname !== '/'
@@ -1445,7 +1445,7 @@ function KasShell() {
         publicMode={isKasPublic}
         showPublicLogin={location.pathname === '/'}
         showUserProfile={location.pathname !== '/login'}
-        showSimulator={isLoggedIn && !isAdmin && location.pathname === '/tournaments/cr-apertura-2026/predictions'}
+        showQuinielaTools={isLoggedIn && !isAdmin && location.pathname === '/tournaments/cr-apertura-2026/predictions'}
         publicNavigation={{
           sports: sports.map((sport) => ({ id: sport.id, label: sport.name, path: '/login', accent: sport.accent })),
           services: [
@@ -1955,6 +1955,7 @@ function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: (us
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
+  const [favoriteKeyword, setFavoriteKeyword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -1963,7 +1964,7 @@ function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: (us
     setIsSubmitting(true);
     try {
       const session = isRegister
-        ? await signUp({ email, password, name, username, favoriteTeamId: 'sap' })
+        ? await signUp({ email, password, name, username, favoriteTeamId: favoriteKeyword || 'sap' })
         : await signIn(email, password);
       loginUser(session.user);
       onSuccess(session.user);
@@ -2018,6 +2019,10 @@ function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: (us
               <label className="block space-y-1">
                 <span className="text-[11px] font-mono uppercase text-[#d5c0d7]">Usuario</span>
                 <input value={username} onChange={(event) => setUsername(event.target.value)} type="text" required className="w-full rounded-xl bg-white px-3 py-3 text-sm font-medium text-black outline-none" />
+              </label>
+              <label className="block space-y-1">
+                <span className="text-[11px] font-mono uppercase text-[#d5c0d7]">Equipo / Deportista Favorito</span>
+                <input value={favoriteKeyword} onChange={(event) => setFavoriteKeyword(event.target.value)} type="text" placeholder="Ej. Real Madrid, Lakers, Hamilton" className="w-full rounded-xl bg-white px-3 py-3 text-sm font-medium text-black outline-none" />
               </label>
             </>}
             <label className="block space-y-1">

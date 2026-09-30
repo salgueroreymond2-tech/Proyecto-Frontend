@@ -379,17 +379,7 @@
 }
 
 .kas-login-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image: var(--kas-login-logo);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  opacity: 0.16;
-  filter: saturate(1.15);
-  pointer-events: none;
+  display: none;
 }
 
 /* Custom glowing effects */

@@ -440,6 +440,21 @@
       "token": "24abbdd5c164c1ae333fb8f82dc27452d141a8cc19c67dd270274412974c0f3f",
       "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
       "expiresAt": "2026-10-06T14:10:14.229Z"
+    },
+    {
+      "token": "995788444ca11de1ca08d7c1345920671257ae85d3fd444932435f2644dd8f6e",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-07T16:34:37.567Z"
+    },
+    {
+      "token": "9f996c8c7584b6e1bf7b57a37b19742d69068ba903cc3e02c10ea4622b123acb",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-07T16:36:15.066Z"
+    },
+    {
+      "token": "ef8f88232708a841e0265e884e2b10e82dbff3657d6030a76e01de0d9822c631",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-07T17:01:15.682Z"
     }
   ],
   "memberships": [
@@ -1988,6 +2003,16 @@
       "status": "captured",
       "createdAt": "2026-09-29T14:08:12.929Z",
       "capturedAt": "2026-09-29T14:08:12.967Z"
+    },
+    {
+      "id": "SIM-3c2b7bb0-2379-4327-9094-384d4ee3da66",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "ufc-fight-night",
+      "amount": "$7.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-09-30T16:41:26.369Z",
+      "capturedAt": "2026-09-30T16:41:26.439Z"
     }
   ]
 }

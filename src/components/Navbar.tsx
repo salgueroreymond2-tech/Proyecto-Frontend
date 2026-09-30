@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTournament } from '../context/TournamentContext';
 import {
   Bell,
@@ -35,7 +36,7 @@ interface NavbarProps {
   publicMode?: boolean;
   showPublicLogin?: boolean;
   showUserProfile?: boolean;
-  showSimulator?: boolean;
+  showQuinielaTools?: boolean;
   isAdminRoute?: boolean;
   publicNavigation?: {
     sports: { id: string; label: string; path: string; accent: string }[];
@@ -55,7 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   publicMode = false,
   showPublicLogin = true,
   showUserProfile = true,
-  showSimulator = true,
+  showQuinielaTools = true,
   isAdminRoute = false,
   publicNavigation,
   onNavigateToPath,
@@ -77,6 +78,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [publicMenuOpen, setPublicMenuOpen] = useState<'sports' | 'services' | null>(null);
+  
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHomePage = location.pathname === '/';
 
   const serviceIcons = {
     trophy: Trophy,
@@ -98,35 +103,61 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         {/* Left: Logo */}
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleBack}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white hover:border-[#EA7301]/60 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EA7301]"
-            aria-label="Volver atras"
-            title="Atras"
-          >
-            <ChevronLeft className="h-5 w-5 text-[#EA7301]" />
-          </button>
-          <button
-            type="button"
-            onClick={onNavigateHome}
-            className="flex items-center gap-2.5 rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EA7301]"
-            aria-label="Ir a la pagina principal"
-          >
-            <img
-              src={ASSET_PATHS.logos.brand.kas}
-              alt="King Arthur Sports"
-              className="h-14 w-14 rounded-xl object-cover border border-[#EA7301]/60 shadow-md"
-            />
-            <div className="hidden sm:block leading-none">
-              <span className="block text-xl font-heading font-black tracking-wide text-[#EA7301]">
-                KAS
-              </span>
-              <span className="block text-[10px] font-mono tracking-[0.24em] text-white/70">
-                KING ARTHUR SPORTS
-              </span>
+          {!isHomePage && (
+            <button
+              type="button"
+              onClick={handleBack}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white hover:border-[#EA7301]/60 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EA7301]"
+              aria-label="Volver atras"
+              title="Atras"
+            >
+              <ChevronLeft className="h-5 w-5 text-[#EA7301]" />
+            </button>
+          )}
+          {isHomePage ? (
+            <div className="flex items-center gap-2.5 rounded-xl text-left cursor-default">
+              <img
+                src={ASSET_PATHS.logos.brand.kas}
+                alt="King Arthur Sports"
+                className="h-14 w-14 rounded-xl object-cover border border-[#EA7301]/60 shadow-md"
+              />
+              <div className="hidden sm:block leading-none">
+                <span className="block text-xl font-heading font-black tracking-wide text-[#EA7301]">
+                  KAS
+                </span>
+                <span className="block text-[10px] font-mono tracking-[0.24em] text-white/70">
+                  KING ARTHUR SPORTS
+                </span>
+              </div>
             </div>
-          </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                if (isLoggedIn) {
+                  navigate('/dashboard');
+                } else {
+                  onNavigateHome?.();
+                }
+              }}
+              className="flex items-center gap-2.5 rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EA7301] hover:opacity-80 transition-opacity"
+              aria-label={isLoggedIn ? "Ir al dashboard" : "Ir a la pagina principal"}
+            >
+              <img
+                src={ASSET_PATHS.logos.brand.kas}
+                alt="King Arthur Sports"
+                className="h-14 w-14 rounded-xl object-cover border border-[#EA7301]/60 shadow-md"
+              />
+              <div className="hidden sm:block leading-none">
+                <span className="block text-xl font-heading font-black tracking-wide text-[#EA7301]">
+                  KAS
+                </span>
+                <span className="block text-[10px] font-mono tracking-[0.24em] text-white/70">
+                  KING ARTHUR SPORTS
+                </span>
+              </div>
+            </button>
+          )}
         </div>
 
         {publicMode ? (
@@ -140,10 +171,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <div className="absolute right-0 mt-2 w-72 rounded-xl border border-[#3c313e] bg-[#19101c] p-2 shadow-2xl">
                     {publicNavigation.services.map((service) => {
                       const Icon = serviceIcons[service.icon];
-                      return <button key={service.id} type="button" onClick={() => { onNavigateToPath?.(service.path); setPublicMenuOpen(null); }} className="flex w-full items-start gap-3 rounded-lg px-3 py-3 text-left hover:bg-white/10">
+                      return <div key={service.id} className="flex w-full items-start gap-3 rounded-lg px-3 py-3 text-left cursor-default">
                         <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#EA7301]" />
                         <span><span className="block text-sm font-bold text-white">{service.label}</span><span className="mt-0.5 block text-xs text-white/60">{service.detail}</span></span>
-                      </button>;
+                      </div>;
                     })}
                   </div>
                 )}
@@ -168,7 +199,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               {publicMenuOpen === 'services' && publicNavigation && (
                 <div className="absolute right-0 mt-2 w-72 rounded-xl border border-[#3c313e] bg-[#19101c] p-2 shadow-2xl">
                   <p className="px-3 py-2 text-[10px] font-mono text-white/50">SERVICIOS</p>
-                  {publicNavigation.services.map((service) => <button key={service.id} type="button" onClick={() => { onNavigateToPath?.(service.path); setPublicMenuOpen(null); }} className="block w-full rounded-lg px-3 py-2 text-left text-sm font-bold text-white hover:bg-white/10">{service.label}</button>)}
+                  {publicNavigation.services.map((service) => <div key={service.id} className="block w-full rounded-lg px-3 py-2 text-left text-sm font-bold text-white cursor-default">{service.label}</div>)}
                   <p className="mt-2 px-3 py-2 text-[10px] font-mono text-white/50">DEPORTES</p>
                   {publicNavigation.sports.map((sport) => <button key={sport.id} type="button" onClick={() => { onNavigateToPath?.(sport.path); setPublicMenuOpen(null); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-bold text-white hover:bg-white/10"><span className="h-2 w-2 rounded-full" style={{ backgroundColor: sport.accent }} />{sport.label}</button>)}
                 </div>
@@ -205,7 +236,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {/* Quick Simulation / Tools Dropdown */}
-          {showSimulator && (
+          {showQuinielaTools && (
           <div className="relative">
             <button
               onClick={() => setShowSimMenu(!showSimMenu)}
@@ -272,7 +303,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
           )}
 
-          {/* Rules info */}
+          {/* Quiniela Specific Tools */}
+          {showQuinielaTools && (
+            <>
+              {/* Rules info */}
           <button
             onClick={() => setShowRulesModal(true)}
             className="p-2 rounded-full hover:bg-[#312733] text-[#eeddee]/80 hover:text-white transition-colors"
@@ -333,9 +367,27 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             )}
           </div>
+            </>
+          )}
 
           {isLoggedIn && showUserProfile && (
-            <div className="relative">
+            <div className="flex items-center gap-2 relative">
+              <button
+                onClick={() => {
+                  logoutUser();
+                  if (onNavigateToLogin) {
+                    onNavigateToLogin();
+                  } else {
+                    navigate('/');
+                  }
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-mono transition-all"
+                title="Cerrar sesión"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Salir</span>
+              </button>
+
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="flex items-center gap-1.5 pl-1.5 pr-2 py-1 rounded-full bg-[#261c28] hover:bg-[#3c313e] border border-[#bf00ff]/40 transition-all cursor-pointer"

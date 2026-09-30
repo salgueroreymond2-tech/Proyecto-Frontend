@@ -45,6 +45,41 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   const [activeEditingMatchId, setActiveEditingMatchId] = useState<string | null>(null);
 
+  const [newsEvents, setNewsEvents] = React.useState<any[]>([]);
+  const [isLoadingNews, setIsLoadingNews] = React.useState(true);
+
+  React.useEffect(() => {
+    async function loadNews() {
+      setIsLoadingNews(true);
+      try {
+        const { getSportEvents } = await import('../services/sportsApi');
+        const sportsIds = ['football', 'basketball', 'baseball'];
+        const results = await Promise.all(sportsIds.map((id) => getSportEvents(id)));
+        let allEvents = results.flat();
+        
+        if (currentUser?.favoriteTeamId && currentUser.favoriteTeamId !== 'sap') {
+          const keyword = currentUser.favoriteTeamId.toLowerCase();
+          const favoriteEvents = allEvents.filter(e => 
+            e.title.toLowerCase().includes(keyword) || 
+            e.league.toLowerCase().includes(keyword)
+          );
+          const otherEvents = allEvents.filter(e => 
+            !e.title.toLowerCase().includes(keyword) && 
+            !e.league.toLowerCase().includes(keyword)
+          );
+          allEvents = [...favoriteEvents, ...otherEvents];
+        }
+
+        setNewsEvents(allEvents.slice(0, 5));
+      } catch (err) {
+        console.error('Error fetching dashboard news', err);
+      } finally {
+        setIsLoadingNews(false);
+      }
+    }
+    loadNews();
+  }, [currentUser]);
+
   // Filter matches for the selected round
   const roundMatches = matches.filter((m) => m.round === selectedRound);
   const featuredMatch = roundMatches.find((m) => m.isFeatured) || roundMatches[0];
@@ -169,6 +204,49 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               );
             })}
           </div>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/92 p-4 mb-5">
+        <div className="flex items-center gap-2 border-b border-[#3c313e]/60 pb-3">
+          <Newspaper className="h-5 w-5 text-[#EA7301]" />
+          <h2 className="font-heading text-xl font-black text-white">
+            Noticias Para Ti {currentUser?.favoriteTeamId && currentUser.favoriteTeamId !== 'sap' && <span className="text-[#EA7301]">({currentUser.favoriteTeamId})</span>}
+          </h2>
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {isLoadingNews ? (
+            [1, 2, 3].map((item) => (
+              <div key={item} className="h-28 animate-pulse rounded-xl border border-white/10 bg-black/25" />
+            ))
+          ) : newsEvents.length > 0 ? (
+            newsEvents.map((event) => (
+              <a
+                key={event.id}
+                href={event.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-col gap-2 rounded-xl border border-white/10 bg-black/25 p-3 hover:border-[#EA7301]/70 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-[11px] font-mono uppercase text-[#EA7301]">{event.league}</p>
+                </div>
+                <h3 className="font-heading text-sm font-bold leading-tight text-white line-clamp-2">
+                  {event.title}
+                </h3>
+                <div className="mt-auto flex items-center justify-between pt-2">
+                  <span className="rounded-full bg-white/5 px-2.5 py-1 text-[10px] font-mono text-[#d5c0d7]">
+                    {event.provider.toUpperCase()}
+                  </span>
+                  <span className="text-xs font-bold text-emerald-300">
+                    {event.status || 'Activo'}
+                  </span>
+                </div>
+              </a>
+            ))
+          ) : (
+            <p className="text-sm text-[#d5c0d7]">No hay noticias recientes.</p>
+          )}
         </div>
       </div>
 

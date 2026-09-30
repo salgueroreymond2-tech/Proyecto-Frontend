@@ -37,6 +37,7 @@ import { TournamentProvider, useTournament } from '../context/TournamentContext'
 import { Navbar } from '../components/Navbar';
 import { BottomNav, NavTab } from '../components/BottomNav';
 import { DashboardView } from '../components/DashboardView';
+import { AIAssistant } from '../components/AIAssistant';
 import { RankingView } from '../components/RankingView';
 import { PlayoffsView } from '../components/PlayoffsView';
 import { SocialView } from '../components/SocialView';
@@ -1498,6 +1499,7 @@ function KasShell() {
       <ChampionModal />
       <AuthModal />
       <RulesModal />
+      <AIAssistant />
       <AdminMatchModal isOpen={adminModalOpen} onClose={() => setAdminModalOpen(false)} />
     </div>
   );
@@ -1580,6 +1582,7 @@ function HomePage() {
         provider: event.provider,
         href: event.sourceUrl,
         path: '/login',
+        sportId: event.sportId,
       }))
     : homeFallbackEvents.map((event) => ({
         ...event,
@@ -1613,21 +1616,7 @@ function HomePage() {
     return true;
   });
   const liveTickerItems = [
-    ...uniqueScoreboard.map((match) => {
-      const home = getTeamById(match.homeTeamId);
-      const away = getTeamById(match.awayTeamId);
-      return {
-        id: match.id,
-        label: `J${match.round}`,
-        status: match.status === 'live' ? `${match.minute}'` : 'Final',
-        title: `${home.code} @ ${away.code}`,
-        score: `${match.homeScore ?? 0} - ${match.awayScore ?? 0}`,
-        path: '/tournaments/cr-apertura-2026/login',
-        localHome: home,
-        localAway: away,
-      };
-    }),
-    ...uniqueExternalTickerEvents.slice(0, 10).map((event) => ({
+    ...uniqueExternalTickerEvents.map((event) => ({
       id: event.id,
       label: event.league,
       status: event.score ? getSportResultLabel(event.sportId) : event.status,
@@ -1636,14 +1625,8 @@ function HomePage() {
       path: event.sourceUrl || '/login',
     })),
   ];
-  const tickerItems = liveTickerItems.length > 0 ? liveTickerItems : homeFallbackEvents.map((event) => ({
-    id: event.id,
-    label: event.league,
-    status: event.status,
-    title: event.title,
-    score: '',
-    path: event.path,
-  }));
+  const tickerItems = liveTickerItems;
+
   const animatedTickerItems = [...tickerItems, ...tickerItems];
 
   useEffect(() => {

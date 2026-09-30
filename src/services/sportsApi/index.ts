@@ -2,6 +2,7 @@ import { fetchEspnScoreboard } from './espnClient';
 import { fetchBundesligaMatches } from './openLigaDbClient';
 import { fetchFootballDataMatches } from './secureProxyClient';
 import { fetchSportsDbLeagues, fetchSportsDbSportVisuals } from './theSportsDbClient';
+import { fetchApiSportsGamesBySport } from './apiSportsClient';
 import type { NormalizedLeague, NormalizedSportEvent, NormalizedSportVisual, SportProvider, SportsApiResult } from './types';
 
 const formulaOneGrandPrix = [
@@ -207,9 +208,9 @@ export async function getTournamentEvents(tournamentId: string, signal?: AbortSi
 
 export async function getSportEvents(sportId: string, signal?: AbortSignal): Promise<SportsApiResult<NormalizedSportEvent[]>> {
   try {
-    const events = await fetchEspnScoreboard(sportId, signal);
+    const events = await fetchApiSportsGamesBySport(sportId, undefined, signal);
     if (events.length > 0) {
-      return { data: events, provider: 'espn', fromFallback: false };
+      return { data: events, provider: 'api-sports', fromFallback: false };
     }
 
     return {
@@ -222,7 +223,7 @@ export async function getSportEvents(sportId: string, signal?: AbortSignal): Pro
       data: localEvents.filter((event) => event.sportId === sportId),
       provider: 'local',
       fromFallback: true,
-      error: error instanceof Error ? error.message : 'No se pudo cargar ESPN',
+      error: error instanceof Error ? error.message : 'No se pudo cargar API-Sports',
     };
   }
 }

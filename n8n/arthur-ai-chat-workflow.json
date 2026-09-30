@@ -1,0 +1,250 @@
+﻿{
+    "name":  "Arthur AI Agent - Quiniela KAS",
+    "nodes":  [
+                  {
+                      "parameters":  {
+                                         "httpMethod":  "POST",
+                                         "path":  "arthur-chat",
+                                         "responseMode":  "responseNode",
+                                         "options":  {
+                                                         "responseHeaders":  {
+                                                                                 "entries":  [
+                                                                                                 {
+                                                                                                     "name":  "Access-Control-Allow-Origin",
+                                                                                                     "value":  "*"
+                                                                                                 },
+                                                                                                 {
+                                                                                                     "name":  "Access-Control-Allow-Methods",
+                                                                                                     "value":  "POST, OPTIONS"
+                                                                                                 },
+                                                                                                 {
+                                                                                                     "name":  "Access-Control-Allow-Headers",
+                                                                                                     "value":  "Content-Type, Authorization"
+                                                                                                 }
+                                                                                             ]
+                                                                             }
+                                                     }
+                                     },
+                      "id":  "09e7a71b-7240-43dc-b9cf-f66e8caf9e6a",
+                      "name":  "Webhook",
+                      "type":  "n8n-nodes-base.webhook",
+                      "typeVersion":  2,
+                      "position":  [
+                                       220,
+                                       300
+                                   ],
+                      "webhookId":  "arthur-chat-webhook"
+                  },
+                  {
+                      "parameters":  {
+                                         "promptType":  "define",
+                                         "text":  "={{ $json.body.message }}",
+                                         "options":  {
+                                                         "systemMessage":  "Eres Sir Arthur, asesor de la Quiniela KAS. Responde SIEMPRE en espanol, BREVE y DIRECTO. Maximo 5-6 lineas. Sin introducciones largas. Ve directo al dato.\n\nFORMATO DE RESPUESTA:\n- 1 linea por partido: [emoji] **Local vs Visitante** | Marcador | Estado\n- Estado: NS=Por jugar, 1H/2H=En vivo, FT=Finalizado, HT=Medio tiempo\n- Fechas en hora Costa Rica (UTC-6)\n- 1 frase corta de motivacion al final si aplica\n- Si no hay datos: \u0027No encontre informacion para esa consulta.\u0027\n- NUNCA inventes resultados\n\nAPI: https://v3.football.api-sports.io (auth ya en las herramientas)\nEndpoints clave:\n  /fixtures?date=YYYY-MM-DD\u0026league=ID\u0026season=2026\n  /fixtures?live=all\n  /fixtures?team=ID\u0026next=5\n  /standings?league=ID\u0026season=2026\n  /teams?search=Nombre\n\nIDs: Champions=2, Premier=39, LaLiga=140, Ligue1=61, Bundesliga=78, SerieA=135, MLS=253, CostaRica=236, Libertadores=13"
+                                                     }
+                                     },
+                      "id":  "b2f7cb9d-4a2c-4291-8b2d-653803df88ed",
+                      "name":  "AI Agent Arthur",
+                      "type":  "@n8n/n8n-nodes-langchain.agent",
+                      "typeVersion":  1.7,
+                      "position":  [
+                                       480,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+                      "typeVersion":  1,
+                      "position":  [
+                                       380,
+                                       520
+                                   ],
+                      "id":  "8fcd3683-2964-411b-bf60-f2ada117f6b5",
+                      "name":  "OpenRouter Chat Model",
+                      "credentials":  {
+                                          "openRouterApi":  {
+                                                                "id":  "TlcpSIKl9RWMhhY8",
+                                                                "name":  "OpenRouter account"
+                                                            }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "sessionIdType":  "customKey",
+                                         "sessionKey":  "={{ $(\u0027Webhook\u0027).item.json.body.sessionId || \u0027session_default\u0027 }}",
+                                         "contextWindowLength":  10
+                                     },
+                      "id":  "1c517f56-d125-4c60-9a27-235ffbae0b67",
+                      "name":  "Window Buffer Memory",
+                      "type":  "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+                      "typeVersion":  1.3,
+                      "position":  [
+                                       580,
+                                       520
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+                                         "toolDescription":  "USA ESTA HERRAMIENTA para consultar partidos, resultados en vivo, marcadores o fixtures por fecha/liga. Construye la URL del endpoint usando estos patrones:\n\nPARTIDOS POR FECHA:\nhttps://v3.football.api-sports.io/fixtures?date=YYYY-MM-DD\u0026league=ID_LIGA\u0026season=2026\n\nPARTIDOS EN VIVO:\nhttps://v3.football.api-sports.io/fixtures?live=all\n\nIDs de ligas:\n- Champions League: 2\n- Premier League: 39\n- La Liga: 140\n- Ligue 1: 61\n- Bundesliga: 78\n- Serie A: 135\n- MLS: 253\n- Costa Rica Primera: 236\n- Libertadores: 13\n\nDel JSON resultante usa: response[].fixture.date, teams.home.name, teams.away.name, goals.home, goals.away, fixture.status.short (NS=Por jugar, 1H/2H=En vivo, FT=Finalizado).",
+                                         "url":  "={{ $fromAI(\u0027url\u0027, \u0027URL completa del endpoint API-Sports, ej: https://v3.football.api-sports.io/fixtures?date=2026-09-29\u0026league=140\u0026season=2026\u0027, \u0027string\u0027) }}",
+                                         "sendHeaders":  true,
+                                         "headerParameters":  {
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "x-apisports-key",
+                                                                                         "value":  "454f49ed9340e47cd07bcd007a9ef3ae"
+                                                                                     }
+                                                                                 ]
+                                                              },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.httpRequestTool",
+                      "typeVersion":  4.4,
+                      "position":  [
+                                       496,
+                                       540
+                                   ],
+                      "id":  "428354ee-e26f-46ff-8333-de535bea4ef2",
+                      "name":  "consultar_partidos"
+                  },
+                  {
+                      "parameters":  {
+                                         "toolDescription":  "USA ESTA HERRAMIENTA para buscar proximos partidos de un equipo especifico o la clasificacion/tabla de una liga. Patrones de URL:\n\nPROXIMOS PARTIDOS DE UN EQUIPO (necesitas el ID del equipo):\nhttps://v3.football.api-sports.io/fixtures?team=ID_EQUIPO\u0026next=5\n\nBUSCAR EQUIPO POR NOMBRE (para obtener su ID):\nhttps://v3.football.api-sports.io/teams?search=NombreEquipo\n\nCLASIFICACION/TABLA DE UNA LIGA:\nhttps://v3.football.api-sports.io/standings?league=ID_LIGA\u0026season=2026\n\nIDs de ligas: Champions=2, Premier=39, LaLiga=140, Ligue1=61, Bundesliga=78, SerieA=135, MLS=253, CostaRica=236, Libertadores=13",
+                                         "url":  "={{ $fromAI(\u0027url\u0027, \u0027URL completa del endpoint API-Sports para equipos, clasificacion o proximos partidos\u0027, \u0027string\u0027) }}",
+                                         "sendHeaders":  true,
+                                         "headerParameters":  {
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "x-apisports-key",
+                                                                                         "value":  "454f49ed9340e47cd07bcd007a9ef3ae"
+                                                                                     }
+                                                                                 ]
+                                                              },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "type":  "n8n-nodes-base.httpRequestTool",
+                      "typeVersion":  4.4,
+                      "position":  [
+                                       656,
+                                       492
+                                   ],
+                      "id":  "b9a40e61-32e4-4519-b3f5-0dcd1c0a8725",
+                      "name":  "consultar_equipos_y_tablas"
+                  },
+                  {
+                      "parameters":  {
+                                         "respondWith":  "json",
+                                         "responseBody":  "={{ JSON.stringify({\n  reply: $json.output,\n  sessionId: $(\u0027Webhook\u0027).item.json.body.sessionId || \u0027session_default\u0027,\n  status: \u0027success\u0027\n}) }}",
+                                         "options":  {
+                                                         "responseCode":  200
+                                                     }
+                                     },
+                      "id":  "b3ae4df3-178d-4e3d-86a5-509203faff13",
+                      "name":  "Respond to Webhook",
+                      "type":  "n8n-nodes-base.respondToWebhook",
+                      "typeVersion":  1.1,
+                      "position":  [
+                                       820,
+                                       300
+                                   ]
+                  }
+              ],
+    "pinData":  {
+
+                },
+    "connections":  {
+                        "Webhook":  {
+                                        "main":  [
+                                                     [
+                                                         {
+                                                             "node":  "AI Agent Arthur",
+                                                             "type":  "main",
+                                                             "index":  0
+                                                         }
+                                                     ]
+                                                 ]
+                                    },
+                        "AI Agent Arthur":  {
+                                                "main":  [
+                                                             [
+                                                                 {
+                                                                     "node":  "Respond to Webhook",
+                                                                     "type":  "main",
+                                                                     "index":  0
+                                                                 }
+                                                             ]
+                                                         ]
+                                            },
+                        "OpenRouter Chat Model":  {
+                                                      "ai_languageModel":  [
+                                                                               [
+                                                                                   {
+                                                                                       "node":  "AI Agent Arthur",
+                                                                                       "type":  "ai_languageModel",
+                                                                                       "index":  0
+                                                                                   }
+                                                                               ]
+                                                                           ]
+                                                  },
+                        "Window Buffer Memory":  {
+                                                     "ai_memory":  [
+                                                                       [
+                                                                           {
+                                                                               "node":  "AI Agent Arthur",
+                                                                               "type":  "ai_memory",
+                                                                               "index":  0
+                                                                           }
+                                                                       ]
+                                                                   ]
+                                                 },
+                        "consultar_partidos":  {
+                                                   "ai_tool":  [
+                                                                   [
+                                                                       {
+                                                                           "node":  "AI Agent Arthur",
+                                                                           "type":  "ai_tool",
+                                                                           "index":  0
+                                                                       }
+                                                                   ]
+                                                               ]
+                                               },
+                        "consultar_equipos_y_tablas":  {
+                                                           "ai_tool":  [
+                                                                           [
+                                                                               {
+                                                                                   "node":  "AI Agent Arthur",
+                                                                                   "type":  "ai_tool",
+                                                                                   "index":  0
+                                                                               }
+                                                                           ]
+                                                                       ]
+                                                       }
+                    },
+    "active":  true,
+    "settings":  {
+                     "executionOrder":  "v1",
+                     "binaryMode":  "separate",
+                     "timeSavedMode":  "fixed",
+                     "callerPolicy":  "workflowsFromSameOwner",
+                     "executionTimeout":  -1,
+                     "availableInMCP":  false
+                 },
+    "versionId":  "0ed96273-fb85-44da-b398-928c1d667b4c",
+    "meta":  {
+                 "templateCredsSetupCompleted":  true,
+                 "instanceId":  "35d97650703e2a576ace3967bc9b6ffc1b1369cad53c058fb954541742fd5f3a"
+             },
+    "id":  "W92foJ51SEMhkJ4d",
+    "tags":  [
+
+             ]
+}

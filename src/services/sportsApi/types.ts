@@ -1,4 +1,4 @@
-export type SportProvider = 'espn' | 'football-data' | 'thesportsdb' | 'openligadb' | 'local';
+export type SportProvider = 'espn' | 'football-data' | 'thesportsdb' | 'openligadb' | 'local' | 'api-sports';
 
 export type NormalizedSportEvent = {
   id: string;

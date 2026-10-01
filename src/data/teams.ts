@@ -178,3 +178,28 @@ export const getTeamById = (id: string): Team => {
 export const getTeamByCode = (code: string): Team => {
   return TEAMS.find((t) => t.code === code) || TEAMS[0];
 };
+
+export const registerGlobalTeamLogo = (name: string, logoUrl: string) => {
+  if (!name || !logoUrl) return;
+  const existing = TEAMS.find(t => t.name === name || t.shortName === name || t.code === name);
+  if (existing && !existing.logoUrl) {
+    existing.logoUrl = logoUrl;
+  } else if (!existing) {
+    TEAMS.push({
+      id: name.toLowerCase().replace(/\s+/g, '-'),
+      name: name,
+      shortName: name,
+      code: name.slice(0, 3).toUpperCase(),
+      primaryColor: '#1a1a1a',
+      secondaryColor: '#ffffff',
+      accentColor: '#333333',
+      stadium: '',
+      city: '',
+      founded: 2024,
+      titles: 0,
+      starPlayers: [],
+      logoType: 'external',
+      logoUrl: logoUrl
+    });
+  }
+};

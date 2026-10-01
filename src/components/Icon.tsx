@@ -18,6 +18,7 @@ const iconNames = {
   Check: 'check',
   CheckCircle2: 'check_circle',
   ChevronDown: 'keyboard_arrow_down',
+  ChevronUp: 'keyboard_arrow_up',
   ChevronLeft: 'chevron_left',
   ChevronRight: 'chevron_right',
   Clock: 'schedule',
@@ -54,6 +55,7 @@ const iconNames = {
   Sliders: 'tune',
   SlidersHorizontal: 'tune',
   Sparkles: 'auto_awesome',
+  Star: 'star',
   DirectionsBike: 'directions_bike',
   SportsBaseball: 'sports_baseball',
   SportsBasketball: 'sports_basketball',
@@ -110,6 +112,7 @@ export const Camera = createMaterialIcon('Camera');
 export const Check = createMaterialIcon('Check');
 export const CheckCircle2 = createMaterialIcon('CheckCircle2');
 export const ChevronDown = createMaterialIcon('ChevronDown');
+export const ChevronUp = createMaterialIcon('ChevronUp');
 export const ChevronLeft = createMaterialIcon('ChevronLeft');
 export const ChevronRight = createMaterialIcon('ChevronRight');
 export const Clock = createMaterialIcon('Clock');
@@ -146,6 +149,7 @@ export const ShieldCheck = createMaterialIcon('ShieldCheck');
 export const Sliders = createMaterialIcon('Sliders');
 export const SlidersHorizontal = createMaterialIcon('SlidersHorizontal');
 export const Sparkles = createMaterialIcon('Sparkles');
+export const Star = createMaterialIcon('Star');
 export const DirectionsBike = createMaterialIcon('DirectionsBike');
 export const SportsBaseball = createMaterialIcon('SportsBaseball');
 export const SportsBasketball = createMaterialIcon('SportsBasketball');

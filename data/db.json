@@ -520,6 +520,36 @@
       "token": "070b252b36ce3709b6331e32f6acdb345c713293efa5be7234cae339177b2efb",
       "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
       "expiresAt": "2026-10-08T16:26:03.948Z"
+    },
+    {
+      "token": "15b145ccfc9aaf2f414b1dd8bc64424b026552f10198414246ae93ebe000819d",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-08T19:08:48.008Z"
+    },
+    {
+      "token": "eb17783646fd815cae41ce2a8f2f68e5b9e829624842110c768878c171ad45a4",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-08T19:09:41.480Z"
+    },
+    {
+      "token": "a689447fce363631ea321fe6eb482488dd469d91cb208f50f33b89b40902c833",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-08T19:10:40.964Z"
+    },
+    {
+      "token": "d7e65b380fba3883fcf4e9b05974d52ca4b34c88cba09988e4dc735bd1e64347",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-08T19:17:51.548Z"
+    },
+    {
+      "token": "f954f10986ad0be499220987dcdc00f493cc403e756ad8701a720a59fbff5416",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-08T19:20:02.324Z"
+    },
+    {
+      "token": "d748ae08404bd6587ed9ef8594547e8c62fd7cf9d049a9c0a145320d733a6224",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-08T19:20:11.588Z"
     }
   ],
   "memberships": [
@@ -946,6 +976,46 @@
       "paymentId": "SIM-af50f3cc-8ff3-44eb-8307-068c91435f38",
       "status": "active",
       "grantedAt": "2026-10-01T16:50:42.059Z"
+    },
+    {
+      "id": "735e75ce-f245-4a89-9ec5-0b2261139e4d",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "roland-garros",
+      "paymentId": "SIM-eabe7250-6959-4b6e-9d7b-03903fa084c5",
+      "status": "active",
+      "grantedAt": "2026-10-01T17:02:33.335Z"
+    },
+    {
+      "id": "f528f838-484c-471c-a27e-ea45f3e0310a",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "pga-tour",
+      "paymentId": "SIM-970954ad-a722-4160-9c20-9880a5175898",
+      "status": "active",
+      "grantedAt": "2026-10-01T17:04:48.774Z"
+    },
+    {
+      "id": "aee6f1ee-028f-4207-ac6a-3020384a7063",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "wbc-world-boxing-council",
+      "paymentId": "SIM-a565f4ed-b4bb-4f27-9f39-91f5916c3b02",
+      "status": "active",
+      "grantedAt": "2026-10-01T17:05:00.429Z"
+    },
+    {
+      "id": "7875234d-4bc0-4131-a93a-4a7b5bb988c4",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "copa-del-cafe-de-costa-rica",
+      "paymentId": "SIM-c8f7d9ee-3c1c-4083-9d31-c5cb77c13034",
+      "status": "active",
+      "grantedAt": "2026-10-01T19:33:50.662Z"
+    },
+    {
+      "id": "774acbb0-229a-42b2-9506-de749fef00eb",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "wimbledon",
+      "paymentId": "SIM-36a44c5f-8ce3-4c4d-837a-ddfd2ea21a0f",
+      "status": "active",
+      "grantedAt": "2026-10-01T20:00:16.464Z"
     }
   ],
   "payments": [
@@ -2498,6 +2568,296 @@
       "status": "captured",
       "createdAt": "2026-10-01T16:53:17.032Z",
       "capturedAt": "2026-10-01T16:53:17.059Z"
+    },
+    {
+      "id": "SIM-eabe7250-6959-4b6e-9d7b-03903fa084c5",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "roland-garros",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T17:02:33.232Z",
+      "capturedAt": "2026-10-01T17:02:33.329Z"
+    },
+    {
+      "id": "SIM-5666a4a9-12a8-44dc-b3f8-83a01e0aeec6",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "nfl-temporada-regular",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T17:03:06.098Z",
+      "capturedAt": "2026-10-01T17:03:06.167Z"
+    },
+    {
+      "id": "SIM-adf398a7-7146-4752-a4e0-9b6d3cdc1d39",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "nba-temporada-regular",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T17:03:35.737Z",
+      "capturedAt": "2026-10-01T17:03:35.762Z"
+    },
+    {
+      "id": "SIM-8d7bf06d-2ff1-48fd-953a-acced4c94044",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "mlb-temporada-regular",
+      "amount": "$2.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T17:04:04.392Z",
+      "capturedAt": "2026-10-01T17:04:04.418Z"
+    },
+    {
+      "id": "SIM-40681108-bc36-4239-bb00-da024a47a4ca",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "f1-world-championship",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T17:04:26.160Z",
+      "capturedAt": "2026-10-01T17:04:26.185Z"
+    },
+    {
+      "id": "SIM-7a7ef33c-532e-4203-8ef2-e118934d279b",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "tour-de-france",
+      "amount": "$2.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T17:04:40.424Z",
+      "capturedAt": "2026-10-01T17:04:40.452Z"
+    },
+    {
+      "id": "SIM-970954ad-a722-4160-9c20-9880a5175898",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "pga-tour",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T17:04:48.727Z",
+      "capturedAt": "2026-10-01T17:04:48.774Z"
+    },
+    {
+      "id": "SIM-99a15dd4-e416-4f53-ba40-02e8dfbc23d4",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "ufc-fight-night",
+      "amount": "$0.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T17:04:54.920Z",
+      "capturedAt": "2026-10-01T17:04:54.943Z"
+    },
+    {
+      "id": "SIM-a565f4ed-b4bb-4f27-9f39-91f5916c3b02",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "wbc-world-boxing-council",
+      "amount": "$2.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T17:05:00.407Z",
+      "capturedAt": "2026-10-01T17:05:00.429Z"
+    },
+    {
+      "id": "SIM-5779ba99-5186-4078-acf8-a6efc20418c9",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "australian-open",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:00:25.924Z",
+      "capturedAt": "2026-10-01T19:00:26.008Z"
+    },
+    {
+      "id": "SIM-b2869029-3a4b-4003-9a97-d14356ac29b5",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "nba-temporada-regular",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:00:37.344Z",
+      "capturedAt": "2026-10-01T19:00:37.373Z"
+    },
+    {
+      "id": "SIM-545d94ee-1a93-46c5-b5a2-80f3a064a0b0",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "nfl-temporada-regular",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:01:19.291Z",
+      "capturedAt": "2026-10-01T19:01:19.315Z"
+    },
+    {
+      "id": "SIM-13aeaceb-1304-419b-a405-69d04b17745b",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "mlb-temporada-regular",
+      "amount": "$2.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:01:34.875Z",
+      "capturedAt": "2026-10-01T19:01:34.898Z"
+    },
+    {
+      "id": "SIM-d4c863a7-bcf9-440c-96b0-712ced65ac33",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "ufc-fight-night",
+      "amount": "$0.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:01:46.712Z",
+      "capturedAt": "2026-10-01T19:01:46.753Z"
+    },
+    {
+      "id": "SIM-5fa69f5d-ae85-4829-a670-388a734883f0",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "mlb-temporada-regular",
+      "amount": "$2.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:02:31.805Z",
+      "capturedAt": "2026-10-01T19:02:31.826Z"
+    },
+    {
+      "id": "SIM-e13def2f-4acf-4cca-8774-d34de60522ca",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "nfl-temporada-regular",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:02:39.533Z",
+      "capturedAt": "2026-10-01T19:02:39.557Z"
+    },
+    {
+      "id": "SIM-dd9cf718-26db-48da-b55c-5af9cb79e872",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "mlb-temporada-regular",
+      "amount": "$2.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:03:04.011Z",
+      "capturedAt": "2026-10-01T19:03:04.108Z"
+    },
+    {
+      "id": "SIM-adb15d20-160e-4fc5-b1a5-12821acc964e",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "cr-apertura-2026",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:09:25.224Z",
+      "capturedAt": "2026-10-01T19:09:25.257Z"
+    },
+    {
+      "id": "SIM-cdcd8fe6-75b6-499b-8a21-29311de6f6db",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "f1-world-championship",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:11:04.206Z",
+      "capturedAt": "2026-10-01T19:11:04.241Z"
+    },
+    {
+      "id": "SIM-c8f7d9ee-3c1c-4083-9d31-c5cb77c13034",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "copa-del-cafe-de-costa-rica",
+      "amount": "$0.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:33:50.565Z",
+      "capturedAt": "2026-10-01T19:33:50.662Z"
+    },
+    {
+      "id": "SIM-2ba30885-a7ed-481d-9575-119ee77ebd87",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "nfl-temporada-regular",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:35:27.724Z",
+      "capturedAt": "2026-10-01T19:35:27.763Z"
+    },
+    {
+      "id": "SIM-48c0d51a-6342-4cd2-b015-bd73c0f3eee6",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "ufc-fight-night",
+      "amount": "$0.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:35:36.219Z",
+      "capturedAt": "2026-10-01T19:35:36.243Z"
+    },
+    {
+      "id": "SIM-194b8ead-3967-4958-8896-e3f850464d40",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "tour-de-france",
+      "amount": "$2.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:35:46.789Z",
+      "capturedAt": "2026-10-01T19:35:46.827Z"
+    },
+    {
+      "id": "SIM-e49ace15-4145-4410-9cd6-28b6f1087453",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "australian-open",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T19:38:35.748Z",
+      "capturedAt": "2026-10-01T19:38:35.797Z"
+    },
+    {
+      "id": "SIM-36a44c5f-8ce3-4c4d-837a-ddfd2ea21a0f",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "wimbledon",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T20:00:16.391Z",
+      "capturedAt": "2026-10-01T20:00:16.464Z"
+    },
+    {
+      "id": "SIM-efd7dc8c-fc2b-430f-a7b0-d7df0aa4462d",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "f1-world-championship",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T20:02:42.618Z",
+      "capturedAt": "2026-10-01T20:02:42.777Z"
+    },
+    {
+      "id": "SIM-6656f6e7-7c7b-4bc9-97fd-854504be5c78",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "pga-tour",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T20:11:07.974Z",
+      "capturedAt": "2026-10-01T20:11:08.055Z"
+    },
+    {
+      "id": "SIM-df2124ef-e658-4c89-a4fe-742f64d96a5f",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "concacaf-nations-league",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T20:12:43.597Z",
+      "capturedAt": "2026-10-01T20:12:43.682Z"
+    },
+    {
+      "id": "SIM-6be06ed0-72bd-4b4c-a5aa-a961a891567e",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "f1-world-championship",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-01T20:15:54.392Z",
+      "capturedAt": "2026-10-01T20:15:54.444Z"
     }
   ]
 }

@@ -17,6 +17,8 @@ import {
   CalendarDays,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
+  ChevronDown,
   Dumbbell,
   Lock,
   LayoutDashboard,
@@ -30,6 +32,7 @@ import {
   SportsMotorsports,
   SportsSoccer,
   SportsTennis,
+  Star,
   Trophy,
   User,
   Users,
@@ -156,7 +159,6 @@ const sportDashboards = {
       { name: 'US Open', season: '2027', status: 'Preparacion', price: '$2.99' },
       { name: 'ATP Masters', season: '2027', status: 'Activo', price: '$1.99' },
       { name: 'WTA Masters', season: '2027', status: 'Activo', price: '$1.99' },
-      { name: 'Copa del Cafe de Costa Rica', season: '2027', status: 'Local', price: '$0.99' },
     ],
   },
   basketball: {
@@ -273,9 +275,44 @@ const sportDashboards = {
   tournaments: { name: string; season: string; status: string; price: string }[];
 }>;
 
+const f1Drivers = [
+  { displayName: 'Max Verstappen', teamName: 'Red Bull Racing', bgColor: '#3671C6', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/4665.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/red%20bull' },
+  { displayName: 'Lando Norris', teamName: 'McLaren', bgColor: '#FF8700', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/5579.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/mclaren' },
+  { displayName: 'Charles Leclerc', teamName: 'Ferrari', bgColor: '#E80020', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/5498.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/ferrari' },
+  { displayName: 'Oscar Piastri', teamName: 'McLaren', bgColor: '#FF8700', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/5752.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/mclaren' },
+  { displayName: 'Carlos Sainz', teamName: 'Ferrari', bgColor: '#E80020', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/4686.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/ferrari' },
+  { displayName: 'Lewis Hamilton', teamName: 'Ferrari', bgColor: '#E80020', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/868.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/ferrari' },
+  { displayName: 'George Russell', teamName: 'Mercedes', bgColor: '#27F4D2', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/5503.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/mercedes' },
+  { displayName: 'Sergio Perez', teamName: 'Red Bull Racing', bgColor: '#3671C6', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/4472.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/red%20bull' },
+  { displayName: 'Fernando Alonso', teamName: 'Aston Martin', bgColor: '#229971', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/348.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/aston%20martin' },
+  { displayName: 'Yuki Tsunoda', teamName: 'Racing Bulls', bgColor: '#6692FF', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/5652.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/rb' },
+  { displayName: 'Nico Hulkenberg', teamName: 'Haas', bgColor: '#B6BABD', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/4396.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/haas' },
+  { displayName: 'Lance Stroll', teamName: 'Aston Martin', bgColor: '#229971', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/4775.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/aston%20martin' },
+  { displayName: 'Alexander Albon', teamName: 'Williams', bgColor: '#64C4FF', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/5592.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/williams' },
+  { displayName: 'Esteban Ocon', teamName: 'Alpine', bgColor: '#0090FF', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/4678.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/alpine' },
+  { displayName: 'Pierre Gasly', teamName: 'Alpine', bgColor: '#0090FF', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/5501.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/alpine' },
+  { displayName: 'Valtteri Bottas', teamName: 'Audi', bgColor: '#F91536', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/4520.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/kick%20sauber' }
+];
+
+const top5Men = [
+  { displayName: 'Jannik Sinner', headshot: { href: 'https://a.espncdn.com/i/headshots/tennis/players/full/3623.png' } },
+  { displayName: 'Carlos Alcaraz', headshot: { href: 'https://a.espncdn.com/i/headshots/tennis/players/full/3782.png' } },
+  { displayName: 'Novak Djokovic', headshot: { href: 'https://a.espncdn.com/i/headshots/tennis/players/full/296.png' } },
+  { displayName: 'Alexander Zverev', headshot: { href: 'https://a.espncdn.com/i/headshots/tennis/players/full/2375.png' } },
+  { displayName: 'Daniil Medvedev', headshot: { href: 'https://a.espncdn.com/i/headshots/tennis/players/full/2383.png' } }
+];
+
+const top5Women = [
+  { displayName: 'Iga Swiatek', headshot: { href: 'https://a.espncdn.com/i/headshots/tennis/players/full/3730.png' } },
+  { displayName: 'Aryna Sabalenka', headshot: { href: 'https://a.espncdn.com/i/headshots/tennis/players/full/3038.png' } },
+  { displayName: 'Coco Gauff', headshot: { href: 'https://a.espncdn.com/i/headshots/tennis/players/full/3626.png' } },
+  { displayName: 'Elena Rybakina', headshot: { href: 'https://a.espncdn.com/i/headshots/tennis/players/full/3126.png' } },
+  { displayName: 'Jessica Pegula', headshot: { href: 'https://a.espncdn.com/i/headshots/tennis/players/full/2113.png' } }
+];
+
 const tournamentDetails: Record<string, {
   overview: string;
-  teams?: string[];
+  teams?: (string | { displayName: string; headshot: { href: string }; flag?: { href: string } })[];
   format: string;
   predictionRules: string[];
   coverage: string[];
@@ -441,7 +478,7 @@ const tournamentDetails: Record<string, {
   },
   'f1-world-championship': {
     overview: 'Temporada completa de Formula 1 con un unico campeonato y 24 Grand Prix como eventos del calendario.',
-    teams: ['Red Bull Racing', 'Ferrari', 'Mercedes', 'McLaren', 'Aston Martin', 'Alpine', 'Williams', 'Racing Bulls', 'Audi', 'Haas F1 Team', 'Cadillac'],
+    teams: f1Drivers,
     format: 'F1 2027 - campeonato mundial con 24 grandes premios.',
     predictionRules: ['Pole position', 'Ganador', 'Podio', 'Vuelta rapida'],
     coverage: ['Clasificacion', 'Carrera', 'Pilotos', 'Constructores'],
@@ -522,6 +559,48 @@ const tournamentDetails: Record<string, {
     format: 'Temporada 2027 - peleas titulares WBO por division.',
     predictionRules: ['Ganador', 'Metodo', 'Round', 'Decision o KO/TKO'],
     coverage: ['Titulo mundial WBO', 'Titulo interino', 'Global', 'Ranking WBO'],
+  },
+  'australian-open': {
+    overview: 'Primer Grand Slam de la temporada en pista dura.',
+    teams: [...top5Men, ...top5Women],
+    format: 'Australian Open 2027 - Grand Slam',
+    predictionRules: ['Ganador del partido', 'Sets totales', 'Ganador del torneo'],
+    coverage: ['ATP', 'WTA', 'Dobles'],
+  },
+  'roland-garros': {
+    overview: 'Segundo Grand Slam de la temporada, la cumbre del tenis en polvo de ladrillo.',
+    teams: [...top5Men, ...top5Women],
+    format: 'Roland Garros 2027 - Grand Slam',
+    predictionRules: ['Ganador del partido', 'Sets totales', 'Ganador del torneo'],
+    coverage: ['ATP', 'WTA', 'Dobles'],
+  },
+  'wimbledon': {
+    overview: 'Tercer Grand Slam de la temporada, el torneo más prestigioso sobre césped.',
+    teams: [...top5Men, ...top5Women],
+    format: 'Wimbledon 2027 - Grand Slam',
+    predictionRules: ['Ganador del partido', 'Sets totales', 'Ganador del torneo'],
+    coverage: ['ATP', 'WTA', 'Dobles'],
+  },
+  'us-open': {
+    overview: 'Último Grand Slam del año disputado en cancha dura en Nueva York.',
+    teams: [...top5Men, ...top5Women],
+    format: 'US Open 2027 - Grand Slam',
+    predictionRules: ['Ganador del partido', 'Sets totales', 'Ganador del torneo'],
+    coverage: ['ATP', 'WTA', 'Dobles'],
+  },
+  'atp-masters': {
+    overview: 'Torneos ATP Masters 1000 y ATP Finals del circuito masculino.',
+    teams: top5Men,
+    format: 'ATP Tour 2027',
+    predictionRules: ['Ganador del partido', 'Sets totales', 'Ganador del torneo'],
+    coverage: ['Masters 1000', 'ATP Finals'],
+  },
+  'wta-masters': {
+    overview: 'Torneos WTA 1000 y WTA Finals del circuito femenino.',
+    teams: top5Women,
+    format: 'WTA Tour 2027',
+    predictionRules: ['Ganador del partido', 'Sets totales', 'Ganador del torneo'],
+    coverage: ['WTA 1000', 'WTA Finals'],
   },
 };
 
@@ -2607,11 +2686,15 @@ function TournamentDashboard() {
   const [apiLeagueLogo, setApiLeagueLogo] = useState<string | null>(null);
 
   const [activeGroupIndex, setActiveGroupIndex] = useState(0);
-  const [competitorsPage, setCompetitorsPage] = useState(1);
+  const [isCompetitorsExpanded, setIsCompetitorsExpanded] = useState(false);
+  const [isTableExpanded, setIsTableExpanded] = useState(false);
+  const [selectedFavoriteTeam, setSelectedFavoriteTeam] = useState<string | null>(null);
 
   useEffect(() => {
     setActiveGroupIndex(0);
-    setCompetitorsPage(1);
+    setIsCompetitorsExpanded(false);
+    setIsTableExpanded(false);
+    setSelectedFavoriteTeam(null);
   }, [tournamentId]);
 
   useEffect(() => {
@@ -2739,10 +2822,12 @@ function TournamentDashboard() {
 
             <div className="relative mt-6 grid gap-3 md:grid-cols-4">
               {espnStandings.length > 0 ? espnStandings[0].entries.slice(0, 4).map((entry: any, index: number) => {
-                const teamName = entry.team?.displayName || entry.team?.name;
+                const teamObj = entry.team || entry.athlete || entry;
+                const teamName = teamObj?.displayName || teamObj?.name || teamObj?.fullName;
+                const f1Static = isFormulaOne ? f1Drivers.find(d => d.displayName === teamName) : null;
                 const points = entry.stats?.find((s: any) => s.name === 'points')?.value || 0;
                 const gd = entry.stats?.find((s: any) => s.name === 'pointDifferential')?.value || 0;
-                const logo = entry.team?.logos?.[0]?.href;
+                const logo = f1Static?.headshot?.href || teamObj?.logos?.[0]?.href || teamObj?.headshot?.href || (typeof teamObj?.headshot === 'string' ? teamObj.headshot : null) || teamObj?.flag?.href || (typeof teamObj?.flag === 'string' ? teamObj.flag : null);
 
                 return (
                   <div key={entry.team?.id || index} className="rounded-xl border border-white/10 bg-black/25 p-3">
@@ -2818,57 +2903,62 @@ function TournamentDashboard() {
           <p className="mt-3 text-sm text-[#d5c0d7]">{detail.overview}</p>
           <div className="mt-5">
             {(() => {
-              const allCompetitors = espnStandings.length > 0 ? espnStandings.flatMap(g => g.entries).map(s => s.team) : (detail.teams || []).map(name => ({ displayName: name }));
-              const COMPETITORS_PER_PAGE = 12;
-              const totalPages = Math.ceil(allCompetitors.length / COMPETITORS_PER_PAGE);
-              const paginatedCompetitors = allCompetitors.slice((competitorsPage - 1) * COMPETITORS_PER_PAGE, competitorsPage * COMPETITORS_PER_PAGE);
+              const allCompetitors = isFormulaOne ? (detail.teams || []) : (espnStandings.length > 0 ? espnStandings.flatMap(g => g.entries).map(s => s.team || s.athlete).filter(Boolean) : (detail.teams || []).map(item => typeof item === 'string' ? { displayName: item } : item));
+              const visibleCompetitors = isCompetitorsExpanded ? allCompetitors : allCompetitors.slice(0, 8);
 
               return (
                 <>
-                  <div className="grid sm:grid-cols-2 gap-3 min-h-[350px]">
-                    {paginatedCompetitors.map((teamObj) => {
-                      const teamName = teamObj.displayName || teamObj.name || 'Desconocido';
-                      const logo = teamObj.logos?.[0]?.href;
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {visibleCompetitors.map((teamObj) => {
+                      const teamName = teamObj.displayName || teamObj.fullName || teamObj.name || 'Desconocido';
+                      const logo = teamObj.logos?.[0]?.href || teamObj.headshot?.href || (typeof teamObj.headshot === 'string' ? teamObj.headshot : null) || teamObj.flag?.href || (typeof teamObj.flag === 'string' ? teamObj.flag : null);
                       const localTeam = findCostaRicaTeamByName(teamName);
+                      const isFavorite = selectedFavoriteTeam === teamName;
+                      const customBgColor = isFormulaOne && teamObj.bgColor ? teamObj.bgColor : null;
+                      const customBgImage = isFormulaOne && teamObj.teamLogo ? teamObj.teamLogo : null;
+                      
                       return (
-                        <div key={teamName} className={`rounded-xl border border-white/10 bg-black/25 px-4 py-3 h-20 flex items-center ${isFormulaOne ? 'select-none' : ''}`}>
-                          <div className="flex items-center gap-3">
+                        <div key={teamName} onClick={() => setSelectedFavoriteTeam(isFavorite ? null : teamName)} className={`relative overflow-hidden rounded-xl border px-4 py-3 h-20 flex items-center cursor-pointer transition-all hover:bg-white/5 ${isFormulaOne ? 'select-none' : ''}`} style={customBgColor ? { backgroundColor: isFavorite ? `${customBgColor}30` : `${customBgColor}15`, borderColor: isFavorite ? customBgColor : `${customBgColor}50` } : isFavorite ? { borderColor: '#EA7301', backgroundColor: 'rgba(234, 115, 1, 0.1)' } : { borderColor: 'rgba(255,255,255,0.1)', backgroundColor: 'rgba(0,0,0,0.25)' }}>
+                          {customBgImage && (
+                            <div 
+                              className="absolute right-0 top-0 bottom-0 w-1/2 opacity-20 bg-no-repeat bg-right bg-contain transition-opacity"
+                              style={{ backgroundImage: `url(${customBgImage})`, backgroundPosition: 'calc(100% + 15px) center', filter: 'grayscale(100%) brightness(2)' }}
+                            />
+                          )}
+                          <div className="relative z-10 flex items-center gap-3 flex-1">
                             {logo ? (
-                              <img src={logo} alt={teamName} className="h-8 w-8 object-contain shrink-0" />
+                              <img src={logo} alt={teamName} className="h-10 w-10 object-contain shrink-0" />
                             ) : localTeam ? <TeamBadge team={localTeam} size="sm" /> : isFormulaOne ? (
                               <span className="flex h-12 w-20 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-[#f7f7f7]/95 px-2 shadow-inner">
                                 <UniversalTeamLogo name={teamName} size="md" className="h-8 w-full" />
                               </span>
                             ) : <UniversalTeamLogo name={teamName} size="sm" />}
-                            <div className="min-w-0">
-                              <p className={`${isFormulaOne ? 'whitespace-normal text-[15px] leading-tight sm:text-base' : 'truncate text-lg'} font-heading font-black text-white`}>{localTeam?.shortName || teamName}</p>
-                              <p className="text-xs text-[#d5c0d7]">{localTeam?.name || tournament.sportName}</p>
+                            <div className="min-w-0 flex-1">
+                              <p className={`${isFormulaOne ? 'whitespace-normal text-[15px] leading-tight sm:text-base' : 'truncate text-lg'} font-heading font-black transition-colors`} style={isFavorite && !customBgColor ? { color: '#EA7301' } : { color: 'white' }}>{localTeam?.shortName || teamName}</p>
+                              <p className="text-xs truncate opacity-70" style={customBgColor ? { color: customBgColor } : { color: '#d5c0d7' }}>{isFormulaOne ? teamObj.teamName : (localTeam?.name || tournament.sportName)}</p>
                             </div>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); setSelectedFavoriteTeam(isFavorite ? null : teamName); }}
+                              className={`p-2 rounded-full transition-colors ${isFavorite ? 'text-[#EA7301] bg-[#EA7301]/20' : 'text-white/20 hover:text-white/50 hover:bg-white/10'}`}
+                            >
+                              <Star className="w-5 h-5" />
+                            </button>
                           </div>
                         </div>
                       );
                     })}
                   </div>
-                  {totalPages > 1 && (
-                    <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
+                  {allCompetitors.length > 8 && (
+                    <div className="mt-4 flex justify-center border-t border-white/5 pt-3">
                       <button 
-                        onClick={() => setCompetitorsPage(p => Math.max(1, p - 1))}
-                        disabled={competitorsPage === 1}
-                        className="flex items-center gap-1 text-sm font-bold text-white/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        onClick={() => setIsCompetitorsExpanded(!isCompetitorsExpanded)}
+                        className="flex items-center gap-2 text-xs font-bold font-mono text-[#d5c0d7] hover:text-white transition-colors bg-white/5 hover:bg-white/10 rounded-full px-5 py-2"
                       >
-                        <ChevronLeft className="w-4 h-4" /> Anterior
-                      </button>
-                      <div className="flex gap-1.5 flex-wrap justify-center px-4 max-w-[200px] sm:max-w-none">
-                        {Array.from({ length: totalPages }).map((_, i) => (
-                          <div key={i} onClick={() => setCompetitorsPage(i + 1)} className={`h-1.5 cursor-pointer rounded-full transition-all duration-300 ${i + 1 === competitorsPage ? 'w-6 bg-[#EA7301]' : 'w-1.5 bg-white/20 hover:bg-white/40'}`} />
-                        ))}
-                      </div>
-                      <button 
-                        onClick={() => setCompetitorsPage(p => Math.min(totalPages, p + 1))}
-                        disabled={competitorsPage === totalPages}
-                        className="flex items-center gap-1 text-sm font-bold text-white/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                      >
-                        Siguiente <ChevronRight className="w-4 h-4" />
+                        {isCompetitorsExpanded ? (
+                          <>Ver menos <ChevronUp className="w-4 h-4" /></>
+                        ) : (
+                          <>Ver los {allCompetitors.length - 8} restantes <ChevronDown className="w-4 h-4" /></>
+                        )}
                       </button>
                     </div>
                   )}
@@ -2950,9 +3040,11 @@ function TournamentDashboard() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-white/5">
-                        {group.entries.map((entry: any, i: number) => {
-                          const teamName = entry.team?.displayName || entry.team?.name;
-                          const logo = entry.team?.logos?.[0]?.href;
+                        {(isTableExpanded ? group.entries : group.entries.slice(0, 5)).map((entry: any, i: number) => {
+                          const teamObj = entry.team || entry.athlete || entry;
+                          const teamName = teamObj?.displayName || teamObj?.name || teamObj?.fullName;
+                          const f1Static = isFormulaOne ? f1Drivers.find(d => d.displayName === teamName) : null;
+                          const logo = f1Static?.headshot?.href || teamObj?.logos?.[0]?.href || teamObj?.headshot?.href || (typeof teamObj?.headshot === 'string' ? teamObj.headshot : null) || teamObj?.flag?.href || (typeof teamObj?.flag === 'string' ? teamObj.flag : null);
                           const getStat = (name: string) => entry.stats?.find((s: any) => s.name === name)?.value ?? '-';
                           
                           return (
@@ -2976,6 +3068,21 @@ function TournamentDashboard() {
                       </tbody>
                     </table>
                   </div>
+                  
+                  {group.entries.length > 5 && (
+                    <div className="mt-4 flex justify-center border-t border-white/5 pt-3">
+                      <button 
+                        onClick={() => setIsTableExpanded(!isTableExpanded)}
+                        className="flex items-center gap-2 text-xs font-bold font-mono text-[#d5c0d7] hover:text-white transition-colors bg-white/5 hover:bg-white/10 rounded-full px-5 py-2"
+                      >
+                        {isTableExpanded ? (
+                          <>Ver menos <ChevronUp className="w-4 h-4" /></>
+                        ) : (
+                          <>Ver los {group.entries.length - 5} restantes <ChevronDown className="w-4 h-4" /></>
+                        )}
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })()}

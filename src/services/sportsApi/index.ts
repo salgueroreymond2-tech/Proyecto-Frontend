@@ -158,6 +158,44 @@ const ESPN_TOURNAMENT_MAP: Record<string, string> = {
   'concacaf-nations-league': 'soccer/concacaf.nations.league',
   'cr-apertura-2026': 'soccer/crc.1',
   'f1-world-championship': 'racing/f1',
+  'nba-temporada-regular': 'basketball/nba',
+  'nba-playoffs': 'basketball/nba',
+  'nba-finals': 'basketball/nba',
+  'mlb-temporada-regular': 'baseball/mlb',
+  'mlb-postseason': 'baseball/mlb',
+  'world-series': 'baseball/mlb',
+  'nfl-temporada-regular': 'football/nfl',
+  'nfl-playoffs': 'football/nfl',
+  'super-bowl': 'football/nfl',
+  'atp-masters': 'tennis/atp',
+  'wta-masters': 'tennis/wta',
+  'australian-open': 'tennis/atp',
+  'wimbledon': 'tennis/atp',
+  'us-open': 'tennis/atp',
+  'roland-garros': 'tennis/atp',
+  'ufc-fight-night': 'mma/ufc',
+  'ufc-ppv': 'mma/ufc',
+  'campeonatos-mundiales': 'boxing/boxing',
+  'veladas-estelares': 'boxing/boxing',
+  'pga-tour': 'golf/pga',
+  'the-masters': 'golf/pga',
+  'ryder-cup': 'golf/pga',
+  'tour-de-france': 'cycling/tour',
+  'giro-d-italia': 'cycling/giro',
+  'vuelta-a-espana': 'cycling/vuelta',
+};
+
+const CUSTOM_LEAGUE_LOGOS: Record<string, string> = {
+  'cr-apertura-2026': '/assets/logos/leagues/costa-rica-primera-division.png',
+  'concacaf-nations-league': 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Concacaf_Nations_League_logo.svg',
+  'australian-open': 'https://en.wikipedia.org/wiki/Special:FilePath/Australian_Open_Logo_2017.svg',
+  'roland-garros': 'https://en.wikipedia.org/wiki/Special:FilePath/Logo_Roland-Garros.svg',
+  'wimbledon': 'https://en.wikipedia.org/wiki/Special:FilePath/Wimbledon.svg',
+  'us-open': 'https://en.wikipedia.org/wiki/Special:FilePath/Usopen-horizontal-logo.svg',
+  'atp-masters': 'https://en.wikipedia.org/wiki/Special:FilePath/ATP_Tour_logo.svg',
+  'wta-masters': 'https://en.wikipedia.org/wiki/Special:FilePath/WTA_2025.svg',
+  'the-masters': 'https://en.wikipedia.org/wiki/Special:FilePath/Masters_Tournament_logo.svg',
+  'ryder-cup': 'https://en.wikipedia.org/wiki/Special:FilePath/Ryder_Cup_logo.svg',
 };
 
 export async function getTournamentEvents(tournamentId: string, signal?: AbortSignal): Promise<SportsApiResult<NormalizedSportEvent[]>> {
@@ -169,12 +207,18 @@ export async function getTournamentEvents(tournamentId: string, signal?: AbortSi
       const data = await response.json();
       
       const events: NormalizedSportEvent[] = (data.events || []).map((event: any) => {
-        const comp = event.competitions?.[0];
+        const comp = event.competitions?.[0] || event.groupings?.[0]?.competitions?.[0];
         const homeCompetitor = comp?.competitors?.find((c: any) => c.homeAway === 'home') || comp?.competitors?.[0];
         const awayCompetitor = comp?.competitors?.find((c: any) => c.homeAway === 'away') || comp?.competitors?.[1];
 
-        const getEntityName = (c: any) => c?.team?.displayName || c?.athlete?.displayName || c?.team?.name || 'Competidor';
-        const getEntityLogo = (c: any) => c?.team?.logo || c?.athlete?.headshot?.href || c?.team?.logos?.[0]?.href;
+        const getEntityName = (c: any) => c?.team?.displayName || c?.athlete?.displayName || c?.athlete?.fullName || c?.team?.name || 'Competidor';
+        const getEntityLogo = (c: any) => 
+          c?.team?.logo || 
+          c?.team?.logos?.[0]?.href || 
+          c?.athlete?.headshot?.href || 
+          (typeof c?.athlete?.headshot === 'string' ? c?.athlete?.headshot : null) || 
+          c?.athlete?.flag?.href || 
+          (typeof c?.athlete?.flag === 'string' ? c?.athlete?.flag : null);
         
         const homeName = getEntityName(homeCompetitor);
         const awayName = getEntityName(awayCompetitor);
@@ -201,8 +245,7 @@ export async function getTournamentEvents(tournamentId: string, signal?: AbortSi
       });
 
       let leagueLogo = data.leagues?.[0]?.logos?.[0]?.href;
-      if (tournamentId === 'cr-apertura-2026') leagueLogo = '/assets/logos/leagues/costa-rica-primera-division.png';
-      if (tournamentId === 'concacaf-nations-league') leagueLogo = 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Concacaf_Nations_League_logo.svg';
+      if (CUSTOM_LEAGUE_LOGOS[tournamentId]) leagueLogo = CUSTOM_LEAGUE_LOGOS[tournamentId];
 
       return { data: events, provider: 'espn', fromFallback: false, meta: { leagueLogo } };
     } catch (error) {
@@ -275,8 +318,7 @@ export async function getLeaguesBySport(sportId: string, signal?: AbortSignal): 
 
 export async function getTournamentLogo(tournamentId: string, signal?: AbortSignal): Promise<string | null> {
   // Manual overrides para logos que ESPN no tiene correctos o actualizados
-  if (tournamentId === 'cr-apertura-2026') return '/assets/logos/leagues/costa-rica-primera-division.png';
-  if (tournamentId === 'concacaf-nations-league') return 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Concacaf_Nations_League_logo.svg';
+  if (CUSTOM_LEAGUE_LOGOS[tournamentId]) return CUSTOM_LEAGUE_LOGOS[tournamentId];
 
   const espnEndpoint = ESPN_TOURNAMENT_MAP[tournamentId];
   if (!espnEndpoint) return null;

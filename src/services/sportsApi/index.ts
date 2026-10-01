@@ -1,7 +1,3 @@
-import { fetchEspnScoreboard } from './espnClient';
-import { fetchBundesligaMatches } from './openLigaDbClient';
-import { fetchFootballDataMatches } from './secureProxyClient';
-import { fetchSportsDbLeagues, fetchSportsDbSportVisuals } from './theSportsDbClient';
 import { fetchApiSportsGamesBySport } from './apiSportsClient';
 import type { NormalizedLeague, NormalizedSportEvent, NormalizedSportVisual, SportProvider, SportsApiResult } from './types';
 
@@ -148,112 +144,96 @@ const localEvents: NormalizedSportEvent[] = [
   },
 ];
 
+// Map de torneos KAS a las ligas de ESPN
+const ESPN_TOURNAMENT_MAP: Record<string, string> = {
+  'champions-league': 'soccer/uefa.champions',
+  'premier-league': 'soccer/eng.1',
+  'laliga': 'soccer/esp.1',
+  'serie-a': 'soccer/ita.1',
+  'primeira-liga': 'soccer/por.1',
+  'bundesliga': 'soccer/ger.1',
+  'cr-apertura-2026': 'soccer/crc.1',
+  'f1-world-championship': 'racing/f1',
+};
+
 export async function getTournamentEvents(tournamentId: string, signal?: AbortSignal): Promise<SportsApiResult<NormalizedSportEvent[]>> {
-  const localSportByTournament: Record<string, string> = {
-    'f1-world-championship': 'f1',
-  };
-
-  const localSportId = localSportByTournament[tournamentId];
-  if (localSportId) {
-    return {
-      data: localEvents.filter((event) => event.sportId === localSportId),
-      provider: 'local',
-      fromFallback: true,
-    };
-  }
-
-  const footballDataCompetitionByTournament: Record<string, string> = {
-    'champions-league': 'CL',
-    'premier-league': 'PL',
-    laliga: 'PD',
-    'serie-a': 'SA',
-    'primeira-liga': 'PPL',
-  };
-
-  if (tournamentId === 'bundesliga') {
+  const espnEndpoint = ESPN_TOURNAMENT_MAP[tournamentId];
+  
+  if (espnEndpoint) {
     try {
-      const events = await fetchBundesligaMatches(signal);
-      return { data: events, provider: 'openligadb', fromFallback: false };
+      const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${espnEndpoint}/scoreboard`, { signal });
+      const data = await response.json();
+      
+      const events: NormalizedSportEvent[] = (data.events || []).map((event: any) => {
+        const comp = event.competitions?.[0];
+        const homeCompetitor = comp?.competitors?.find((c: any) => c.homeAway === 'home') || comp?.competitors?.[0];
+        const awayCompetitor = comp?.competitors?.find((c: any) => c.homeAway === 'away') || comp?.competitors?.[1];
+
+        const getEntityName = (c: any) => c?.team?.displayName || c?.athlete?.displayName || c?.team?.name || 'Competidor';
+        const homeName = getEntityName(homeCompetitor);
+        const awayName = getEntityName(awayCompetitor);
+        
+        const hasScore = homeCompetitor?.score && awayCompetitor?.score;
+        const score = hasScore ? `${homeCompetitor.score} - ${awayCompetitor.score}` : undefined;
+
+        return {
+          id: `espn-${event.id}`,
+          sportId: tournamentId,
+          league: data.leagues?.[0]?.name || event.season?.slug || tournamentId,
+          title: event.name || `${homeName} vs ${awayName}`,
+          status: event.status?.type?.detail || event.status?.type?.state,
+          score,
+          startsAt: event.date,
+          provider: 'espn',
+        };
+      });
+
+      return { data: events, provider: 'espn', fromFallback: false };
     } catch (error) {
-      return {
-        data: [],
-        provider: 'local',
-        fromFallback: true,
-        error: error instanceof Error ? error.message : 'No se pudo cargar OpenLigaDB',
-      };
+      return { data: localEvents, provider: 'local', fromFallback: true, error: error instanceof Error ? error.message : 'Error ESPN' };
     }
   }
 
-  const competitionCode = footballDataCompetitionByTournament[tournamentId];
-  if (competitionCode) {
-    try {
-      const events = await fetchFootballDataMatches(competitionCode, signal);
-      return { data: events, provider: 'football-data', fromFallback: false };
-    } catch (error) {
-      return {
-        data: localEvents.filter((event) => event.id === 'local-champions-league'),
-        provider: 'local',
-        fromFallback: true,
-        error: error instanceof Error ? error.message : 'No se pudo cargar Football-Data.org',
-      };
-    }
-  }
-
-  return {
-    data: localEvents.filter((event) => event.sportId === 'football'),
-    provider: 'local',
-    fromFallback: true,
-  };
+  return { data: localEvents, provider: 'local', fromFallback: true };
 }
 
 export async function getSportEvents(sportId: string, signal?: AbortSignal): Promise<SportsApiResult<NormalizedSportEvent[]>> {
   try {
     const events = await fetchApiSportsGamesBySport(sportId, undefined, signal);
     if (events.length > 0) {
-      return { data: events, provider: 'api-sports', fromFallback: false };
+      return { data: events, provider: 'espn', fromFallback: false };
     }
-
-    return {
-      data: localEvents.filter((event) => event.sportId === sportId),
-      provider: 'local',
-      fromFallback: true,
-    };
+    return { data: localEvents, provider: 'local', fromFallback: true };
   } catch (error) {
     return {
-      data: localEvents.filter((event) => event.sportId === sportId),
+      data: localEvents,
       provider: 'local',
       fromFallback: true,
-      error: error instanceof Error ? error.message : 'No se pudo cargar API-Sports',
+      error: error instanceof Error ? error.message : 'No se pudo cargar ESPN',
     };
+  }
+}
+
+export async function getTournamentStandings(tournamentId: string, signal?: AbortSignal): Promise<any[]> {
+  const espnEndpoint = ESPN_TOURNAMENT_MAP[tournamentId];
+  if (!espnEndpoint) return [];
+  
+  try {
+    const response = await fetch(`https://site.api.espn.com/apis/v2/sports/${espnEndpoint}/standings`, { signal });
+    const data = await response.json();
+    return data.children?.[0]?.standings?.entries || [];
+  } catch (error) {
+    console.error(`Error fetching standings for ${tournamentId}`, error);
+    return [];
   }
 }
 
 export async function getLeaguesBySport(sportId: string, signal?: AbortSignal): Promise<SportsApiResult<NormalizedLeague[]>> {
-  try {
-    const leagues = await fetchSportsDbLeagues(sportId, signal);
-    return { data: leagues, provider: 'thesportsdb', fromFallback: false };
-  } catch (error) {
-    return {
-      data: [],
-      provider: 'local',
-      fromFallback: true,
-      error: error instanceof Error ? error.message : 'No se pudo cargar TheSportsDB',
-    };
-  }
+  return { data: [], provider: 'espn', fromFallback: false };
 }
 
 export async function getSportVisuals(signal?: AbortSignal): Promise<SportsApiResult<NormalizedSportVisual[]>> {
-  try {
-    const visuals = await fetchSportsDbSportVisuals(signal);
-    return { data: visuals, provider: 'thesportsdb', fromFallback: false };
-  } catch (error) {
-    return {
-      data: [],
-      provider: 'local',
-      fromFallback: true,
-      error: error instanceof Error ? error.message : 'No se pudieron cargar los recursos de TheSportsDB',
-    };
-  }
+  return { data: [], provider: 'espn', fromFallback: false };
 }
 
 export type { NormalizedLeague, NormalizedSportEvent, NormalizedSportVisual, SportProvider, SportsApiResult };

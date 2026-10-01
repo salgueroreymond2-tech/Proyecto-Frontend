@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { EspnTestView } from '../components/EspnTestView';
 import {
   BrowserRouter,
   Link,
@@ -66,7 +67,7 @@ import {
   getLeagueLogo,
   splitMatchupTitle,
 } from '../data/teamLogos';
-import { getSportEvents, getSportVisuals, getTournamentEvents, type NormalizedSportEvent, type SportProvider } from '../services/sportsApi';
+import { getSportEvents, getSportVisuals, getTournamentEvents, getTournamentStandings, type NormalizedSportEvent, type SportProvider } from '../services/sportsApi';
 import { cancelMembership, getMyMemberships, getStoredSession, renewMembership, signIn, signUp, simulatePayPalCheckout, type UserMembership } from '../services/authApi';
 
 type Sport = {
@@ -1484,6 +1485,7 @@ function KasShell() {
               <Route path="/tournaments/:tournamentId/forum" element={<CostaRicaOnly><SocialView /></CostaRicaOnly>} />
               <Route path="/profile" element={isLoggedIn ? <KasProfileDashboard /> : <Navigate to="/login" replace />} />
               <Route path="/admin/*" element={isAdmin ? <AdminView tournaments={getAllAdminTournaments()} /> : <Navigate to="/login" replace />} />
+              <Route path="/test-espn" element={<EspnTestView />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>
@@ -2561,6 +2563,8 @@ function TournamentDashboard() {
   const [tournamentApiStatus, setTournamentApiStatus] = useState<'loading' | 'ready' | 'fallback'>('loading');
   const [tournamentProvider, setTournamentProvider] = useState<SportProvider>('local');
 
+  const [espnStandings, setEspnStandings] = useState<any[]>([]);
+
   useEffect(() => {
     if (!tournamentId) return;
 
@@ -2576,6 +2580,10 @@ function TournamentDashboard() {
       setTournamentApiStatus('fallback');
       setTournamentProvider('local');
     });
+
+    getTournamentStandings(tournamentId, controller.signal).then(standings => {
+      setEspnStandings(standings);
+    }).catch(() => {});
 
     return () => controller.abort();
   }, [tournamentId]);
@@ -2613,7 +2621,9 @@ function TournamentDashboard() {
     return prediction?.homeScore !== null && prediction?.homeScore !== undefined && prediction?.awayScore !== null && prediction?.awayScore !== undefined;
   }).length;
   const predictionProgress = currentRoundMatches.length > 0 ? Math.round((predictedCurrentRound / currentRoundMatches.length) * 100) : 0;
-  const classificationZone = standings.slice(0, 4);
+  
+  // Usar posiciones reales de ESPN si están disponibles, sino usar el fallback KAS
+  const classificationZone = espnStandings.length > 0 ? espnStandings.slice(0, 4) : standings.slice(0, 4);
 
   return (
     <div className="space-y-6 pb-24 px-4 pt-4 max-w-6xl mx-auto">
@@ -2664,7 +2674,30 @@ function TournamentDashboard() {
             </div>
 
             <div className="relative mt-6 grid gap-3 md:grid-cols-4">
-              {classificationZone.map((standing, index) => {
+              {espnStandings.length > 0 ? espnStandings.slice(0, 4).map((entry: any, index: number) => {
+                const teamName = entry.team?.displayName || entry.team?.name;
+                const points = entry.stats?.find((s: any) => s.name === 'points')?.value || 0;
+                const gd = entry.stats?.find((s: any) => s.name === 'pointDifferential')?.value || 0;
+                const logo = entry.team?.logos?.[0]?.href;
+
+                return (
+                  <div key={entry.team?.id || index} className="rounded-xl border border-white/10 bg-black/25 p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-mono text-[#d5c0d7]">#{index + 1}</span>
+                      <span className="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[10px] font-mono text-emerald-300">Clasifica</span>
+                    </div>
+                    <div className="mt-3 flex items-center gap-2">
+                      {logo ? (
+                        <img src={logo} alt={teamName} className="w-6 h-6 object-contain" />
+                      ) : (
+                        <div className="w-6 h-6 bg-white/10 rounded-full" />
+                      )}
+                      <p className="min-w-0 truncate font-heading text-base font-black text-white">{teamName}</p>
+                    </div>
+                    <p className="mt-1 text-xs text-[#d5c0d7]">{points} pts - DG {gd > 0 ? `+${gd}` : gd}</p>
+                  </div>
+                );
+              }) : classificationZone.map((standing: any, index: number) => {
                 const team = getTeamById(standing.teamId);
                 return (
                   <div key={standing.teamId} className="rounded-xl border border-white/10 bg-black/25 p-3">
@@ -2716,22 +2749,26 @@ function TournamentDashboard() {
               <p className="text-sm font-mono text-[#EA7301]">EQUIPOS / PARTICIPANTES</p>
               <h2 className="text-3xl font-heading font-black text-white">Competidores</h2>
             </div>
-            <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{detail.teams.length} activos</span>
+            <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{espnStandings.length > 0 ? espnStandings.length : detail.teams.length} activos</span>
           </div>
           <p className="mt-3 text-sm text-[#d5c0d7]">{detail.overview}</p>
           <div className="mt-5 grid sm:grid-cols-2 gap-3">
-            {detail.teams.map((team) => {
-              const localTeam = findCostaRicaTeamByName(team);
+            {(espnStandings.length > 0 ? espnStandings.map(s => s.team) : detail.teams.map(name => ({ displayName: name }))).map((teamObj) => {
+              const teamName = teamObj.displayName || teamObj.name || 'Desconocido';
+              const logo = teamObj.logos?.[0]?.href;
+              const localTeam = findCostaRicaTeamByName(teamName);
               return (
-                <div key={team} className={`rounded-xl border border-white/10 bg-black/25 px-4 py-3 ${isFormulaOne ? 'select-none' : ''}`}>
+                <div key={teamName} className={`rounded-xl border border-white/10 bg-black/25 px-4 py-3 ${isFormulaOne ? 'select-none' : ''}`}>
                   <div className="flex items-center gap-3">
-                    {localTeam ? <TeamBadge team={localTeam} size="sm" /> : isFormulaOne ? (
+                    {logo ? (
+                      <img src={logo} alt={teamName} className="h-8 w-8 object-contain" />
+                    ) : localTeam ? <TeamBadge team={localTeam} size="sm" /> : isFormulaOne ? (
                       <span className="flex h-16 w-28 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-[#f7f7f7]/95 px-2 shadow-inner">
-                        <UniversalTeamLogo name={team} size="md" className="h-12 w-full" />
+                        <UniversalTeamLogo name={teamName} size="md" className="h-12 w-full" />
                       </span>
-                    ) : <UniversalTeamLogo name={team} size="sm" />}
+                    ) : <UniversalTeamLogo name={teamName} size="sm" />}
                     <div className="min-w-0">
-                      <p className={`${isFormulaOne ? 'whitespace-normal text-[15px] leading-tight sm:text-base' : 'truncate text-lg'} font-heading font-black text-white`}>{localTeam?.shortName || team}</p>
+                      <p className={`${isFormulaOne ? 'whitespace-normal text-[15px] leading-tight sm:text-base' : 'truncate text-lg'} font-heading font-black text-white`}>{localTeam?.shortName || teamName}</p>
                       <p className="text-xs text-[#d5c0d7]">{localTeam?.name || tournament.sportName}</p>
                     </div>
                   </div>
@@ -2764,6 +2801,54 @@ function TournamentDashboard() {
           </div>
         </div>
       </section>
+
+      {!isCostaRica && espnStandings.length > 0 && (
+        <section className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5 overflow-hidden">
+          <p className="text-sm font-mono text-[#EA7301]">RANKING OFICIAL</p>
+          <h2 className="mt-2 text-3xl font-heading font-black text-white">Tabla de Posiciones</h2>
+          <div className="mt-5 overflow-x-auto">
+            <table className="w-full text-left text-sm text-[#d5c0d7] min-w-[600px]">
+              <thead className="border-b border-white/10 bg-black/30 font-mono text-xs uppercase">
+                <tr>
+                  <th className="px-4 py-3 font-medium">Pos</th>
+                  <th className="px-4 py-3 font-medium">Equipo</th>
+                  <th className="px-4 py-3 font-medium text-center">PTS</th>
+                  <th className="px-4 py-3 font-medium text-center">PJ</th>
+                  <th className="px-4 py-3 font-medium text-center">PG</th>
+                  <th className="px-4 py-3 font-medium text-center">PE</th>
+                  <th className="px-4 py-3 font-medium text-center">PP</th>
+                  <th className="px-4 py-3 font-medium text-center">DG</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {espnStandings.map((entry: any, i: number) => {
+                  const teamName = entry.team?.displayName || entry.team?.name;
+                  const logo = entry.team?.logos?.[0]?.href;
+                  const getStat = (name: string) => entry.stats?.find((s: any) => s.name === name)?.value ?? '-';
+                  
+                  return (
+                    <tr key={entry.team?.id || i} className="hover:bg-white/5 transition-colors">
+                      <td className="px-4 py-3 font-mono text-white/50">{i + 1}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          {logo ? <img src={logo} alt={teamName} className="h-6 w-6 object-contain bg-white/10 rounded-full p-0.5" /> : <div className="h-6 w-6 rounded-full bg-white/10" />}
+                          <span className="font-heading font-bold text-white">{teamName}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-center font-bold text-[#EA7301]">{getStat('points')}</td>
+                      <td className="px-4 py-3 text-center">{getStat('gamesPlayed')}</td>
+                      <td className="px-4 py-3 text-center">{getStat('wins')}</td>
+                      <td className="px-4 py-3 text-center">{getStat('ties')}</td>
+                      <td className="px-4 py-3 text-center">{getStat('losses')}</td>
+                      <td className="px-4 py-3 text-center">{getStat('pointDifferential')}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
 
       <section className="grid md:grid-cols-3 gap-4">
         <InfoCard className="kas-dark-card" icon={<CalendarDays />} title="Calendario" text={isCostaRica ? 'Jornada activa disponible.' : 'Fixture conectado al deporte y listo para carga.'} />

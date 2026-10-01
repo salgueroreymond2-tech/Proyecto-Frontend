@@ -1,62 +1,37 @@
 import { NormalizedSportEvent } from './types';
-import { API_SPORTS_DOMAINS, API_SPORTS_KEY } from './apiSportsConfig';
 
-async function fetchApiSportsEndpoint(sport: string, endpoint: string, params: Record<string, string>, signal?: AbortSignal) {
-  const domain = API_SPORTS_DOMAINS[sport];
-  if (!domain) throw new Error(`Sport ${sport} not supported by API-Sports client yet`);
+// Mapeo de deportes KAS hacia endpoints de ESPN
+const ESPN_ENDPOINTS: Record<string, string> = {
+  football: 'soccer/uefa.champions', // Se podría expandir a array si quisieras varias ligas
+  basketball: 'basketball/nba',
+  baseball: 'baseball/mlb',
+  mma: 'mma/ufc',
+  motorsports: 'racing/f1',
+  tennis: 'tennis/atp'
+};
 
-  const url = new URL(`${domain}${endpoint}`);
-  for (const key in params) {
-    url.searchParams.append(key, params[key]);
-  }
+function normalizeEspnEvent(event: any, sportId: string): NormalizedSportEvent {
+  const comp = event.competitions[0];
+  const homeCompetitor = comp.competitors.find((c: any) => c.homeAway === 'home') || comp.competitors[0];
+  const awayCompetitor = comp.competitors.find((c: any) => c.homeAway === 'away') || comp.competitors[1];
 
-  const response = await fetch(url.toString(), {
-    headers: {
-      'x-apisports-key': API_SPORTS_KEY,
-    },
-    signal,
-  });
-
-  if (!response.ok) {
-    throw new Error(`API-Sports request failed: ${response.statusText}`);
-  }
-
-  return response.json();
-}
-
-function normalizeFootballFixture(item: any): NormalizedSportEvent {
-  const home = item.teams.home.name;
-  const away = item.teams.away.name;
-  const status = item.fixture.status.long;
-  const score = item.goals.home !== null ? `${item.goals.home} - ${item.goals.away}` : undefined;
+  const getEntityName = (c: any) => c?.team?.displayName || c?.athlete?.displayName || c?.team?.name || 'Competidor';
+  
+  const homeName = getEntityName(homeCompetitor);
+  const awayName = getEntityName(awayCompetitor);
+  
+  const hasScore = homeCompetitor?.score && awayCompetitor?.score;
+  const score = hasScore ? `${homeCompetitor.score} - ${awayCompetitor.score}` : undefined;
 
   return {
-    id: `api-sports-football-${item.fixture.id}`,
-    sportId: 'football',
-    league: item.league.name,
-    title: `${home} vs ${away}`,
-    status: status,
-    score: score,
-    startsAt: item.fixture.date,
-    provider: 'api-sports',
-  };
-}
-
-function normalizeBasketballGame(item: any): NormalizedSportEvent {
-  const home = item.teams.home.name;
-  const away = item.teams.away.name;
-  const status = item.status.long;
-  const score = item.scores.home.total !== null ? `${item.scores.home.total} - ${item.scores.away.total}` : undefined;
-
-  return {
-    id: `api-sports-basketball-${item.id}`,
-    sportId: 'basketball',
-    league: item.league.name,
-    title: `${home} vs ${away}`,
-    status: status,
-    score: score,
-    startsAt: item.date,
-    provider: 'api-sports',
+    id: `espn-${event.id}`,
+    sportId,
+    league: event.season?.slug || sportId,
+    title: event.name || `${homeName} vs ${awayName}`,
+    status: event.status.type.detail || event.status.type.state,
+    score,
+    startsAt: event.date,
+    provider: 'espn', // Cambiado a espn
   };
 }
 
@@ -65,33 +40,32 @@ export async function fetchApiSportsGamesBySport(
   date?: string,
   signal?: AbortSignal
 ): Promise<NormalizedSportEvent[]> {
-  const queryDate = date || new Date().toISOString().split('T')[0];
+  const endpoint = ESPN_ENDPOINTS[sportId];
+  if (!endpoint) return [];
+
+  // ESPN format para soccer no soporta fechas exactas a menos que sea muy preciso,
+  // pero para los demás podemos pasar la fecha. Si es soccer y no hay fecha, no pasamos nada
+  // Para estandarizar, si el usuario pasa date YYYY-MM-DD, lo convertimos a YYYYMMDD
+  let url = `https://site.api.espn.com/apis/site/v2/sports/${endpoint}/scoreboard`;
+  
+  if (date) {
+    const formattedDate = date.replace(/-/g, '');
+    url += `?dates=${formattedDate}`;
+  }
 
   try {
-    if (sportId === 'football') {
-      // 2 es UEFA Champions League
-      const data = await fetchApiSportsEndpoint(sportId, '/fixtures', { date: queryDate, league: '2', season: '2024' }, signal);
-      if (!data.response) return [];
-      return data.response.map(normalizeFootballFixture);
-    }
-    
-    if (sportId === 'basketball') {
-      // 12 es NBA
-      const data = await fetchApiSportsEndpoint(sportId, '/games', { date: queryDate, league: '12', season: '2025' }, signal);
-      if (!data.response) return [];
-      return data.response.map(normalizeBasketballGame);
+    const response = await fetch(url, { signal });
+    if (!response.ok) {
+      console.warn(`ESPN API retornó ${response.status} para ${sportId}`);
+      return [];
     }
 
-    if (sportId === 'baseball') {
-      // 1 es MLB
-      const data = await fetchApiSportsEndpoint(sportId, '/games', { date: queryDate, league: '1', season: '2025' }, signal);
-      if (!data.response) return [];
-      return data.response.map(normalizeBasketballGame); // Asumiendo que el formato es similar
-    }
+    const data = await response.json();
+    if (!data.events || data.events.length === 0) return [];
 
-    return [];
+    return data.events.map((e: any) => normalizeEspnEvent(e, sportId));
   } catch (error) {
-    console.error(`Error fetching API-Sports for ${sportId}:`, error);
+    console.error(`Error fetching ESPN API for ${sportId}:`, error);
     return [];
   }
 }

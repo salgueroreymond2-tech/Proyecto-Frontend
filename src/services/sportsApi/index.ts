@@ -194,8 +194,19 @@ const CUSTOM_LEAGUE_LOGOS: Record<string, string> = {
   'us-open': 'https://en.wikipedia.org/wiki/Special:FilePath/Usopen-horizontal-logo.svg',
   'atp-masters': 'https://en.wikipedia.org/wiki/Special:FilePath/ATP_Tour_logo.svg',
   'wta-masters': 'https://en.wikipedia.org/wiki/Special:FilePath/WTA_2025.svg',
-  'the-masters': 'https://en.wikipedia.org/wiki/Special:FilePath/Masters_Tournament_logo.svg',
-  'ryder-cup': 'https://en.wikipedia.org/wiki/Special:FilePath/Ryder_Cup_logo.svg',
+  'the-masters': 'https://en.wikipedia.org/wiki/Special:FilePath/Augusta_National_Golf_Club_logo.png',
+  'ryder-cup': 'https://en.wikipedia.org/wiki/Special:FilePath/RyderCupLogo.svg',
+  'tour-de-france': 'https://en.wikipedia.org/wiki/Special:FilePath/Tour_de_France_logo.svg',
+  'giro-d-italia': 'https://en.wikipedia.org/wiki/Special:FilePath/Giro_d%E2%80%99Italia_logo.svg',
+  'la-vuelta': 'https://en.wikipedia.org/wiki/Special:FilePath/La_Vuelta_(Spain)_logo.svg',
+  'uci-world-championships': 'https://en.wikipedia.org/wiki/Special:FilePath/Union_Cycliste_Internationale_logo.svg',
+  'ufc-fight-night': 'https://upload.wikimedia.org/wikipedia/commons/0/0d/UFC_logo.svg',
+  'ufc-ppv-series': 'https://upload.wikimedia.org/wikipedia/commons/0/0d/UFC_logo.svg',
+  'ufc-championship-events': 'https://upload.wikimedia.org/wikipedia/commons/0/0d/UFC_logo.svg',
+  'wbc-world-boxing-council': 'https://commons.wikimedia.org/wiki/Special:FilePath/WBC_logo.svg',
+  'wba-world-boxing-association': 'https://en.wikipedia.org/wiki/Special:FilePath/World_Boxing_Association_logo.png',
+  'ibf-international-boxing-federation': 'https://en.wikipedia.org/wiki/Special:FilePath/International_Boxing_Federation_logo.png',
+  'wbo-world-boxing-organization': 'https://en.wikipedia.org/wiki/Special:FilePath/World_Boxing_Organization_logo.png',
 };
 
 export async function getTournamentEvents(tournamentId: string, signal?: AbortSignal): Promise<SportsApiResult<NormalizedSportEvent[]>> {

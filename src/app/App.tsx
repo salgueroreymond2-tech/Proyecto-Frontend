@@ -294,6 +294,65 @@ const f1Drivers = [
   { displayName: 'Valtteri Bottas', teamName: 'Audi', bgColor: '#F91536', headshot: { href: 'https://a.espncdn.com/i/headshots/rpm/players/full/4520.png' }, teamLogo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/kick%20sauber' }
 ];
 
+const f1Teams = [
+  { name: 'Red Bull', logo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/red%20bull' },
+  { name: 'McLaren', logo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/mclaren' },
+  { name: 'Ferrari', logo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/ferrari' },
+  { name: 'Mercedes', logo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/mercedes' },
+  { name: 'Aston Martin', logo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/aston%20martin' },
+  { name: 'RB', logo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/rb' },
+  { name: 'Haas', logo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/haas' },
+  { name: 'Williams', logo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/williams' },
+  { name: 'Alpine', logo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/alpine' },
+  { name: 'Kick Sauber', logo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/kick%20sauber' },
+  { name: 'Sauber', logo: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/2018-redesign-assets/team%20logos/kick%20sauber' }
+];
+
+const cyclingTeams = [
+  { displayName: 'UAE Team Emirates', bgColor: '#000000', headshot: { href: 'https://en.wikipedia.org/wiki/Special:FilePath/UAE_Team_Emirates.png' } },
+  { displayName: 'Team Visma-Lease a Bike', bgColor: '#FFE600', headshot: { href: 'https://en.wikipedia.org/wiki/Special:FilePath/Visma-Lease_a_Bike_logo.svg' } },
+  { displayName: 'Soudal Quick-Step', bgColor: '#1A3F85', headshot: { href: 'https://en.wikipedia.org/wiki/Special:FilePath/Soudal_Quick-Step_logo.png' } },
+  { displayName: 'INEOS Grenadiers', bgColor: '#0B0D17', headshot: { href: 'https://en.wikipedia.org/wiki/Special:FilePath/Ineos_Grenadiers_Logo.png' } },
+  { displayName: 'Red Bull-BORA-hansgrohe', bgColor: '#0A2640', headshot: { href: 'https://en.wikipedia.org/wiki/Special:FilePath/Bora-hansgrohe.svg' } },
+  { displayName: 'Lidl-Trek', bgColor: '#0050AA', headshot: { href: 'https://en.wikipedia.org/wiki/Special:FilePath/Lidl%E2%80%93Trek_logo.png' } },
+  { displayName: 'Movistar Team', bgColor: '#00A9E0', headshot: { href: 'https://en.wikipedia.org/wiki/Special:FilePath/Movistar_Team_2017_logo.svg' } },
+  { displayName: 'EF Education-EasyPost', bgColor: '#EF59A1', headshot: { href: 'https://en.wikipedia.org/wiki/Special:FilePath/EF_Education-EasyPost_Logo.svg' } },
+  { displayName: 'Groupama-FDJ', bgColor: '#004A99', headshot: { href: 'https://en.wikipedia.org/wiki/Special:FilePath/2020_Groupama-FDJ_jersey.png' } },
+  { displayName: 'Alpecin-Deceuninck', bgColor: '#1E2243', headshot: { href: 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Alpecin-Deceuninck_logo.svg' } }
+];
+
+
+const topGolfers = [
+  { displayName: 'Scottie Scheffler', headshot: { href: 'https://pga-tour-res.cloudinary.com/image/upload/c_fill,d_headshots_default.png,f_auto,g_face:center,h_370,q_auto,w_280/headshots_46046.png' } },
+  { displayName: 'Rory McIlroy', headshot: { href: 'https://pga-tour-res.cloudinary.com/image/upload/c_fill,d_headshots_default.png,f_auto,g_face:center,h_370,q_auto,w_280/headshots_28237.png' } },
+  { displayName: 'Jon Rahm', headshot: { href: 'https://pga-tour-res.cloudinary.com/image/upload/c_fill,d_headshots_default.png,f_auto,g_face:center,h_370,q_auto,w_280/headshots_46970.png' } },
+  { displayName: 'Xander Schauffele', headshot: { href: 'https://pga-tour-res.cloudinary.com/image/upload/c_fill,d_headshots_default.png,f_auto,g_face:center,h_370,q_auto,w_280/headshots_48081.png' } },
+  { displayName: 'Collin Morikawa', headshot: { href: 'https://pga-tour-res.cloudinary.com/image/upload/c_fill,d_headshots_default.png,f_auto,g_face:center,h_370,q_auto,w_280/headshots_50525.png' } },
+  { displayName: 'Viktor Hovland', headshot: { href: 'https://pga-tour-res.cloudinary.com/image/upload/c_fill,d_headshots_default.png,f_auto,g_face:center,h_370,q_auto,w_280/headshots_46717.png' } },
+  { displayName: 'Ludvig Aberg', headshot: { href: 'https://pga-tour-res.cloudinary.com/image/upload/c_fill,d_headshots_default.png,f_auto,g_face:center,h_370,q_auto,w_280/headshots_55481.png' } },
+  { displayName: 'Tommy Fleetwood', headshot: { href: 'https://pga-tour-res.cloudinary.com/image/upload/c_fill,d_headshots_default.png,f_auto,g_face:center,h_370,q_auto,w_280/headshots_30911.png' } },
+  { displayName: 'Hideki Matsuyama', headshot: { href: 'https://pga-tour-res.cloudinary.com/image/upload/c_fill,d_headshots_default.png,f_auto,g_face:center,h_370,q_auto,w_280/headshots_32839.png' } },
+  { displayName: 'Jordan Spieth', headshot: { href: 'https://pga-tour-res.cloudinary.com/image/upload/c_fill,d_headshots_default.png,f_auto,g_face:center,h_370,q_auto,w_280/headshots_34046.png' } }
+];
+
+const ryderCupTeams = [
+  { displayName: 'Team USA', headshot: { href: 'https://a.espncdn.com/i/teamlogos/countries/500/usa.png' } },
+  { displayName: 'Team Europe', headshot: { href: 'https://a.espncdn.com/i/teamlogos/countries/500/eur.png' } },
+  ...topGolfers.filter(g => ['Scottie Scheffler', 'Rory McIlroy', 'Jon Rahm', 'Xander Schauffele', 'Tommy Fleetwood', 'Collin Morikawa'].includes(g.displayName))
+];
+
+const topFighters = [
+  { displayName: 'Jon Jones', headshot: { href: 'https://a.espncdn.com/i/headshots/mma/players/full/2335639.png' } },
+  { displayName: 'Islam Makhachev', headshot: { href: 'https://a.espncdn.com/i/headshots/mma/players/full/3332412.png' } },
+  { displayName: 'Alex Pereira', headshot: { href: 'https://a.espncdn.com/i/headshots/mma/players/full/4705658.png' } },
+  { displayName: 'Tom Aspinall', headshot: { href: 'https://a.espncdn.com/i/headshots/mma/players/full/4010976.png' } },
+  { displayName: 'Ilia Topuria', headshot: { href: 'https://a.espncdn.com/i/headshots/mma/players/full/4350812.png' } },
+  { displayName: 'Max Holloway', headshot: { href: 'https://a.espncdn.com/i/headshots/mma/players/full/2614933.png' } },
+  { displayName: 'Charles Oliveira', headshot: { href: 'https://a.espncdn.com/i/headshots/mma/players/full/2504169.png' } },
+  { displayName: 'Leon Edwards', headshot: { href: 'https://a.espncdn.com/i/headshots/mma/players/full/3152929.png' } },
+  { displayName: 'Valentina Shevchenko', headshot: { href: 'https://a.espncdn.com/i/headshots/mma/players/full/2554705.png' } }
+];
+
 const top5Men = [
   { displayName: 'Jannik Sinner', headshot: { href: 'https://a.espncdn.com/i/headshots/tennis/players/full/3623.png' } },
   { displayName: 'Carlos Alcaraz', headshot: { href: 'https://a.espncdn.com/i/headshots/tennis/players/full/3782.png' } },
@@ -485,21 +544,21 @@ const tournamentDetails: Record<string, {
   },
   'tour-de-france': {
     overview: 'Grand Tour frances con predicciones por etapa, general, montana y puntos.',
-    teams: ['UAE Team Emirates-XRG', 'Team Visma-Lease a Bike', 'Soudal Quick-Step', 'Netcompany INEOS Cycling Team', 'Red Bull-BORA-hansgrohe', 'Lidl-Trek', 'Alpecin-Premier Tech', 'Movistar Team', 'EF Education-EasyPost', 'Groupama-FDJ United'],
+    teams: cyclingTeams,
     format: 'Tour de France 2027 - 21 etapas.',
     predictionRules: ['Ganador de etapa', 'Maillot amarillo', 'Montana', 'Puntos'],
     coverage: ['Etapas llanas', 'Montana', 'Contrarreloj', 'Clasificacion general'],
   },
   'giro-d-italia': {
     overview: 'Grand Tour italiano con clasificacion general, sprints y etapas de montana.',
-    teams: ['UAE Team Emirates-XRG', 'Team Visma-Lease a Bike', 'Soudal Quick-Step', 'Netcompany INEOS Cycling Team', 'Red Bull-BORA-hansgrohe', 'Lidl-Trek', 'Alpecin-Premier Tech', 'Movistar Team', 'EF Education-EasyPost', 'Groupama-FDJ United'],
+    teams: cyclingTeams,
     format: 'Giro d Italia 2027 - 21 etapas.',
     predictionRules: ['Ganador de etapa', 'Maglia rosa', 'Montana', 'Joven destacado'],
     coverage: ['Etapas', 'General', 'Montana', 'Sprint'],
   },
   'la-vuelta': {
     overview: 'Grand Tour espanol con finales en alto, general y etapas explosivas.',
-    teams: ['UAE Team Emirates-XRG', 'Team Visma-Lease a Bike', 'Soudal Quick-Step', 'Netcompany INEOS Cycling Team', 'Red Bull-BORA-hansgrohe', 'Lidl-Trek', 'Alpecin-Premier Tech', 'Movistar Team', 'EF Education-EasyPost', 'Groupama-FDJ United'],
+    teams: cyclingTeams,
     format: 'La Vuelta 2027 - 21 etapas.',
     predictionRules: ['Ganador de etapa', 'Maillot rojo', 'Montana', 'Equipo lider'],
     coverage: ['Finales en alto', 'Contrarreloj', 'General', 'Puntos'],
@@ -513,24 +572,45 @@ const tournamentDetails: Record<string, {
   },
   'pga-tour': {
     overview: 'Circuito PGA con predicciones por ronda, top 10, ganador y desempates.',
-    teams: ['Scottie Scheffler', 'Rory McIlroy', 'Jon Rahm', 'Xander Schauffele', 'Collin Morikawa', 'Viktor Hovland', 'Ludvig Aberg', 'Tommy Fleetwood', 'Hideki Matsuyama', 'Jordan Spieth'],
+    teams: topGolfers,
     format: 'PGA Tour 2027 - eventos por semana.',
     predictionRules: ['Ganador', 'Top 10', 'Lider por ronda', 'Corte superado'],
     coverage: ['Ronda 1', 'Ronda 2', 'Moving day', 'Final'],
   },
   'the-masters': {
     overview: 'Major premium en Augusta con picks por ronda, ganador y chaqueta verde.',
-    teams: ['Scottie Scheffler', 'Rory McIlroy', 'Jon Rahm', 'Xander Schauffele', 'Collin Morikawa', 'Viktor Hovland', 'Ludvig Aberg', 'Tommy Fleetwood', 'Hideki Matsuyama', 'Jordan Spieth'],
+    teams: topGolfers,
     format: 'The Masters 2027 - 4 rondas.',
     predictionRules: ['Ganador', 'Top 5', 'Lider final', 'Mejor ronda'],
     coverage: ['Augusta', 'Amen Corner', 'Corte', 'Chaqueta verde'],
   },
   'ryder-cup': {
     overview: 'Competencia por equipos con match play, parejas y singles.',
-    teams: ['Team USA', 'Team Europe', 'Scottie Scheffler', 'Rory McIlroy', 'Jon Rahm', 'Xander Schauffele', 'Tommy Fleetwood', 'Collin Morikawa'],
+    teams: ryderCupTeams,
     format: 'Ryder Cup 2027 - foursomes, four-ball y singles.',
     predictionRules: ['Ganador de match', 'Punto por equipo', 'Marcador global', 'MVP'],
     coverage: ['Foursomes', 'Four-ball', 'Singles', 'Marcador global'],
+  },
+  'ufc-fight-night': {
+    overview: 'Carteleras semanales de UFC Fight Night con predicciones por combate.',
+    teams: topFighters,
+    format: 'Cartelera estelar y preliminar.',
+    predictionRules: ['Ganador', 'Metodo de victoria', 'Round exacto', 'Pelea de la noche'],
+    coverage: ['Pesaje', 'Cartelera preliminar', 'Cartelera estelar'],
+  },
+  'ufc-ppv-series': {
+    overview: 'Eventos numerados de UFC (PPV) con combates titulares.',
+    teams: topFighters,
+    format: 'Eventos de Pago Por Evento (PPV).',
+    predictionRules: ['Ganador', 'Metodo de victoria', 'Round exacto', 'Pelea de la noche'],
+    coverage: ['Pesaje', 'Cartelera preliminar', 'Cartelera estelar'],
+  },
+  'ufc-championship-events': {
+    overview: 'Eventos premium de Campeonato de UFC.',
+    teams: topFighters,
+    format: 'Defensas de título.',
+    predictionRules: ['Ganador', 'Metodo de victoria', 'Round exacto', 'Pelea de la noche'],
+    coverage: ['Pesaje', 'Cartelera preliminar', 'Cartelera estelar'],
   },
   'wbc-world-boxing-council': {
     overview: 'Quiniela de peleas titulares avaladas por el World Boxing Council.',
@@ -2757,6 +2837,7 @@ function TournamentDashboard() {
   const enabledPath = primaryPath;
   const leagueLogo = apiLeagueLogo;
   const isFormulaOne = tournament.id === 'f1-world-championship';
+  const isCycling = tournament.sportId === 'cycling' || ['tour-de-france', 'giro-d-italia', 'la-vuelta'].includes(tournament.id);
   const leaderStanding = standings[0];
   const leaderTeam = getTeamById(leaderStanding?.teamId || 'sap');
   const favoriteTeam = getTeamById(currentUser.favoriteTeamId || 'sap');
@@ -2825,9 +2906,10 @@ function TournamentDashboard() {
                 const teamObj = entry.team || entry.athlete || entry;
                 const teamName = teamObj?.displayName || teamObj?.name || teamObj?.fullName;
                 const f1Static = isFormulaOne ? f1Drivers.find(d => d.displayName === teamName) : null;
+                const f1TeamStatic = isFormulaOne ? f1Teams.find(t => t.name === teamName) : null;
                 const points = entry.stats?.find((s: any) => s.name === 'points')?.value || 0;
                 const gd = entry.stats?.find((s: any) => s.name === 'pointDifferential')?.value || 0;
-                const logo = f1Static?.headshot?.href || teamObj?.logos?.[0]?.href || teamObj?.headshot?.href || (typeof teamObj?.headshot === 'string' ? teamObj.headshot : null) || teamObj?.flag?.href || (typeof teamObj?.flag === 'string' ? teamObj.flag : null);
+                const logo = f1Static?.headshot?.href || f1TeamStatic?.logo || teamObj?.logos?.[0]?.href || teamObj?.headshot?.href || (typeof teamObj?.headshot === 'string' ? teamObj.headshot : null) || teamObj?.flag?.href || (typeof teamObj?.flag === 'string' ? teamObj.flag : null);
 
                 return (
                   <div key={entry.team?.id || index} className="rounded-xl border border-white/10 bg-black/25 p-3">
@@ -2837,7 +2919,7 @@ function TournamentDashboard() {
                     </div>
                     <div className="mt-3 flex items-center gap-2">
                       {logo ? (
-                        <img src={logo} alt={teamName} className="w-6 h-6 object-contain" />
+                        <img src={logo} alt={teamName} className={f1TeamStatic ? "w-8 h-6 object-contain bg-white/95 rounded-sm p-0.5 shadow-sm" : "w-6 h-6 object-contain"} />
                       ) : (
                         <div className="w-6 h-6 bg-white/10 rounded-full" />
                       )}
@@ -2927,7 +3009,7 @@ function TournamentDashboard() {
                           )}
                           <div className="relative z-10 flex items-center gap-3 flex-1">
                             {logo ? (
-                              <img src={logo} alt={teamName} className="h-10 w-10 object-contain shrink-0" />
+                              <img src={logo} alt={teamName} className={`h-10 object-contain shrink-0 ${isCycling ? 'w-16 bg-white/95 rounded-md p-1 shadow-sm' : 'w-10'}`} />
                             ) : localTeam ? <TeamBadge team={localTeam} size="sm" /> : isFormulaOne ? (
                               <span className="flex h-12 w-20 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-[#f7f7f7]/95 px-2 shadow-inner">
                                 <UniversalTeamLogo name={teamName} size="md" className="h-8 w-full" />
@@ -3044,7 +3126,8 @@ function TournamentDashboard() {
                           const teamObj = entry.team || entry.athlete || entry;
                           const teamName = teamObj?.displayName || teamObj?.name || teamObj?.fullName;
                           const f1Static = isFormulaOne ? f1Drivers.find(d => d.displayName === teamName) : null;
-                          const logo = f1Static?.headshot?.href || teamObj?.logos?.[0]?.href || teamObj?.headshot?.href || (typeof teamObj?.headshot === 'string' ? teamObj.headshot : null) || teamObj?.flag?.href || (typeof teamObj?.flag === 'string' ? teamObj.flag : null);
+                          const f1TeamStatic = isFormulaOne ? f1Teams.find(t => t.name === teamName) : null;
+                          const logo = f1Static?.headshot?.href || f1TeamStatic?.logo || teamObj?.logos?.[0]?.href || teamObj?.headshot?.href || (typeof teamObj?.headshot === 'string' ? teamObj.headshot : null) || teamObj?.flag?.href || (typeof teamObj?.flag === 'string' ? teamObj.flag : null);
                           const getStat = (name: string) => entry.stats?.find((s: any) => s.name === name)?.value ?? '-';
                           
                           return (
@@ -3052,7 +3135,7 @@ function TournamentDashboard() {
                               <td className="px-4 py-3 font-mono text-white/50">{i + 1}</td>
                               <td className="px-4 py-3">
                                 <div className="flex items-center gap-3">
-                                  {logo ? <img src={logo} alt={teamName} className="h-6 w-6 object-contain bg-white/10 rounded-full p-0.5" loading="lazy" referrerPolicy="no-referrer" /> : <div className="h-6 w-6 rounded-full bg-white/10" />}
+                                  {logo ? <img src={logo} alt={teamName} className={f1TeamStatic ? "h-6 w-8 object-contain bg-white/95 rounded-sm p-0.5 shadow-sm shrink-0" : "h-6 w-6 object-contain bg-white/10 rounded-full p-0.5 shrink-0"} loading="lazy" referrerPolicy="no-referrer" /> : <div className="h-6 w-6 rounded-full bg-white/10 shrink-0" />}
                                   <span className="font-heading font-bold text-white">{teamName}</span>
                                 </div>
                               </td>

@@ -152,6 +152,10 @@ const ESPN_TOURNAMENT_MAP: Record<string, string> = {
   'serie-a': 'soccer/ita.1',
   'primeira-liga': 'soccer/por.1',
   'bundesliga': 'soccer/ger.1',
+  'ligue-1': 'soccer/fra.1',
+  'europa-league': 'soccer/uefa.europa',
+  'nations-league': 'soccer/uefa.nations',
+  'concacaf-nations-league': 'soccer/concacaf.nations.league',
   'cr-apertura-2026': 'soccer/crc.1',
   'f1-world-championship': 'racing/f1',
 };
@@ -170,8 +174,12 @@ export async function getTournamentEvents(tournamentId: string, signal?: AbortSi
         const awayCompetitor = comp?.competitors?.find((c: any) => c.homeAway === 'away') || comp?.competitors?.[1];
 
         const getEntityName = (c: any) => c?.team?.displayName || c?.athlete?.displayName || c?.team?.name || 'Competidor';
+        const getEntityLogo = (c: any) => c?.team?.logo || c?.athlete?.headshot?.href || c?.team?.logos?.[0]?.href;
+        
         const homeName = getEntityName(homeCompetitor);
         const awayName = getEntityName(awayCompetitor);
+        const homeLogo = getEntityLogo(homeCompetitor);
+        const awayLogo = getEntityLogo(awayCompetitor);
         
         const hasScore = homeCompetitor?.score && awayCompetitor?.score;
         const score = hasScore ? `${homeCompetitor.score} - ${awayCompetitor.score}` : undefined;
@@ -181,6 +189,10 @@ export async function getTournamentEvents(tournamentId: string, signal?: AbortSi
           sportId: tournamentId,
           league: data.leagues?.[0]?.name || event.season?.slug || tournamentId,
           title: event.name || `${homeName} vs ${awayName}`,
+          homeTeam: homeName,
+          awayTeam: awayName,
+          homeLogo,
+          awayLogo,
           status: event.status?.type?.detail || event.status?.type?.state,
           score,
           startsAt: event.date,
@@ -188,7 +200,11 @@ export async function getTournamentEvents(tournamentId: string, signal?: AbortSi
         };
       });
 
-      return { data: events, provider: 'espn', fromFallback: false };
+      let leagueLogo = data.leagues?.[0]?.logos?.[0]?.href;
+      if (tournamentId === 'cr-apertura-2026') leagueLogo = '/assets/logos/leagues/costa-rica-primera-division.png';
+      if (tournamentId === 'concacaf-nations-league') leagueLogo = 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Concacaf_Nations_League_logo.svg';
+
+      return { data: events, provider: 'espn', fromFallback: false, meta: { leagueLogo } };
     } catch (error) {
       return { data: localEvents, provider: 'local', fromFallback: true, error: error instanceof Error ? error.message : 'Error ESPN' };
     }
@@ -214,22 +230,64 @@ export async function getSportEvents(sportId: string, signal?: AbortSignal): Pro
   }
 }
 
-export async function getTournamentStandings(tournamentId: string, signal?: AbortSignal): Promise<any[]> {
+export async function getTournamentStandings(tournamentId: string, signal?: AbortSignal): Promise<{ groupName: string; entries: any[] }[]> {
   const espnEndpoint = ESPN_TOURNAMENT_MAP[tournamentId];
   if (!espnEndpoint) return [];
   
   try {
     const response = await fetch(`https://site.api.espn.com/apis/v2/sports/${espnEndpoint}/standings`, { signal });
     const data = await response.json();
-    return data.children?.[0]?.standings?.entries || [];
+    
+    // Si la competencia tiene multiples grupos (como la Nations League o formatos de grupos), 
+    // devolvemos los grupos separados.
+    if (data.children && data.children.length > 0) {
+      return data.children.map((child: any) => ({
+        groupName: child.name || 'Posiciones',
+        entries: child.standings?.entries || []
+      }));
+    }
+    
+    return [];
   } catch (error) {
     console.error(`Error fetching standings for ${tournamentId}`, error);
     return [];
   }
 }
 
+export async function getTournamentTopScorers(tournamentId: string, signal?: AbortSignal): Promise<any[]> {
+  const espnEndpoint = ESPN_TOURNAMENT_MAP[tournamentId];
+  if (!espnEndpoint) return [];
+  
+  try {
+    const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${espnEndpoint}/statistics`, { signal });
+    const data = await response.json();
+    const goalsLeaders = data.stats?.find((s: any) => s.name === 'goalsLeaders');
+    return goalsLeaders?.leaders || [];
+  } catch (error) {
+    console.error(`Error fetching top scorers for ${tournamentId}`, error);
+    return [];
+  }
+}
+
 export async function getLeaguesBySport(sportId: string, signal?: AbortSignal): Promise<SportsApiResult<NormalizedLeague[]>> {
   return { data: [], provider: 'espn', fromFallback: false };
+}
+
+export async function getTournamentLogo(tournamentId: string, signal?: AbortSignal): Promise<string | null> {
+  // Manual overrides para logos que ESPN no tiene correctos o actualizados
+  if (tournamentId === 'cr-apertura-2026') return '/assets/logos/leagues/costa-rica-primera-division.png';
+  if (tournamentId === 'concacaf-nations-league') return 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Concacaf_Nations_League_logo.svg';
+
+  const espnEndpoint = ESPN_TOURNAMENT_MAP[tournamentId];
+  if (!espnEndpoint) return null;
+  
+  try {
+    const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${espnEndpoint}/scoreboard`, { signal });
+    const data = await response.json();
+    return data.leagues?.[0]?.logos?.[0]?.href || null;
+  } catch (error) {
+    return null;
+  }
 }
 
 export async function getSportVisuals(signal?: AbortSignal): Promise<SportsApiResult<NormalizedSportVisual[]>> {

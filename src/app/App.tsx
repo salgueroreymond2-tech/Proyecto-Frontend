@@ -54,20 +54,8 @@ import { TeamBadge } from '../components/TeamBadge';
 import { UniversalTeamLogo } from '../components/UniversalTeamLogo';
 import { ASSET_PATHS } from '../config/assets';
 import { TEAMS, getTeamById } from '../data/teams';
-import {
-  BUNDESLIGA_TEAMS,
-  LALIGA_TEAMS,
-  LIGUE_1_TEAMS,
-  MLB_TEAMS,
-  NBA_TEAMS,
-  NFL_TEAMS,
-  PREMIER_LEAGUE_TEAMS,
-  PRIMEIRA_LIGA_TEAMS,
-  SERIE_A_TEAMS,
-  getLeagueLogo,
-  splitMatchupTitle,
-} from '../data/teamLogos';
-import { getSportEvents, getSportVisuals, getTournamentEvents, getTournamentStandings, type NormalizedSportEvent, type SportProvider } from '../services/sportsApi';
+
+import { getSportEvents, getSportVisuals, getTournamentEvents, getTournamentStandings, getTournamentTopScorers, getTournamentLogo, type NormalizedSportEvent, type SportProvider } from '../services/sportsApi';
 import { cancelMembership, getMyMemberships, getStoredSession, renewMembership, signIn, signUp, simulatePayPalCheckout, type UserMembership } from '../services/authApi';
 
 type Sport = {
@@ -287,7 +275,7 @@ const sportDashboards = {
 
 const tournamentDetails: Record<string, {
   overview: string;
-  teams: string[];
+  teams?: string[];
   format: string;
   predictionRules: string[];
   coverage: string[];
@@ -308,41 +296,41 @@ const tournamentDetails: Record<string, {
   },
   'premier-league': {
     overview: 'Liga inglesa con jornadas semanales, tabla acumulada y quiniela por fecha.',
-    teams: PREMIER_LEAGUE_TEAMS,
+
     format: 'Temporada 2026-2027 · todos contra todos.',
     predictionRules: ['Ganador', 'Marcador', 'Diferencia de goles', 'Top 4'],
     coverage: ['Calendario de liga', 'Tabla general', 'Derbis', 'Carrera al titulo'],
   },
   laliga: {
     overview: 'Competicion espanola con seguimiento de clubes principales, jornadas y lucha por puestos europeos.',
-    teams: LALIGA_TEAMS,
+
     format: 'Temporada 2026-2027 · liga regular.',
     predictionRules: ['Ganador', 'Marcador', 'Porteria a cero', 'Campeon'],
     coverage: ['Jornadas', 'Clasico', 'Tabla', 'Puestos europeos'],
   },
   'serie-a': {
     overview: 'Liga italiana con pronosticos de resultados, ranking de usuarios y seguimiento de candidatos al Scudetto.',
-    teams: SERIE_A_TEAMS,
+
     format: 'Temporada 2026-2027 · liga regular.',
     predictionRules: ['Ganador', 'Marcador', 'Resultado doble oportunidad', 'Campeon'],
     coverage: ['Jornadas', 'Tabla', 'Clasicos italianos', 'Zona europea'],
   },
   bundesliga: {
     overview: 'Liga alemana con foco en marcadores, liderato y rendimiento ofensivo.',
-    teams: BUNDESLIGA_TEAMS,
+
     format: 'Temporada 2026-2027 · liga regular.',
     predictionRules: ['Ganador', 'Marcador', 'Total de goles', 'Campeon'],
     coverage: ['Jornadas', 'Tabla', 'Carrera al titulo', 'Goleadores'],
   },
   'ligue-1': {
     overview: 'Liga francesa con seguimiento de clubes historicos, jornada regular y carrera europea.',
-    teams: LIGUE_1_TEAMS,
+
     format: 'Temporada 2026-2027 - liga regular.',
     predictionRules: ['Ganador', 'Marcador', 'Diferencia de goles', 'Campeon'],
     coverage: ['Jornadas', 'Tabla', 'Clasicos franceses', 'Zona europea'],
   },  'primeira-liga': {
     overview: 'Liga portuguesa con predicciones por fecha y seguimiento de clubes historicos.',
-    teams: PRIMEIRA_LIGA_TEAMS,
+
     format: 'Temporada 2026-2027 · liga regular.',
     predictionRules: ['Ganador', 'Marcador', 'Diferencia de goles', 'Campeon'],
     coverage: ['Jornadas', 'Tabla', 'Clasicos', 'Puestos europeos'],
@@ -390,63 +378,63 @@ const tournamentDetails: Record<string, {
     coverage: ['Grupos', 'Octavos', 'Semifinales', 'Final'],
   },  'nba-temporada-regular': {
     overview: 'Temporada regular NBA con partidos diarios, marcadores y ranking por aciertos.',
-    teams: NBA_TEAMS,
+
     format: 'Temporada 2026-2027 · conferencia Este y Oeste.',
     predictionRules: ['Ganador', 'Marcador', 'Diferencia de puntos', 'Equipo con mas puntos'],
     coverage: ['Calendario NBA', 'Conferencias', 'Rachas', 'Play-in'],
   },
   'nba-playoffs': {
     overview: 'Playoffs NBA con series al mejor de siete y predicciones por ronda.',
-    teams: NBA_TEAMS,
+
     format: 'Playoffs 2027 · series eliminatorias.',
     predictionRules: ['Ganador de juego', 'Ganador de serie', 'Resultado de serie', 'Campeon de conferencia'],
     coverage: ['Primera ronda', 'Semifinales', 'Finales de conferencia', 'Finales NBA'],
   },
   'nba-finals': {
     overview: 'Serie final NBA con predicciones premium por partido, MVP y campeon.',
-    teams: NBA_TEAMS,
+
     format: 'Finales NBA 2027 · mejor de siete.',
     predictionRules: ['Ganador', 'Marcador', 'MVP', 'Resultado de serie'],
     coverage: ['Finales', 'MVP', 'Marcadores', 'Campeon'],
   },
   'mlb-temporada-regular': {
     overview: 'Temporada MLB con picks por juego, carreras y series.',
-    teams: MLB_TEAMS,
+
     format: 'Temporada 2027 · liga Americana y Nacional.',
     predictionRules: ['Ganador', 'Carreras totales', 'Ganador de serie', 'Diferencia de carreras'],
     coverage: ['Temporada regular', 'Divisiones', 'Series', 'Wild Card'],
   },
   'mlb-postseason': {
     overview: 'Postemporada MLB con series eliminatorias y predicciones por ronda.',
-    teams: MLB_TEAMS,
+
     format: 'Postseason 2027 · series eliminatorias.',
     predictionRules: ['Ganador de juego', 'Ganador de serie', 'Carreras', 'Campeon de liga'],
     coverage: ['Wild Card', 'Division Series', 'Championship Series', 'World Series'],
   },
   'world-series': {
     overview: 'Final de MLB con predicciones de campeon, marcador y MVP.',
-    teams: MLB_TEAMS,
+
     format: 'World Series 2027 - mejor de siete.',
     predictionRules: ['Ganador', 'Carreras', 'Resultado de serie', 'MVP'],
     coverage: ['Serie final', 'MVP', 'Campeon', 'Juego decisivo'],
   },
   'nfl-temporada-regular': {
     overview: 'Temporada NFL con picks semanales, marcadores proyectados y ranking por conferencia.',
-    teams: NFL_TEAMS,
+
     format: 'Temporada 2026-2027 Â· AFC y NFC.',
     predictionRules: ['Ganador', 'Marcador', 'Diferencia de puntos', 'Equipo con mas yardas'],
     coverage: ['Semana regular', 'Divisiones', 'Conferencias', 'Playoffs'],
   },
   'nfl-playoffs': {
     overview: 'Playoffs NFL con rondas eliminatorias y predicciones por conferencia.',
-    teams: NFL_TEAMS,
+
     format: 'Playoffs 2027 Â· eliminatorias AFC y NFC.',
     predictionRules: ['Ganador', 'Marcador', 'Campeon de conferencia', 'Total de puntos'],
     coverage: ['Wild Card', 'Divisional', 'Finales de conferencia', 'Super Bowl'],
   },
   'super-bowl': {
     overview: 'Final NFL premium con predicciones de campeon, marcador, MVP y jugadas clave.',
-    teams: NFL_TEAMS,
+
     format: 'Super Bowl 2027 - final unica por el campeonato.',
     predictionRules: ['Ganador', 'Marcador', 'MVP', 'Total de puntos'],
     coverage: ['Final NFL', 'MVP', 'Campeon', 'Halftime props'],
@@ -1717,7 +1705,7 @@ function HomePage() {
                             );
                           })()
                         ) : (
-                          <MatchupTitleWithLogos title={item.title} size="xs" />
+                          <MatchupTitleWithLogos event={item.title} size="xs" />
                         )}
                         {item.score && <span className="ml-auto shrink-0 font-black">{item.score}</span>}
                       </div>
@@ -1819,7 +1807,7 @@ function HomePage() {
                             </h3>
                           ) : (
                             <h3 className="mt-1 flex min-w-0 items-center gap-2 font-heading text-lg font-black leading-tight text-white">
-                              <MatchupTitleWithLogos title={event.title} size="xs" />
+                              <MatchupTitleWithLogos event={event.title} size="xs" />
                             </h3>
                           )}
                         </div>
@@ -2269,7 +2257,7 @@ function SportsDashboard() {
                       </h3>
                     ) : (
                       <h3 className="mt-2 flex min-w-0 items-center gap-2 font-heading text-xl font-black text-white">
-                        <MatchupTitleWithLogos title={event.title} size="sm" />
+                        <MatchupTitleWithLogos event={event.title} size="sm" />
                       </h3>
                     )}
                   </div>
@@ -2307,7 +2295,25 @@ function formatMatchupTitle(title: string) {
   return title.replace(/\s+@\s+/g, ' vs ');
 }
 
-function MatchupLogoRow({ title, size = 'sm' }: { title: string; size?: 'xs' | 'sm' | 'md' }) {
+function splitMatchupTitle(title: string) {
+  const normalized = title.replace(/\s+@\s+/g, ' vs ');
+  const parts = normalized.split(/\s+vs\s+/i).map((item) => item.trim()).filter(Boolean);
+  return parts.length === 2 ? { home: parts[0], away: parts[1] } : null;
+}
+
+function MatchupLogoRow({ event, size = 'sm' }: { event: NormalizedSportEvent | string; size?: 'xs' | 'sm' | 'md' }) {
+  if (typeof event === 'object') {
+    if (event.homeLogo && event.awayLogo) {
+      return (
+        <span className="flex shrink-0 items-center -space-x-2">
+          <img src={event.homeLogo} alt={event.homeTeam} className="w-8 h-8 rounded-full object-contain bg-white/10" />
+          <img src={event.awayLogo} alt={event.awayTeam} className="w-8 h-8 rounded-full object-contain bg-white/10" />
+        </span>
+      );
+    }
+  }
+
+  const title = typeof event === 'string' ? event : event.title;
   const matchup = splitMatchupTitle(title);
 
   if (!matchup) return null;
@@ -2320,7 +2326,26 @@ function MatchupLogoRow({ title, size = 'sm' }: { title: string; size?: 'xs' | '
   );
 }
 
-function MatchupTitleWithLogos({ title, size = 'sm' }: { title: string; size?: 'xs' | 'sm' | 'md' }) {
+function MatchupTitleWithLogos({ event, size = 'sm' }: { event: NormalizedSportEvent | string; size?: 'xs' | 'sm' | 'md' }) {
+  if (typeof event === 'object') {
+    if (event.homeLogo && event.awayLogo) {
+      return (
+        <span className="flex min-w-0 items-center gap-2">
+          <span className="flex min-w-0 items-center gap-1.5">
+            <img src={event.homeLogo} alt={event.homeTeam} className="w-6 h-6 object-contain" />
+            <span className="truncate">{event.homeTeam || splitMatchupTitle(event.title)?.home}</span>
+          </span>
+          <span className="text-sm text-[#d5c0d7]">vs</span>
+          <span className="flex min-w-0 items-center gap-1.5">
+            <img src={event.awayLogo} alt={event.awayTeam} className="w-6 h-6 object-contain" />
+            <span className="truncate">{event.awayTeam || splitMatchupTitle(event.title)?.away}</span>
+          </span>
+        </span>
+      );
+    }
+  }
+
+  const title = typeof event === 'string' ? event : event.title;
   const matchup = splitMatchupTitle(title);
 
   if (!matchup) return <span className="truncate">{formatMatchupTitle(title)}</span>;
@@ -2340,14 +2365,28 @@ function MatchupTitleWithLogos({ title, size = 'sm' }: { title: string; size?: '
   );
 }
 
-function LeagueLogo({ tournamentId, name, className = '' }: { tournamentId: string; name: string; className?: string }) {
-  const logoUrl = getLeagueLogo(tournamentId);
+function LeagueLogo({ tournamentId, name, className = 'h-11 w-11' }: { tournamentId: string; name: string; className?: string }) {
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
-  if (!logoUrl) return null;
+  useEffect(() => {
+    let mounted = true;
+    getTournamentLogo(tournamentId).then((url) => {
+      if (mounted && url) {
+        setLogoUrl(url);
+      }
+    }).catch(() => {});
+    return () => { mounted = false; };
+  }, [tournamentId]);
 
   return (
-    <span className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white p-1 ${className}`}>
-      <img src={logoUrl} alt={name} className="h-full w-full object-contain" loading="lazy" referrerPolicy="no-referrer" />
+    <span className={`inline-flex shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white p-1 shadow-inner ${className}`}>
+      {logoUrl ? (
+        <img src={logoUrl} alt={name} className="h-full w-full object-contain" loading="lazy" referrerPolicy="no-referrer" />
+      ) : (
+        <span className="font-heading font-black text-black/50 text-[10px] sm:text-xs">
+          {name.substring(0, 3).toUpperCase()}
+        </span>
+      )}
     </span>
   );
 }
@@ -2563,7 +2602,26 @@ function TournamentDashboard() {
   const [tournamentApiStatus, setTournamentApiStatus] = useState<'loading' | 'ready' | 'fallback'>('loading');
   const [tournamentProvider, setTournamentProvider] = useState<SportProvider>('local');
 
-  const [espnStandings, setEspnStandings] = useState<any[]>([]);
+  const [espnStandings, setEspnStandings] = useState<{groupName: string; entries: any[]}[]>([]);
+  const [topScorers, setTopScorers] = useState<any[]>([]);
+  const [apiLeagueLogo, setApiLeagueLogo] = useState<string | null>(null);
+
+  const [activeGroupIndex, setActiveGroupIndex] = useState(0);
+  const [competitorsPage, setCompetitorsPage] = useState(1);
+
+  useEffect(() => {
+    setActiveGroupIndex(0);
+    setCompetitorsPage(1);
+  }, [tournamentId]);
+
+  useEffect(() => {
+    if (espnStandings.length > 1) {
+      const interval = setInterval(() => {
+        setActiveGroupIndex((prev) => (prev + 1) % espnStandings.length);
+      }, 7000);
+      return () => clearInterval(interval);
+    }
+  }, [espnStandings.length, activeGroupIndex]);
 
   useEffect(() => {
     if (!tournamentId) return;
@@ -2575,14 +2633,20 @@ function TournamentDashboard() {
       setTournamentApiEvents(result.data);
       setTournamentApiStatus(result.fromFallback ? 'fallback' : 'ready');
       setTournamentProvider(result.provider);
+      setApiLeagueLogo(result.meta?.leagueLogo || null);
     }).catch(() => {
       setTournamentApiEvents([]);
       setTournamentApiStatus('fallback');
       setTournamentProvider('local');
+      setApiLeagueLogo(null);
     });
 
     getTournamentStandings(tournamentId, controller.signal).then(standings => {
       setEspnStandings(standings);
+    }).catch(() => {});
+
+    getTournamentTopScorers(tournamentId, controller.signal).then(scorers => {
+      setTopScorers(scorers);
     }).catch(() => {});
 
     return () => controller.abort();
@@ -2608,7 +2672,7 @@ function TournamentDashboard() {
   ];
   const liveTournamentEvents = tournamentApiEvents.length > 0 ? tournamentApiEvents : [];
   const enabledPath = primaryPath;
-  const leagueLogo = getLeagueLogo(tournament.id);
+  const leagueLogo = apiLeagueLogo;
   const isFormulaOne = tournament.id === 'f1-world-championship';
   const leaderStanding = standings[0];
   const leaderTeam = getTeamById(leaderStanding?.teamId || 'sap');
@@ -2623,7 +2687,7 @@ function TournamentDashboard() {
   const predictionProgress = currentRoundMatches.length > 0 ? Math.round((predictedCurrentRound / currentRoundMatches.length) * 100) : 0;
   
   // Usar posiciones reales de ESPN si están disponibles, sino usar el fallback KAS
-  const classificationZone = espnStandings.length > 0 ? espnStandings.slice(0, 4) : standings.slice(0, 4);
+  const classificationZone = espnStandings.length > 0 ? espnStandings[0].entries.slice(0, 4) : standings.slice(0, 4);
 
   return (
     <div className="space-y-6 pb-24 px-4 pt-4 max-w-6xl mx-auto">
@@ -2674,7 +2738,7 @@ function TournamentDashboard() {
             </div>
 
             <div className="relative mt-6 grid gap-3 md:grid-cols-4">
-              {espnStandings.length > 0 ? espnStandings.slice(0, 4).map((entry: any, index: number) => {
+              {espnStandings.length > 0 ? espnStandings[0].entries.slice(0, 4).map((entry: any, index: number) => {
                 const teamName = entry.team?.displayName || entry.team?.name;
                 const points = entry.stats?.find((s: any) => s.name === 'points')?.value || 0;
                 const gd = entry.stats?.find((s: any) => s.name === 'pointDifferential')?.value || 0;
@@ -2724,7 +2788,7 @@ function TournamentDashboard() {
           <div>
             <p className="text-sm font-mono text-[#EA7301]">DASHBOARD DEL TORNEO</p>
             {leagueLogo && (
-              <span className="mt-3 inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white p-2">
+              <span className="mt-3 inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white p-2 shadow-inner">
                 <img src={leagueLogo} alt={tournament.name} className="h-full w-full object-contain" loading="lazy" referrerPolicy="no-referrer" />
               </span>
             )}
@@ -2749,32 +2813,68 @@ function TournamentDashboard() {
               <p className="text-sm font-mono text-[#EA7301]">EQUIPOS / PARTICIPANTES</p>
               <h2 className="text-3xl font-heading font-black text-white">Competidores</h2>
             </div>
-            <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{espnStandings.length > 0 ? espnStandings.length : detail.teams.length} activos</span>
+            <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{espnStandings.length > 0 ? espnStandings.reduce((sum, g) => sum + g.entries.length, 0) : (detail.teams?.length || 0)} activos</span>
           </div>
           <p className="mt-3 text-sm text-[#d5c0d7]">{detail.overview}</p>
-          <div className="mt-5 grid sm:grid-cols-2 gap-3">
-            {(espnStandings.length > 0 ? espnStandings.map(s => s.team) : detail.teams.map(name => ({ displayName: name }))).map((teamObj) => {
-              const teamName = teamObj.displayName || teamObj.name || 'Desconocido';
-              const logo = teamObj.logos?.[0]?.href;
-              const localTeam = findCostaRicaTeamByName(teamName);
+          <div className="mt-5">
+            {(() => {
+              const allCompetitors = espnStandings.length > 0 ? espnStandings.flatMap(g => g.entries).map(s => s.team) : (detail.teams || []).map(name => ({ displayName: name }));
+              const COMPETITORS_PER_PAGE = 12;
+              const totalPages = Math.ceil(allCompetitors.length / COMPETITORS_PER_PAGE);
+              const paginatedCompetitors = allCompetitors.slice((competitorsPage - 1) * COMPETITORS_PER_PAGE, competitorsPage * COMPETITORS_PER_PAGE);
+
               return (
-                <div key={teamName} className={`rounded-xl border border-white/10 bg-black/25 px-4 py-3 ${isFormulaOne ? 'select-none' : ''}`}>
-                  <div className="flex items-center gap-3">
-                    {logo ? (
-                      <img src={logo} alt={teamName} className="h-8 w-8 object-contain" />
-                    ) : localTeam ? <TeamBadge team={localTeam} size="sm" /> : isFormulaOne ? (
-                      <span className="flex h-16 w-28 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-[#f7f7f7]/95 px-2 shadow-inner">
-                        <UniversalTeamLogo name={teamName} size="md" className="h-12 w-full" />
-                      </span>
-                    ) : <UniversalTeamLogo name={teamName} size="sm" />}
-                    <div className="min-w-0">
-                      <p className={`${isFormulaOne ? 'whitespace-normal text-[15px] leading-tight sm:text-base' : 'truncate text-lg'} font-heading font-black text-white`}>{localTeam?.shortName || teamName}</p>
-                      <p className="text-xs text-[#d5c0d7]">{localTeam?.name || tournament.sportName}</p>
-                    </div>
+                <>
+                  <div className="grid sm:grid-cols-2 gap-3 min-h-[350px]">
+                    {paginatedCompetitors.map((teamObj) => {
+                      const teamName = teamObj.displayName || teamObj.name || 'Desconocido';
+                      const logo = teamObj.logos?.[0]?.href;
+                      const localTeam = findCostaRicaTeamByName(teamName);
+                      return (
+                        <div key={teamName} className={`rounded-xl border border-white/10 bg-black/25 px-4 py-3 h-20 flex items-center ${isFormulaOne ? 'select-none' : ''}`}>
+                          <div className="flex items-center gap-3">
+                            {logo ? (
+                              <img src={logo} alt={teamName} className="h-8 w-8 object-contain shrink-0" />
+                            ) : localTeam ? <TeamBadge team={localTeam} size="sm" /> : isFormulaOne ? (
+                              <span className="flex h-12 w-20 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-[#f7f7f7]/95 px-2 shadow-inner">
+                                <UniversalTeamLogo name={teamName} size="md" className="h-8 w-full" />
+                              </span>
+                            ) : <UniversalTeamLogo name={teamName} size="sm" />}
+                            <div className="min-w-0">
+                              <p className={`${isFormulaOne ? 'whitespace-normal text-[15px] leading-tight sm:text-base' : 'truncate text-lg'} font-heading font-black text-white`}>{localTeam?.shortName || teamName}</p>
+                              <p className="text-xs text-[#d5c0d7]">{localTeam?.name || tournament.sportName}</p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                </div>
+                  {totalPages > 1 && (
+                    <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
+                      <button 
+                        onClick={() => setCompetitorsPage(p => Math.max(1, p - 1))}
+                        disabled={competitorsPage === 1}
+                        className="flex items-center gap-1 text-sm font-bold text-white/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ChevronLeft className="w-4 h-4" /> Anterior
+                      </button>
+                      <div className="flex gap-1.5 flex-wrap justify-center px-4 max-w-[200px] sm:max-w-none">
+                        {Array.from({ length: totalPages }).map((_, i) => (
+                          <div key={i} onClick={() => setCompetitorsPage(i + 1)} className={`h-1.5 cursor-pointer rounded-full transition-all duration-300 ${i + 1 === competitorsPage ? 'w-6 bg-[#EA7301]' : 'w-1.5 bg-white/20 hover:bg-white/40'}`} />
+                        ))}
+                      </div>
+                      <button 
+                        onClick={() => setCompetitorsPage(p => Math.min(totalPages, p + 1))}
+                        disabled={competitorsPage === totalPages}
+                        className="flex items-center gap-1 text-sm font-bold text-white/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        Siguiente <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </>
               );
-            })}
+            })()}
           </div>
         </div>
 
@@ -2802,50 +2902,137 @@ function TournamentDashboard() {
         </div>
       </section>
 
-      {!isCostaRica && espnStandings.length > 0 && (
+      {espnStandings.length > 0 && (
         <section className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5 overflow-hidden">
           <p className="text-sm font-mono text-[#EA7301]">RANKING OFICIAL</p>
           <h2 className="mt-2 text-3xl font-heading font-black text-white">Tabla de Posiciones</h2>
-          <div className="mt-5 overflow-x-auto">
-            <table className="w-full text-left text-sm text-[#d5c0d7] min-w-[600px]">
-              <thead className="border-b border-white/10 bg-black/30 font-mono text-xs uppercase">
-                <tr>
-                  <th className="px-4 py-3 font-medium">Pos</th>
-                  <th className="px-4 py-3 font-medium">Equipo</th>
-                  <th className="px-4 py-3 font-medium text-center">PTS</th>
-                  <th className="px-4 py-3 font-medium text-center">PJ</th>
-                  <th className="px-4 py-3 font-medium text-center">PG</th>
-                  <th className="px-4 py-3 font-medium text-center">PE</th>
-                  <th className="px-4 py-3 font-medium text-center">PP</th>
-                  <th className="px-4 py-3 font-medium text-center">DG</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {espnStandings.map((entry: any, i: number) => {
-                  const teamName = entry.team?.displayName || entry.team?.name;
-                  const logo = entry.team?.logos?.[0]?.href;
-                  const getStat = (name: string) => entry.stats?.find((s: any) => s.name === name)?.value ?? '-';
-                  
-                  return (
-                    <tr key={entry.team?.id || i} className="hover:bg-white/5 transition-colors">
-                      <td className="px-4 py-3 font-mono text-white/50">{i + 1}</td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          {logo ? <img src={logo} alt={teamName} className="h-6 w-6 object-contain bg-white/10 rounded-full p-0.5" /> : <div className="h-6 w-6 rounded-full bg-white/10" />}
-                          <span className="font-heading font-bold text-white">{teamName}</span>
+          <div className="mt-5 relative">
+            {(() => {
+              const group = espnStandings[activeGroupIndex] || espnStandings[0];
+              return (
+                <div key={group.groupName} className="w-full animate-in fade-in duration-500">
+                  {espnStandings.length > 1 && (
+                    <div className="flex items-center justify-between mb-4 border-l-4 border-[#EA7301] pl-3">
+                      <h3 className="text-lg font-bold text-white">{group.groupName}</h3>
+                      <div className="flex items-center gap-3">
+                        <button 
+                          onClick={() => setActiveGroupIndex((prev) => (prev - 1 + espnStandings.length) % espnStandings.length)}
+                          className="p-1 rounded-full hover:bg-white/10 transition-colors text-[#d5c0d7] hover:text-white"
+                        >
+                          <ChevronLeft size={20} />
+                        </button>
+                        <div className="flex gap-1.5 hidden sm:flex">
+                          {espnStandings.map((_, idx) => (
+                            <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx === activeGroupIndex ? 'w-6 bg-[#EA7301]' : 'w-1.5 bg-white/20'}`} />
+                          ))}
                         </div>
-                      </td>
-                      <td className="px-4 py-3 text-center font-bold text-[#EA7301]">{getStat('points')}</td>
-                      <td className="px-4 py-3 text-center">{getStat('gamesPlayed')}</td>
-                      <td className="px-4 py-3 text-center">{getStat('wins')}</td>
-                      <td className="px-4 py-3 text-center">{getStat('ties')}</td>
-                      <td className="px-4 py-3 text-center">{getStat('losses')}</td>
-                      <td className="px-4 py-3 text-center">{getStat('pointDifferential')}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                        <button 
+                          onClick={() => setActiveGroupIndex((prev) => (prev + 1) % espnStandings.length)}
+                          className="p-1 rounded-full hover:bg-white/10 transition-colors text-[#d5c0d7] hover:text-white"
+                        >
+                          <ChevronRight size={20} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm text-[#d5c0d7] min-w-[500px]">
+                      <thead className="border-b border-white/10 bg-black/30 font-mono text-xs uppercase">
+                        <tr>
+                          <th className="px-4 py-3 font-medium">Pos</th>
+                          <th className="px-4 py-3 font-medium">Equipo</th>
+                          <th className="px-4 py-3 font-medium text-center">PTS</th>
+                          <th className="px-4 py-3 font-medium text-center">PJ</th>
+                          <th className="px-4 py-3 font-medium text-center">PG</th>
+                          <th className="px-4 py-3 font-medium text-center">PE</th>
+                          <th className="px-4 py-3 font-medium text-center">PP</th>
+                          <th className="px-4 py-3 font-medium text-center">DG</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                        {group.entries.map((entry: any, i: number) => {
+                          const teamName = entry.team?.displayName || entry.team?.name;
+                          const logo = entry.team?.logos?.[0]?.href;
+                          const getStat = (name: string) => entry.stats?.find((s: any) => s.name === name)?.value ?? '-';
+                          
+                          return (
+                            <tr key={entry.team?.id || i} className="hover:bg-white/5 transition-colors">
+                              <td className="px-4 py-3 font-mono text-white/50">{i + 1}</td>
+                              <td className="px-4 py-3">
+                                <div className="flex items-center gap-3">
+                                  {logo ? <img src={logo} alt={teamName} className="h-6 w-6 object-contain bg-white/10 rounded-full p-0.5" loading="lazy" referrerPolicy="no-referrer" /> : <div className="h-6 w-6 rounded-full bg-white/10" />}
+                                  <span className="font-heading font-bold text-white">{teamName}</span>
+                                </div>
+                              </td>
+                              <td className="px-4 py-3 text-center font-bold text-[#EA7301]">{getStat('points')}</td>
+                              <td className="px-4 py-3 text-center">{getStat('gamesPlayed')}</td>
+                              <td className="px-4 py-3 text-center">{getStat('wins')}</td>
+                              <td className="px-4 py-3 text-center">{getStat('ties')}</td>
+                              <td className="px-4 py-3 text-center">{getStat('losses')}</td>
+                              <td className="px-4 py-3 text-center">{getStat('pointDifferential')}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </section>
+      )}
+
+      {topScorers.length > 0 && (
+        <section className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">
+          <p className="text-sm font-mono text-[#EA7301]">TOP SCORERS</p>
+          <h2 className="mt-2 text-3xl font-heading font-black text-white">Goleadores Oficiales</h2>
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {topScorers.slice(0, 8).map((scorer: any, i: number) => {
+              const athleteName = scorer.athlete?.displayName || 'Jugador Desconocido';
+              const teamName = scorer.team?.displayName || scorer.team?.name;
+              const teamLogo = scorer.team?.logos?.[0]?.href;
+              const goals = scorer.value || scorer.statistics?.find((s: any) => s.name === 'totalGoals' || s.name === 'goals')?.displayValue || 0;
+              const games = scorer.statistics?.find((s: any) => s.name === 'appearances' || s.name === 'gamesPlayed')?.displayValue 
+                || (scorer.displayValue && typeof scorer.displayValue === 'string' ? scorer.displayValue.match(/Matches:\s*(\d+)/i)?.[1] : 0) || 0;
+              const athletePhoto = scorer.athlete?.headshot?.href;
+
+              return (
+                <div key={scorer.athlete?.id || i} className="rounded-xl border border-white/10 bg-black/25 p-4 relative overflow-hidden group">
+                  {teamLogo && (
+                    <div className="absolute right-[-20px] bottom-[-10px] opacity-[0.07] pointer-events-none transition-all duration-500 group-hover:scale-110 group-hover:opacity-[0.15]">
+                      <img src={teamLogo} alt="" className="h-36 w-36 object-contain" />
+                    </div>
+                  )}
+                  <div className="absolute right-2 top-2 opacity-5 pointer-events-none transition-transform group-hover:scale-110">
+                    <span className="font-heading text-6xl font-black">{i + 1}</span>
+                  </div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#EA7301]/20 font-mono text-xs text-[#EA7301]">{i + 1}</span>
+                    {teamLogo ? <img src={teamLogo} alt={teamName} className="h-6 w-6 object-contain bg-white/10 rounded-full p-0.5" /> : null}
+                  </div>
+                  <div className="flex items-center gap-3 mb-3">
+                    {athletePhoto ? (
+                      <img src={athletePhoto} alt={athleteName} className="h-10 w-10 rounded-full object-cover border border-white/20 bg-black/40 shrink-0" />
+                    ) : (
+                      <div className="h-10 w-10 shrink-0 rounded-full border border-white/10 bg-black/40 flex items-center justify-center font-heading text-lg text-white/50">
+                        {athleteName.charAt(0)}
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <h3 className="font-heading text-base sm:text-lg font-black text-white leading-tight truncate">{athleteName}</h3>
+                      <p className="text-xs text-[#d5c0d7] truncate">{teamName}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-end gap-2">
+                    <span className="font-heading text-3xl font-black text-[#EA7301]">{goals}</span>
+                    <span className="text-xs font-mono text-white/50 mb-1 tracking-wider uppercase">Goles</span>
+                  </div>
+                  <p className="text-[10px] font-mono text-white/30 mt-1 uppercase">{games} partidos</p>
+                </div>
+              );
+            })}
           </div>
         </section>
       )}
@@ -2902,7 +3089,7 @@ function TournamentDashboard() {
               <div key={event.id} className="rounded-xl border border-white/10 bg-black/25 px-4 py-3">
                 <div className="flex items-center justify-between gap-4">
                   <span className="flex min-w-0 items-center gap-3 font-heading text-lg font-bold text-white">
-                    <MatchupLogoRow title={event.title} />
+                    <MatchupLogoRow event={event} />
                     <span className="truncate">{event.title}</span>
                   </span>
                   <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{event.status}</span>
@@ -2918,7 +3105,7 @@ function TournamentDashboard() {
             {tournamentApiStatus !== 'loading' && liveTournamentEvents.length === 0 && events.map((event) => (
               <div key={event} className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-black/25 px-4 py-3">
                 <span className="flex min-w-0 items-center gap-3 font-heading text-lg font-bold text-white">
-                  <MatchupLogoRow title={event} />
+                  <MatchupLogoRow event={event} />
                   <span className="truncate">{event}</span>
                 </span>
                 <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">Picks</span>
@@ -3005,7 +3192,7 @@ function SportPlaceholder() {
               {dashboard.events.map((event) => (
                 <div key={event} className="flex items-center justify-between rounded-xl bg-black/25 border border-white/10 px-4 py-3">
                   <span className="flex min-w-0 items-center gap-3 font-heading text-lg font-bold text-white">
-                    <MatchupLogoRow title={event} />
+                    <MatchupLogoRow event={event} />
                     <span className="truncate">{event}</span>
                   </span>
                   <span className="text-xs font-mono text-[#EA7301]">Picks</span>

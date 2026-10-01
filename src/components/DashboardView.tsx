@@ -55,7 +55,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         const { getSportEvents } = await import('../services/sportsApi');
         const sportsIds = ['football', 'basketball', 'baseball'];
         const results = await Promise.all(sportsIds.map((id) => getSportEvents(id)));
-        let allEvents = results.flat();
+        let allEvents = results.flatMap(r => r.data || []);
         
         if (currentUser?.favoriteTeamId && currentUser.favoriteTeamId !== 'sap') {
           const keyword = currentUser.favoriteTeamId.toLowerCase();
@@ -230,6 +230,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               >
                 <div className="flex items-start justify-between gap-3">
                   <p className="text-[11px] font-mono uppercase text-[#EA7301]">{event.league}</p>
+                  <div className="flex items-center -space-x-1 shrink-0">
+                    {event.homeLogo && <img src={event.homeLogo} alt="" className="w-5 h-5 rounded-full border border-black object-contain bg-white/10" />}
+                    {event.awayLogo && <img src={event.awayLogo} alt="" className="w-5 h-5 rounded-full border border-black object-contain bg-white/10" />}
+                  </div>
                 </div>
                 <h3 className="font-heading text-sm font-bold leading-tight text-white line-clamp-2">
                   {event.title}

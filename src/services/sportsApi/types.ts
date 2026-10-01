@@ -7,6 +7,8 @@ export type NormalizedSportEvent = {
   title: string;
   homeTeam?: string;
   awayTeam?: string;
+  homeLogo?: string;
+  awayLogo?: string;
   startsAt?: string;
   status: string;
   venue?: string;
@@ -35,4 +37,5 @@ export type SportsApiResult<T> = {
   provider: SportProvider;
   fromFallback: boolean;
   error?: string;
+  meta?: { leagueLogo?: string; [key: string]: any };
 };

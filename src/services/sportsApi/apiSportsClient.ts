@@ -16,9 +16,12 @@ function normalizeEspnEvent(event: any, sportId: string): NormalizedSportEvent {
   const awayCompetitor = comp.competitors.find((c: any) => c.homeAway === 'away') || comp.competitors[1];
 
   const getEntityName = (c: any) => c?.team?.displayName || c?.athlete?.displayName || c?.team?.name || 'Competidor';
+  const getEntityLogo = (c: any) => c?.team?.logo || c?.athlete?.headshot?.href || c?.team?.logos?.[0]?.href;
   
   const homeName = getEntityName(homeCompetitor);
   const awayName = getEntityName(awayCompetitor);
+  const homeLogo = getEntityLogo(homeCompetitor);
+  const awayLogo = getEntityLogo(awayCompetitor);
   
   const hasScore = homeCompetitor?.score && awayCompetitor?.score;
   const score = hasScore ? `${homeCompetitor.score} - ${awayCompetitor.score}` : undefined;
@@ -28,6 +31,10 @@ function normalizeEspnEvent(event: any, sportId: string): NormalizedSportEvent {
     sportId,
     league: event.season?.slug || sportId,
     title: event.name || `${homeName} vs ${awayName}`,
+    homeTeam: homeName,
+    awayTeam: awayName,
+    homeLogo,
+    awayLogo,
     status: event.status.type.detail || event.status.type.state,
     score,
     startsAt: event.date,

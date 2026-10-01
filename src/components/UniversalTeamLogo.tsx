@@ -1,5 +1,4 @@
 import React from 'react';
-import { getExternalTeamLogo } from '../data/teamLogos';
 import { TeamBadge } from './TeamBadge';
 import { TEAMS } from '../data/teams';
 
@@ -25,33 +24,12 @@ const normalizeTeamName = (value: string) =>
     .trim();
 
 export const UniversalTeamLogo: React.FC<UniversalTeamLogoProps> = ({ name, size = 'sm', className = '' }) => {
-  const [imgError, setImgError] = React.useState(false);
   const localTeam = TEAMS.find((team) =>
     [team.id, team.code, team.shortName, team.name].some((candidate) => normalizeTeamName(candidate) === normalizeTeamName(name))
   );
 
   if (localTeam) {
     return <TeamBadge team={localTeam} size={size === 'lg' ? 'lg' : size === 'md' ? 'md' : size} className={className} />;
-  }
-
-  const logo = getExternalTeamLogo(name);
-
-  if (logo && !imgError) {
-    return (
-      <span
-        className={`inline-flex shrink-0 items-center justify-center ${sizeClasses[size]} ${className}`}
-        title={logo.name}
-      >
-        <img
-          src={logo.logoUrl}
-          alt={logo.name}
-          className="h-full w-full select-none object-contain drop-shadow-md"
-          loading="lazy"
-          referrerPolicy="no-referrer"
-          onError={() => setImgError(true)}
-        />
-      </span>
-    );
   }
 
   return (

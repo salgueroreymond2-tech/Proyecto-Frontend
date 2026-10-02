@@ -109,7 +109,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({ isOpen, onClos
         <div className="flex items-center justify-between pt-2 border-t border-[#3c313e]">
           <button
             onClick={() => simulateRound(selectedRound)}
-            className="px-3 py-2 rounded-xl bg-[#bf00ff]/20 text-[#ecb1ff] border border-[#bf00ff] text-xs font-mono flex items-center gap-1.5"
+            className="px-3 py-2 rounded-xl bg-[#bf00ff]/20 text-white border border-[#bf00ff] text-xs font-mono flex items-center gap-1.5"
           >
             <Play className="w-3.5 h-3.5" />
             <span>Simular J{selectedRound}</span>

@@ -289,6 +289,29 @@ export async function getTournamentEvents(tournamentId: string, signal?: AbortSi
   return { data: localEvents, provider: 'local', fromFallback: true };
 }
 
+export async function getTournamentNews(tournamentId: string, signal?: AbortSignal): Promise<{ headline: string; link?: string }[]> {
+  const espnEndpoint = ESPN_TOURNAMENT_MAP[tournamentId];
+  if (!espnEndpoint) return [];
+  
+  try {
+    const url = `https://site.api.espn.com/apis/site/v2/sports/${espnEndpoint}/news?lang=es`;
+    const response = await fetch(url, { signal });
+    if (!response.ok) return [];
+    const data = await response.json();
+    
+    if (data.articles && data.articles.length > 0) {
+      return data.articles.slice(0, 4).map((article: any) => ({
+        headline: article.headline,
+        link: article.links?.web?.href,
+      }));
+    }
+  } catch (e) {
+    console.warn('ESPN News API failed for tournament', e);
+  }
+  
+  return [];
+}
+
 export async function getSportEvents(sportId: string, signal?: AbortSignal): Promise<SportsApiResult<NormalizedSportEvent[]>> {
   try {
     const events = await fetchApiSportsGamesBySport(sportId, undefined, signal);

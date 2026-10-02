@@ -590,6 +590,41 @@
       "token": "685074a6afc9e9a985f09c74c5a1efe5d3f17a94d734cc6fa1f95276be124606",
       "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
       "expiresAt": "2026-10-09T14:13:39.965Z"
+    },
+    {
+      "token": "5d99b442c1eb933833469a172bd7d413e2bfd4ca0d0a102bb2e5c5d0d30c318a",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-09T15:12:36.464Z"
+    },
+    {
+      "token": "e15b7783bd4e103bf5a48cc3e0975d969b08e177a8c2fb61d1dd06409feac5e5",
+      "userId": "9169f63b-3193-4b61-9b59-b7e9932d42e7",
+      "expiresAt": "2026-10-09T15:15:13.528Z"
+    },
+    {
+      "token": "32822d27de46652e3f4d25c8e2dee368539f076add956b9fdee398a4664f9e41",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-09T15:15:31.554Z"
+    },
+    {
+      "token": "ab17620387df8d1acd79a823e0ea60c636dba610522ff06538b4c6020a8f1d7e",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-09T15:15:44.762Z"
+    },
+    {
+      "token": "5db2cfa9cb144199bc40e28e18b5dec767c6207c9fa3f37e336aaf6050e607d9",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-09T15:24:14.445Z"
+    },
+    {
+      "token": "efe454b1a53bb17b5d2d9f894692025b7e313cdff08e310e459497d4c66de057",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-09T15:24:24.929Z"
+    },
+    {
+      "token": "c0b4ee7a6ec6cf6e3149a54204213a3c7a3f92ad3779acb53bf47822c72d4182",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-09T16:18:48.185Z"
     }
   ],
   "memberships": [
@@ -3144,6 +3179,36 @@
       "status": "captured",
       "createdAt": "2026-10-02T14:34:14.363Z",
       "capturedAt": "2026-10-02T14:34:14.406Z"
+    },
+    {
+      "id": "SIM-9602bb9c-4afb-4348-8729-50e74a7010a8",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "cr-apertura-2026",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-02T15:15:36.410Z",
+      "capturedAt": "2026-10-02T15:15:36.436Z"
+    },
+    {
+      "id": "SIM-ec00a48c-a158-409b-8c9a-f8945b49d231",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "cr-apertura-2026",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-02T15:24:19.665Z",
+      "capturedAt": "2026-10-02T15:24:19.686Z"
+    },
+    {
+      "id": "SIM-cb6629b1-9352-4b6d-bd30-b868e3d36123",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "cr-apertura-2026",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-02T16:34:38.345Z",
+      "capturedAt": "2026-10-02T16:34:38.426Z"
     }
   ]
 }

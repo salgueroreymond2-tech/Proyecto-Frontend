@@ -48,6 +48,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   const { tournamentId } = useParams<{ tournamentId: string }>();
   const [agendaEvents, setAgendaEvents] = React.useState<any[]>([]);
+  const [newsEvents, setNewsEvents] = React.useState<{ headline: string; link?: string }[]>([]);
   const [isLoadingAgenda, setIsLoadingAgenda] = React.useState(true);
 
   React.useEffect(() => {
@@ -58,18 +59,24 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       try {
         if (!tournamentId) {
           setAgendaEvents([]);
+          setNewsEvents([]);
           return;
         }
 
-        const { getTournamentEvents } = await import('../services/sportsApi');
-        const result = await getTournamentEvents(tournamentId, controller.signal);
+        const { getTournamentEvents, getTournamentNews } = await import('../services/sportsApi');
+        const [result, news] = await Promise.all([
+          getTournamentEvents(tournamentId, controller.signal),
+          getTournamentNews(tournamentId, controller.signal),
+        ]);
         if (!controller.signal.aborted) {
-          setAgendaEvents(result.provider === 'espn' ? result.data.slice(0, 5) : []);
+          setAgendaEvents(result.data.slice(0, 5));
+          setNewsEvents(news.slice(0, 4));
         }
       } catch (err) {
         if (!controller.signal.aborted) {
           console.error('Error fetching dashboard agenda', err);
           setAgendaEvents([]);
+          setNewsEvents([]);
         }
       } finally {
         if (!controller.signal.aborted) setIsLoadingAgenda(false);
@@ -341,7 +348,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => fillRandomPredictionsForRound(selectedRound)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#261c28] hover:bg-[#3c313e] text-[#ecb1ff] text-xs font-mono border border-[#bf00ff]/40 transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#261c28] hover:bg-[#3c313e] text-white text-xs font-mono border border-[#bf00ff]/40 transition-all"
             title="Autollenar pronósticos de esta jornada"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#bf00ff]" />
@@ -380,7 +387,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
       {/* PARTIDO ESTELAR (Featured Match - Matching Screenshot 9) */}
       {featuredMatch && (
-        <div className="relative rounded-2xl bg-gradient-to-b from-[#221824] to-[#19101c] border-2 border-[#bf00ff]/80 p-5 glow-purple shadow-2xl overflow-hidden">
+        <div className="relative rounded-2xl bg-[#19101c] border-2 border-[#bf00ff]/80 p-5 glow-purple shadow-2xl overflow-hidden">
           {/* Top badge */}
           <div className="flex items-center justify-between mb-4">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#bf00ff]/25 border border-[#bf00ff]/60 text-[11px] font-mono font-bold text-[#ecb1ff]">
@@ -509,7 +516,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 {/* Button VOTAR POR GOLEADOR (matching screenshot 9) */}
                 <button
                   onClick={() => onOpenScorerModal(featuredMatch.id)}
-                  className="w-full mt-2 py-3.5 px-4 rounded-xl bg-[#bf00ff] hover:bg-[#d033ff] text-black font-heading font-extrabold text-base tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg glow-purple transition-all duration-200 active:scale-[0.99]"
+                  className="w-full mt-2 py-3.5 px-4 rounded-xl bg-[#bf00ff] hover:bg-[#d033ff] text-white font-heading font-extrabold text-base tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg glow-purple transition-all duration-200 active:scale-[0.99]"
                 >
                   <span>VOTAR POR GOLEADOR</span>
                   <span className="text-lg">⚽</span>
@@ -681,7 +688,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     className={`py-1.5 px-3 rounded-lg text-xs font-mono font-semibold uppercase tracking-wider transition-all text-center flex items-center justify-center gap-1.5 border ${
                       pred.isLocked
                         ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                        : 'bg-[#bf00ff]/20 hover:bg-[#bf00ff]/30 text-[#ecb1ff] border-[#bf00ff]/40'
+                        : 'bg-[#bf00ff]/20 hover:bg-[#bf00ff]/30 text-white border-[#bf00ff]/40'
                     }`}
                   >
                     {pred.isLocked ? (
@@ -712,12 +719,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <h2 className="font-heading text-xl font-black text-white">Titulares</h2>
             </div>
             <div className="divide-y divide-[#3c313e]/60">
-              {headlineItems.map((item, index) => (
-                <p key={item} className="flex items-center gap-2 py-3 text-sm leading-snug text-[#eeddee]">
-                  {index === 0 && <TeamBadge team={leaderTeam} size="xs" />}
-                  <span>{item}</span>
-                </p>
-              ))}
+              {newsEvents.length > 0 ? (
+                newsEvents.map((item, index) => (
+                  <a key={index} href={item.link || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 py-3 text-sm leading-snug text-[#eeddee] hover:text-white transition-colors">
+                    <span>{item.headline}</span>
+                  </a>
+                ))
+              ) : (
+                headlineItems.map((item, index) => (
+                  <p key={item} className="flex items-center gap-2 py-3 text-sm leading-snug text-[#eeddee]">
+                    {index === 0 && <TeamBadge team={leaderTeam} size="xs" />}
+                    <span>{item}</span>
+                  </p>
+                ))
+              )}
             </div>
           </section>
 
@@ -770,34 +785,62 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="mt-3 space-y-2">
               {isLoadingAgenda ? (
                 <div className="h-16 animate-pulse rounded-lg bg-black/25 w-full" />
-              ) : agendaEvents.length > 0 ? (
-                agendaEvents.slice(0, 5).map((match) => (
-                  <button
-                    key={match.id}
-                    className="w-full rounded-lg bg-black/25 px-3 py-2 text-left hover:bg-black/40 transition-colors"
-                  >
-                    <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
-                      <span>{new Date(match.startsAt).toLocaleDateString()}</span>
-                      <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {new Date(match.startsAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                    </div>
-                    <div className="mt-1 flex items-center justify-between">
-                      <p className="flex min-w-0 items-center gap-2 text-sm font-heading font-bold text-white">
-                        <span className="flex min-w-0 items-center gap-1.5">
-                          {match.homeLogo && <img src={match.homeLogo} alt="" className="h-5 w-5 shrink-0 object-contain" />}
-                          <span className="truncate">{match.homeTeam}</span>
-                        </span>
-                        <span className="shrink-0 text-[#d5c0d7]">vs</span>
-                        <span className="flex min-w-0 items-center gap-1.5">
-                          {match.awayLogo && <img src={match.awayLogo} alt="" className="h-5 w-5 shrink-0 object-contain" />}
-                          <span className="truncate">{match.awayTeam}</span>
-                        </span>
-                      </p>
-                      {match.score && <span className="font-mono text-xs text-[#EA7301]">{match.score}</span>}
-                    </div>
-                  </button>
-                ))
               ) : (
-                <p className="text-sm text-[#d5c0d7]">No hay eventos proximos</p>
+                <>
+                  {agendaEvents.slice(0, 5).map((match) => (
+                    <button
+                      key={match.id}
+                      className="w-full rounded-lg bg-black/25 px-3 py-2 text-left hover:bg-black/40 transition-colors"
+                    >
+                      <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
+                        <span>{match.status} {match.startsAt && `· ${new Date(match.startsAt).toLocaleDateString()}`}</span>
+                        {match.startsAt && <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {new Date(match.startsAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>}
+                      </div>
+                      <div className="mt-1 flex items-center justify-between">
+                        <p className="flex min-w-0 items-center gap-2 text-sm font-heading font-bold text-white">
+                          <span className="flex min-w-0 items-center gap-1.5">
+                            {match.homeLogo && <img src={match.homeLogo} alt="" className="h-5 w-5 shrink-0 object-contain" />}
+                            <span className="truncate">{match.homeTeam}</span>
+                          </span>
+                          <span className="shrink-0 text-[#d5c0d7]">vs</span>
+                          <span className="flex min-w-0 items-center gap-1.5">
+                            {match.awayLogo && <img src={match.awayLogo} alt="" className="h-5 w-5 shrink-0 object-contain" />}
+                            <span className="truncate">{match.awayTeam}</span>
+                          </span>
+                        </p>
+                        {match.score && <span className="font-mono text-xs text-[#EA7301]">{match.score}</span>}
+                      </div>
+                    </button>
+                  ))}
+                  {nextMatches.slice(0, Math.max(0, 5 - agendaEvents.length)).map((match) => {
+                    const home = getTeamById(match.homeTeamId);
+                    const away = getTeamById(match.awayTeamId);
+                    return (
+                      <button
+                        key={match.id}
+                        className="w-full rounded-lg bg-black/25 px-3 py-2 text-left hover:bg-black/40 transition-colors"
+                      >
+                        <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
+                          <span>J{match.round} · {match.date}</span>
+                          <span>{match.time}</span>
+                        </div>
+                        <div className="mt-1 flex items-center justify-between">
+                          <p className="flex min-w-0 items-center gap-2 text-sm font-heading font-bold text-white">
+                            <span className="flex min-w-0 items-center gap-1.5">
+                              <TeamBadge team={home} size="xs" />
+                              <span className="truncate">{home.shortName}</span>
+                            </span>
+                            <span className="shrink-0 text-[#d5c0d7]">vs</span>
+                            <span className="flex min-w-0 items-center gap-1.5">
+                              <TeamBadge team={away} size="xs" />
+                              <span className="truncate">{away.shortName}</span>
+                            </span>
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </>
               )}
             </div>
           </section>

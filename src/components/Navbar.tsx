@@ -90,12 +90,47 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const handleBack = () => {
-    if (window.history.length > 1) {
-      window.history.back();
+    const path = location.pathname;
+    
+    // Si estamos dentro de un torneo (predicciones, ranking, grand-prix, etc.)
+    const tournamentInnerMatch = path.match(/^\/tournaments\/([^\/]+)\/(.+)$/);
+    if (tournamentInnerMatch) {
+      navigate(`/tournaments/${tournamentInnerMatch[1]}`);
+      return;
+    }
+    
+    // Si estamos en la vista de un torneo, ir a los deportes
+    if (path.match(/^\/tournaments\/[^\/]+$/)) {
+      navigate('/sports');
+      return;
+    }
+    
+    // Si estamos viendo un deporte especifico, volver a deportes
+    if (path.match(/^\/sports\/[^\/]+$/)) {
+      navigate('/sports');
+      return;
+    }
+    
+    // Si estamos dentro del dashboard (ej. /dashboard/calendario), volver al dashboard principal
+    if (path.match(/^\/dashboard\/.+$/)) {
+      navigate('/dashboard');
       return;
     }
 
-    onNavigateHome?.();
+    // Para rutas como /admin/algo -> /admin
+    if (path.match(/^\/admin\/.+$/)) {
+      navigate('/admin');
+      return;
+    }
+    
+    // Si estamos en dashboard o profile, volver a home o a la raiz
+    if (path === '/dashboard' || path === '/sports') {
+      onNavigateHome ? onNavigateHome() : navigate('/');
+      return;
+    }
+
+    // Fallback general
+    onNavigateHome ? onNavigateHome() : navigate('/');
   };
 
   return (
@@ -235,74 +270,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             {colorMode === 'dark' ? <Sun className="w-4 h-4 text-[#EA7301]" /> : <Moon className="w-4 h-4 text-[#EA7301]" />}
           </button>
 
-          {/* Quick Simulation / Tools Dropdown */}
-          {showQuinielaTools && (
-          <div className="relative">
-            <button
-              onClick={() => setShowSimMenu(!showSimMenu)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-[#261c28] hover:bg-[#3c313e] border border-[#bf00ff]/40 text-[#eeddee] text-xs font-mono transition-all"
-              title="Simulador y Herramientas"
-            >
-              <SlidersHorizontal className="w-3.5 h-3.5 text-[#00f0ff]" />
-              <span className="hidden sm:inline">Simulador</span>
-            </button>
-
-            {showSimMenu && (
-              <div className="absolute right-0 mt-2 w-64 bg-[#1e1321] border border-[#bf00ff]/50 rounded-lg shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95">
-                <div className="text-[11px] font-mono text-[#d5c0d7] px-2 py-1 border-b border-[#3c313e] mb-1 font-bold">
-                  HERRAMIENTAS DE QUINIELA
-                </div>
-
-                <button
-                  onClick={() => {
-                    fillRandomPredictionsAll();
-                    setShowSimMenu(false);
-                  }}
-                  className="w-full flex items-center gap-2 px-2 py-2 text-xs text-left rounded hover:bg-[#3c313e] text-[#ecb1ff]"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-[#bf00ff]" />
-                  <span>Autollenar mis pronósticos</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    simulateAllRemaining();
-                    setShowSimMenu(false);
-                  }}
-                  className="w-full flex items-center gap-2 px-2 py-2 text-xs text-left rounded hover:bg-[#3c313e] text-[#00f0ff]"
-                >
-                  <Play className="w-3.5 h-3.5 text-[#00f0ff]" />
-                  <span>Simular todo el torneo</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    onOpenAdmin();
-                    setShowSimMenu(false);
-                  }}
-                  className="w-full flex items-center gap-2 px-2 py-2 text-xs text-left rounded hover:bg-[#3c313e] text-yellow-300"
-                >
-                  <SlidersHorizontal className="w-3.5 h-3.5 text-yellow-400" />
-                  <span>Editar marcadores reales</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    if (confirm('¿Deseas reiniciar el torneo y los pronósticos?')) {
-                      resetTournament();
-                      setShowSimMenu(false);
-                    }
-                  }}
-                  className="w-full flex items-center gap-2 px-2 py-2 text-xs text-left rounded hover:bg-red-950 text-red-300 border-t border-[#3c313e] mt-1 pt-2"
-                >
-                  <RotateCcw className="w-3.5 h-3.5 text-red-400" />
-                  <span>Reiniciar datos</span>
-                </button>
-              </div>
-            )}
-          </div>
-          )}
-
           {/* Quiniela Specific Tools */}
           {showQuinielaTools && (
             <>
@@ -381,24 +348,24 @@ export const Navbar: React.FC<NavbarProps> = ({
                     navigate('/');
                   }
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-mono transition-all"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 text-red-400 hover:text-red-300 hover:border-red-500/50 hover:bg-red-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                 title="Cerrar sesión"
               >
-                <LogOut className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Salir</span>
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline text-sm font-bold font-heading">Salir</span>
               </button>
 
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-1.5 pl-1.5 pr-2 py-1 rounded-full bg-[#261c28] hover:bg-[#3c313e] border border-[#bf00ff]/40 transition-all cursor-pointer"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 pl-2 pr-3 text-[#d5c0d7] hover:text-white hover:border-[#EA7301]/60 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EA7301] cursor-pointer"
                 title="Mi Cuenta"
               >
                 <img
                   src={currentUser.avatar}
                   alt={currentUser.name}
-                  className="w-6 h-6 rounded-full object-cover border border-[#bf00ff]"
+                  className="w-6 h-6 rounded-md object-cover border border-white/20"
                 />
-                <span className="text-xs font-mono text-[#ecb1ff] hidden sm:inline">
+                <span className="text-sm font-bold font-heading hidden sm:inline">
                   {currentUser.username}
                 </span>
               </button>
@@ -423,7 +390,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setShowAuthModal(true);
                       }
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-mono text-left rounded-lg hover:bg-[#3c313e] text-[#ecb1ff] transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-mono text-left rounded-lg hover:bg-[#3c313e] text-white transition-colors cursor-pointer"
                   >
                     <Edit3 className="w-4 h-4 text-[#bf00ff]" />
                     <span>Editar Perfil</span>

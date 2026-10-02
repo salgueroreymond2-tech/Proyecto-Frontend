@@ -235,7 +235,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onOpenLogin }) => {
       <div className="space-y-2 pt-2">
         <button
           onClick={() => setShowAuthModal(true)}
-          className="w-full py-3 px-4 rounded-xl bg-[#261c28] hover:bg-[#312733] border border-[#bf00ff]/40 text-[#ecb1ff] font-heading font-bold text-sm flex items-center justify-center gap-2 transition-all"
+          className="w-full py-3 px-4 rounded-xl bg-[#261c28] hover:bg-[#312733] border border-[#bf00ff]/40 text-white font-heading font-bold text-sm flex items-center justify-center gap-2 transition-all"
         >
           <Edit3 className="w-4 h-4" />
           <span>Editar Perfil & Equipo Favorito</span>

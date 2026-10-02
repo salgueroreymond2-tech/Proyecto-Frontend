@@ -19,6 +19,7 @@ import {
   ChevronRight,
   ChevronUp,
   ChevronDown,
+  Clock,
   Dumbbell,
   Lock,
   LayoutDashboard,
@@ -58,7 +59,7 @@ import { UniversalTeamLogo } from '../components/UniversalTeamLogo';
 import { ASSET_PATHS } from '../config/assets';
 import { TEAMS, getTeamById } from '../data/teams';
 
-import { getSportEvents, getSportVisuals, getTournamentEvents, getTournamentStandings, getTournamentTopScorers, getTournamentLogo, type NormalizedSportEvent, type SportProvider } from '../services/sportsApi';
+import { getSportEvents, getSportVisuals, getTournamentEvents, getTournamentNews, getTournamentStandings, getTournamentTopScorers, getTournamentLogo, type NormalizedSportEvent, type SportProvider } from '../services/sportsApi';
 import { cancelMembership, getMyMemberships, getStoredSession, renewMembership, signIn, signUp, simulatePayPalCheckout, type UserMembership } from '../services/authApi';
 
 type Sport = {
@@ -690,7 +691,7 @@ const navPathByTab: Record<NavTab, string> = {
   ranking: '/tournaments/cr-apertura-2026/ranking',
   playoffs: '/tournaments/cr-apertura-2026/playoffs',
   social: '/tournaments/cr-apertura-2026/forum',
-  profile: '/profile',
+  profile: '/tournaments/cr-apertura-2026/profile',
   admin: '/admin',
   login: '/login',
 };
@@ -1604,6 +1605,7 @@ function KasShell() {
     '/tournaments/cr-apertura-2026/ranking',
     '/tournaments/cr-apertura-2026/playoffs',
     '/tournaments/cr-apertura-2026/forum',
+    '/tournaments/cr-apertura-2026/profile',
   ].some((path) => location.pathname.startsWith(path));
   const usesTeamTheme = isLoggedIn && isCostaRicaQuinielaRoute;
   const usesLoginTeamTheme = !isLoggedIn && location.pathname === '/login';
@@ -1625,8 +1627,7 @@ function KasShell() {
 
   return (
     <div
-      data-team-theme={usesTeamTheme ? themeTeamId : undefined}
-      data-login-theme={usesLoginTeamTheme ? themeTeamId : undefined}
+      data-login-theme={usesTeamTheme || usesLoginTeamTheme ? themeTeamId : undefined}
       data-color-mode={colorMode}
       className="min-h-screen bg-transparent text-[#eeddee] flex flex-col selection:bg-[#EA7301] selection:text-white"
       style={usesTeamTheme || usesLoginTeamTheme ? {
@@ -1681,6 +1682,7 @@ function KasShell() {
               <Route path="/tournaments/:tournamentId/ranking" element={<CostaRicaOnly><RankingView /></CostaRicaOnly>} />
               <Route path="/tournaments/:tournamentId/playoffs" element={<CostaRicaOnly><PlayoffsView onOpenScorerModal={(id) => setActiveScorerMatchId(id)} /></CostaRicaOnly>} />
               <Route path="/tournaments/:tournamentId/forum" element={<CostaRicaOnly><SocialView /></CostaRicaOnly>} />
+              <Route path="/tournaments/:tournamentId/profile" element={<CostaRicaOnly><ProfileView /></CostaRicaOnly>} />
               <Route path="/profile" element={isLoggedIn ? <KasProfileDashboard /> : <Navigate to="/login" replace />} />
               <Route path="/admin/*" element={isAdmin ? <AdminView tournaments={getAllAdminTournaments()} /> : <Navigate to="/login" replace />} />
               <Route path="/test-espn" element={<EspnTestView />} />
@@ -1754,6 +1756,8 @@ const formatSportResult = (event: NormalizedSportEvent) =>
 function HomePage() {
   const { matches, standings, leaderboard } = useTournament();
   const [homeEvents, setHomeEvents] = useState<NormalizedSportEvent[]>([]);
+  const [homeNewsEvents, setHomeNewsEvents] = useState<{ headline: string; link?: string }[]>([]);
+  const [homeAgendaEvents, setHomeAgendaEvents] = useState<NormalizedSportEvent[]>([]);
   const [homeEventsStatus, setHomeEventsStatus] = useState<'loading' | 'ready' | 'fallback'>('loading');
   const scoreboard = matches
     .filter((match) => match.status === 'live' || match.status === 'finished')
@@ -1784,6 +1788,10 @@ function HomePage() {
         href: event.sourceUrl,
         path: '/login',
         sportId: event.sportId,
+        homeTeam: event.homeTeam,
+        awayTeam: event.awayTeam,
+        homeLogo: event.homeLogo,
+        awayLogo: event.awayLogo,
       }))
     : homeFallbackEvents.map((event) => ({
         ...event,
@@ -1834,16 +1842,30 @@ function HomePage() {
     const controller = new AbortController();
     setHomeEventsStatus('loading');
 
-    Promise.all(sports.map((sport) => getSportEvents(sport.id, controller.signal))).then((results) => {
+    Promise.all([
+      ...sports.map((sport) => getSportEvents(sport.id, controller.signal)),
+      getTournamentEvents('cr-apertura-2026', controller.signal),
+      getTournamentNews('cr-apertura-2026', controller.signal)
+    ]).then((results) => {
       if (controller.signal.aborted) return;
-      const events = results.flatMap((result) => result.data.slice(0, 2)).slice(0, 14);
-      const usingFallback = results.some((result) => result.fromFallback);
+      
+      const newsResult = results.pop() as { headline: string; link?: string }[];
+      const crAgendaResult = results.pop() as SportsApiResult<NormalizedSportEvent[]>;
+      const sportsResults = results as SportsApiResult<NormalizedSportEvent[]>[];
+      
+      const events = sportsResults.flatMap((result) => result.data.slice(0, 2)).slice(0, 14);
+      const usingFallback = sportsResults.some((result) => result.fromFallback);
+      
       setHomeEvents(events);
       setHomeEventsStatus(usingFallback ? 'fallback' : 'ready');
+      setHomeAgendaEvents(crAgendaResult.data.slice(0, 4));
+      setHomeNewsEvents(newsResult.slice(0, 4));
     }).catch(() => {
       if (controller.signal.aborted) return;
       setHomeEvents([]);
       setHomeEventsStatus('fallback');
+      setHomeAgendaEvents([]);
+      setHomeNewsEvents([]);
     });
 
     return () => controller.abort();
@@ -1941,12 +1963,20 @@ function HomePage() {
                   <h2 className="font-heading text-xl font-black text-white">Titulares</h2>
                 </div>
                 <div className="divide-y divide-[#3c313e]/60">
-                  {headlines.map((headline, index) => (
-                    <p key={headline} className="flex items-center gap-2 py-3 text-sm leading-snug text-[#eeddee]">
-                      {index === 0 && <TeamBadge team={homeLeaderTeam} size="xs" />}
-                      <span>{headline}</span>
-                    </p>
-                  ))}
+                  {homeNewsEvents.length > 0 ? (
+                    homeNewsEvents.map((item, index) => (
+                      <a key={index} href={item.link || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 py-3 text-sm leading-snug text-[#eeddee] hover:text-white transition-colors">
+                        <span>{item.headline}</span>
+                      </a>
+                    ))
+                  ) : (
+                    headlines.map((headline, index) => (
+                      <p key={headline} className="flex items-center gap-2 py-3 text-sm leading-snug text-[#eeddee]">
+                        {index === 0 && <TeamBadge team={homeLeaderTeam} size="xs" />}
+                        <span>{headline}</span>
+                      </p>
+                    ))
+                  )}
                 </div>
               </section>
 
@@ -1956,23 +1986,48 @@ function HomePage() {
                   <h2 className="font-heading text-xl font-black text-white">Agenda</h2>
                 </div>
                 <div className="mt-3 space-y-2">
-                  {upcoming.map((match) => {
-                    const home = getTeamById(match.homeTeamId);
-                    const away = getTeamById(match.awayTeamId);
-                    return (
-                      <Link key={match.id} to="/tournaments/cr-apertura-2026/login" className="block rounded-lg bg-black/25 px-3 py-2 hover:bg-black/40">
-                        <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
-                          <span>J{match.round} · {match.date}</span>
-                          <span>{match.time}</span>
+                  {homeEventsStatus === 'loading' ? (
+                    <div className="h-16 animate-pulse rounded-lg bg-black/25 w-full" />
+                  ) : (
+                    <>
+                      {homeAgendaEvents.map((match) => (
+                        <div key={match.id} className="block rounded-lg bg-black/25 px-3 py-2">
+                          <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
+                            <span>{match.status} {match.startsAt && `· ${new Date(match.startsAt).toLocaleDateString()}`}</span>
+                            {match.startsAt && <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {new Date(match.startsAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>}
+                          </div>
+                          <p className="mt-1 flex items-center gap-2 truncate text-sm font-heading font-bold text-white">
+                            <span className="flex min-w-0 items-center gap-1.5">
+                              {match.homeLogo && <img src={match.homeLogo} alt="" className="h-4 w-4 shrink-0 object-contain" />}
+                              <span className="truncate">{match.homeTeam}</span>
+                            </span>
+                            <span className="text-[#d5c0d7]">vs</span>
+                            <span className="flex min-w-0 items-center gap-1.5">
+                              {match.awayLogo && <img src={match.awayLogo} alt="" className="h-4 w-4 shrink-0 object-contain" />}
+                              <span className="truncate">{match.awayTeam}</span>
+                            </span>
+                          </p>
                         </div>
-                        <p className="mt-1 flex items-center gap-2 truncate text-sm font-heading font-bold text-white">
-                          <TeamBadge team={home} size="xs" /> {home.shortName}
-                          <span className="text-[#d5c0d7]">vs</span>
-                          <TeamBadge team={away} size="xs" /> {away.shortName}
-                        </p>
-                      </Link>
-                    );
-                  })}
+                      ))}
+                      {upcoming.slice(0, Math.max(0, 4 - homeAgendaEvents.length)).map((match) => {
+                        const home = getTeamById(match.homeTeamId);
+                        const away = getTeamById(match.awayTeamId);
+                        return (
+                          <div key={match.id} className="block rounded-lg bg-black/25 px-3 py-2">
+                            <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
+                              <span>J{match.round} · {match.date}</span>
+                              <span>{match.time}</span>
+                            </div>
+                            <p className="mt-1 flex items-center gap-2 truncate text-sm font-heading font-bold text-white">
+                              <TeamBadge team={home} size="xs" /> {home.shortName}
+                              <span className="text-[#d5c0d7]">vs</span>
+                              <TeamBadge team={away} size="xs" /> {away.shortName}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </>
+                  )}
                 </div>
               </section>
             </div>
@@ -2017,7 +2072,7 @@ function HomePage() {
                             </h3>
                           ) : (
                             <h3 className="mt-1 flex min-w-0 items-center gap-2 font-heading text-lg font-black leading-tight text-white">
-                              <MatchupTitleWithLogos event={event.title} size="xs" />
+                              <MatchupTitleWithLogos event={event as NormalizedSportEvent} size="xs" />
                             </h3>
                           )}
                         </div>
@@ -2048,10 +2103,9 @@ function HomePage() {
                     </div>
                     <div className="mt-3 grid gap-3 sm:grid-cols-3">
                       {upcomingFootballTournaments.map((tournament) => (
-                        <Link
+                        <div
                           key={tournament.id}
-                          to="/sports/football"
-                          className="rounded-xl border border-white/10 bg-black/25 p-3 hover:border-[#EA7301]/70 transition-colors"
+                          className="rounded-xl border border-white/10 bg-black/25 p-3"
                         >
                           <div className="flex items-center gap-3">
                             <LeagueLogo tournamentId={tournament.id} name={tournament.name} className="h-10 w-10 rounded-lg" />
@@ -2060,7 +2114,7 @@ function HomePage() {
                               <p className="text-xs text-[#d5c0d7]">{tournament.season} - {tournament.status}</p>
                             </div>
                           </div>
-                        </Link>
+                        </div>
                       ))}
                     </div>
                   </div>

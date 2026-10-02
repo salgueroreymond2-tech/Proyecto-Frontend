@@ -15,7 +15,7 @@ const UNAFUT_TEAM_IDS: Record<string, string> = {
   'A.D. San Carlos': 'sca',
 };
 
-const CALENDAR_DATE = new Date(2026, 7, 19);
+const CALENDAR_DATE = new Date();
 
 const formatCalendarDate = (date: string) => {
   const [day, month] = date.split('.').map(Number);

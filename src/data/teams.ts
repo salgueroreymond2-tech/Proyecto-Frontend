@@ -8,6 +8,14 @@ unafutCalendar.partidos.forEach((match) => {
   UNAFUT_LOGOS[match.equipo_visitante] = match.logo_visitante;
 });
 
+export const findTeamByEspnName = (name: string): Team | undefined => {
+  const normalized = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return TEAMS.find(t => 
+    normalized.includes(t.shortName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) ||
+    normalized.includes(t.code.toLowerCase())
+  );
+};
+
 export const TEAMS: Team[] = [
   {
     id: 'sap',

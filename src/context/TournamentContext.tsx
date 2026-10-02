@@ -7,7 +7,7 @@ import {
   SocialPost,
   Achievement,
 } from '../types';
-import { TEAMS } from '../data/teams';
+import { TEAMS, findTeamByEspnName } from '../data/teams';
 import { generateRegularSeason, generatePlayoffMatches } from '../data/fixture';
 import {
   INITIAL_CURRENT_USER,
@@ -100,6 +100,90 @@ export const TournamentProvider: React.FC<{ children: ReactNode }> = ({ children
     const playoffs = generatePlayoffMatches(top4);
     return [...regular, ...playoffs];
   });
+
+  // Sync Costa Rica matches with ESPN API
+  useEffect(() => {
+    let mounted = true;
+    const fetchLiveScores = async () => {
+      try {
+        const { getTournamentEvents } = await import('../services/sportsApi');
+        const res = await getTournamentEvents('cr-apertura-2026');
+        if (!mounted || res.fromFallback || !res.data) return;
+
+        setMatches(prevMatches => {
+          let updated = false;
+          const nextMatches = [...prevMatches];
+          
+          res.data.forEach(espnEvent => {
+            if (!espnEvent.homeTeam || !espnEvent.awayTeam) return;
+            const home = findTeamByEspnName(espnEvent.homeTeam);
+            const away = findTeamByEspnName(espnEvent.awayTeam);
+            if (!home || !away) return;
+            
+            // Match based on home and away team
+            const localMatchIndex = nextMatches.findIndex(m => m.homeTeamId === home.id && m.awayTeamId === away.id);
+            if (localMatchIndex >= 0) {
+              const localMatch = nextMatches[localMatchIndex];
+              let newHomeScore = localMatch.homeScore;
+              let newAwayScore = localMatch.awayScore;
+              let newStatus = localMatch.status;
+              let newTime = localMatch.time;
+              
+              if (espnEvent.score) {
+                const parts = espnEvent.score.split('-');
+                if (parts.length === 2) {
+                  const hScore = parseInt(parts[0].trim(), 10);
+                  const aScore = parseInt(parts[1].trim(), 10);
+                  if (!isNaN(hScore) && !isNaN(aScore)) {
+                    newHomeScore = hScore;
+                    newAwayScore = aScore;
+                  }
+                }
+              }
+              
+              if (espnEvent.status) {
+                const statusLower = espnEvent.status.toLowerCase();
+                if (statusLower.includes('final') || statusLower.includes('ft')) {
+                  newStatus = 'finished';
+                  newTime = 'Finalizado';
+                } else if (statusLower.includes('vivo') || statusLower.includes('progress') || statusLower.includes("'")) {
+                  newStatus = 'live';
+                  newTime = espnEvent.status;
+                }
+              }
+              
+              if (
+                localMatch.homeScore !== newHomeScore || 
+                localMatch.awayScore !== newAwayScore || 
+                localMatch.status !== newStatus ||
+                localMatch.time !== newTime
+              ) {
+                nextMatches[localMatchIndex] = {
+                  ...localMatch,
+                  homeScore: newHomeScore,
+                  awayScore: newAwayScore,
+                  status: newStatus,
+                  time: newTime
+                };
+                updated = true;
+              }
+            }
+          });
+          
+          return updated ? nextMatches : prevMatches;
+        });
+      } catch (err) {
+        console.error('Failed to sync ESPN live scores:', err);
+      }
+    };
+    
+    fetchLiveScores();
+    const intervalId = setInterval(fetchLiveScores, 60000);
+    return () => {
+      mounted = false;
+      clearInterval(intervalId);
+    };
+  }, []);
 
   // Initialize Predictions
   const [userPredictions, setUserPredictions] = useState<Record<string, UserPrediction>>(() => {

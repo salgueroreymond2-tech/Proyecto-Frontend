@@ -60,7 +60,7 @@ export const ChampionModal: React.FC = () => {
         {/* Top Glowing Trophy Icon */}
         <div className="flex justify-center pt-2">
           <div className="w-16 h-16 rounded-2xl bg-[#bf00ff]/20 border border-[#bf00ff] flex items-center justify-center glow-purple">
-            <Trophy className="w-10 h-10 text-[#bf00ff] animate-pulse" />
+            <Trophy className="w-10 h-10 text-[#bf00ff] animate-pulse" aria-hidden="true" />
           </div>
         </div>
 

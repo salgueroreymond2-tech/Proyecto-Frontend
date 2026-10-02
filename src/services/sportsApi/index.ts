@@ -338,12 +338,28 @@ export async function getTournamentStandings(tournamentId: string, signal?: Abor
     const data = await response.json();
     
     // Si la competencia tiene multiples grupos (como la Nations League o formatos de grupos), 
-    // devolvemos los grupos separados.
+    // devolvemos los grupos separados y ordenamos sus tablas por puntos.
     if (data.children && data.children.length > 0) {
-      return data.children.map((child: any) => ({
-        groupName: child.name || 'Posiciones',
-        entries: child.standings?.entries || []
-      }));
+      return data.children.map((child: any) => {
+        const entries = child.standings?.entries || [];
+        
+        // Ordenar por puntos (PTS) y luego por diferencia de goles (DG)
+        entries.sort((a: any, b: any) => {
+          const ptsA = a.stats?.find((s: any) => s.name === 'points')?.value ?? 0;
+          const ptsB = b.stats?.find((s: any) => s.name === 'points')?.value ?? 0;
+          
+          if (ptsB !== ptsA) return ptsB - ptsA;
+          
+          const gdA = a.stats?.find((s: any) => s.name === 'pointDifferential')?.value ?? 0;
+          const gdB = b.stats?.find((s: any) => s.name === 'pointDifferential')?.value ?? 0;
+          return gdB - gdA;
+        });
+
+        return {
+          groupName: child.name || 'Posiciones',
+          entries: entries
+        };
+      });
     }
     
     return [];

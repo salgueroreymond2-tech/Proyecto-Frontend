@@ -45,10 +45,10 @@ Para consultar datos, usa la herramienta 'consultar_espn_api' y pasale la URL co
 
 Las URLs COMPLETAS de ESPN para la herramienta son:
 - Marcadores (Partidos/Agenda): https://site.api.espn.com/apis/site/v2/sports/[LIGA]/scoreboard
-- Si el usuario te pregunta por fechas específicas (como 'ayer', 'mañana', o 'hace dos días'), DEBES agregarle el parámetro ?dates=YYYYMMDD. Ej: si hoy es 2 de octubre de 2026 y te preguntan por ayer: https://site.api.espn.com/apis/site/v2/sports/[LIGA]/scoreboard?dates=20261001
+- MUY IMPORTANTE: La API de ESPN a veces devuelve datos viejos (de agosto, por ejemplo) si no especificas las fechas. POR LO TANTO, para marcadores SIEMPRE DEBES agregar el parámetro ?dates=YYYYMMDD o ?dates=YYYYMMDD-YYYYMMDD a la URL. Ej: Si te preguntan por los partidos de hoy (octubre 2, 2026) debes pedir https://site.api.espn.com/apis/site/v2/sports/[LIGA]/scoreboard?dates=20261002-20261009 para asegurar que ESPN devuelva los datos correctos del día de hoy y de la próxima semana.
 - Noticias: https://site.api.espn.com/apis/site/v2/sports/[LIGA]/news?lang=es
 
-Si un usuario te pregunta por un equipo específico (ej. "Saprissa ayer"), debes inferir la liga (Costa Rica = soccer/crc.1), calcular la fecha (ayer), descargar el scoreboard de esa liga en esa fecha, y buscar manualmente en el JSON los eventos que mencionen a ese equipo para darle la respuesta correcta.`;
+Si un usuario te pregunta por un equipo específico o liga en general, DEBES usar el truco de ?dates=YYYYMMDD-YYYYMMDD con la fecha real del día (calculada) para evitar datos viejos de agosto.`;
 
 const agentNode = oldWorkflow.nodes.find(n => n.name === 'AI Agent Arthur');
 if (agentNode) {
@@ -58,8 +58,8 @@ if (agentNode) {
 const tool1 = oldWorkflow.nodes.find(n => n.name === 'consultar_partidos' || n.name === 'consultar_espn_api');
 if (tool1) {
   tool1.name = 'consultar_espn_api';
-  tool1.parameters.toolDescription = 'USA ESTA HERRAMIENTA para consultar partidos, marcadores o noticias en la API oficial de ESPN. Pasale la URL completa (ej. https://site.api.espn.com/apis/site/v2/sports/soccer/crc.1/scoreboard o con ?dates=YYYYMMDD). SIEMPRE DEVUELVE JSON.';
-  tool1.parameters.url = '={{ $fromAI(\'url\', \'URL completa de la API de ESPN (ej. https://site.api.espn.com/apis/site/v2/sports/soccer/crc.1/scoreboard)\', \'string\') }}';
+  tool1.parameters.toolDescription = 'USA ESTA HERRAMIENTA para consultar partidos, marcadores o noticias en la API oficial de ESPN. Pasale la URL completa (ej. https://site.api.espn.com/apis/site/v2/sports/soccer/crc.1/scoreboard?dates=20261002). SIEMPRE DEVUELVE JSON.';
+  tool1.parameters.url = '={{ $fromAI(\'url\', \'URL completa de la API de ESPN (ej. https://site.api.espn.com/apis/site/v2/sports/soccer/crc.1/scoreboard?dates=20261002-20261009)\', \'string\') }}';
   delete tool1.parameters.sendHeaders;
   delete tool1.parameters.headerParameters;
 }

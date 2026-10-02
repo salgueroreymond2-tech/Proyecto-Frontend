@@ -43,6 +43,7 @@ import { Navbar } from '../components/Navbar';
 import { BottomNav, NavTab } from '../components/BottomNav';
 import { DashboardView } from '../components/DashboardView';
 import { AIAssistant } from '../components/AIAssistant';
+import { GlobalTalkback } from '../components/GlobalTalkback';
 import { RankingView } from '../components/RankingView';
 import { PlayoffsView } from '../components/PlayoffsView';
 import { SocialView } from '../components/SocialView';
@@ -818,7 +819,7 @@ function DashboardSidebar({ isAdmin }: { isAdmin: boolean }) {
     <aside className="shrink-0 border-white/10 bg-[#120913]/95 px-3 py-3 lg:sticky lg:top-[76px] lg:h-[calc(100vh-76px)] lg:w-64 lg:border-r lg:px-4 lg:py-5">
       <div className="hidden lg:block">
         <p className="text-xs font-mono uppercase text-[#EA7301]">Navegacion</p>
-        <h2 className="mt-1 font-heading text-2xl font-black text-white">Dashboard KAS</h2>
+        <h2 className="mt-1 font-heading text-2xl font-black text-white">Quiniela KAS</h2>
       </div>
       <nav className="mt-0 flex gap-2 overflow-x-auto pb-1 lg:mt-6 lg:flex-col lg:overflow-visible lg:pb-0">
         {items.map((item) => {
@@ -834,7 +835,7 @@ function DashboardSidebar({ isAdmin }: { isAdmin: boolean }) {
                   : 'border-white/10 bg-white/[0.03] text-[#d5c0d7] hover:border-[#EA7301]/45 hover:text-white'
               }`}
             >
-              <Icon className={isActive ? 'text-[#EA7301]' : 'text-white/55'} size={20} />
+              <Icon className={isActive ? 'text-[#EA7301]' : 'text-white/55'} size={20} aria-hidden="true" />
               <span className="truncate">{item.label}</span>
             </Link>
           );
@@ -1664,8 +1665,24 @@ function KasShell() {
           <div className={showDashboardSidebar ? 'min-w-0 flex-1' : ''}>
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<KasLoginPage onSuccess={(user) => navigate(user.role === 'admin' || user.isAdmin ? '/admin' : '/dashboard')} />} />
-              <Route path="/register" element={<KasLoginPage onSuccess={(user) => navigate(user.role === 'admin' || user.isAdmin ? '/admin' : '/dashboard')} isRegisterDefault />} />
+              <Route path="/login" element={<KasLoginPage onSuccess={(user) => {
+                const redirect = new URLSearchParams(window.location.search).get('redirect');
+                if (redirect) {
+                  if (redirect.startsWith('http')) window.location.href = redirect;
+                  else navigate(redirect);
+                } else {
+                  navigate(user.role === 'admin' || user.isAdmin ? '/admin' : '/dashboard');
+                }
+              }} />} />
+              <Route path="/register" element={<KasLoginPage onSuccess={(user) => {
+                const redirect = new URLSearchParams(window.location.search).get('redirect');
+                if (redirect) {
+                  if (redirect.startsWith('http')) window.location.href = redirect;
+                  else navigate(redirect);
+                } else {
+                  navigate(user.role === 'admin' || user.isAdmin ? '/admin' : '/dashboard');
+                }
+              }} isRegisterDefault />} />
               <Route path="/dashboard" element={isLoggedIn ? <SportsDashboard /> : <Navigate to="/login" replace />} />
               <Route path="/dashboard/calendario" element={isLoggedIn ? <MembershipCalendarDashboard /> : <Navigate to="/login" replace />} />
               <Route path="/dashboard/membresias" element={isLoggedIn ? <MembershipsDashboard /> : <Navigate to="/login" replace />} />
@@ -1702,7 +1719,8 @@ function KasShell() {
       <ChampionModal />
       <AuthModal />
       <RulesModal />
-      <AIAssistant />
+      <GlobalTalkback />
+        <AIAssistant />
       <AdminMatchModal isOpen={adminModalOpen} onClose={() => setAdminModalOpen(false)} />
     </div>
   );
@@ -1840,35 +1858,69 @@ function HomePage() {
 
   useEffect(() => {
     const controller = new AbortController();
-    setHomeEventsStatus('loading');
+    
+    function loadHomeData() {
+      if (homeEventsStatus === 'idle') setHomeEventsStatus('loading');
+        const today = new Date();
+        const nextMonth = new Date();
+        nextMonth.setDate(today.getDate() + 30);
+        const d1 = today.toISOString().split('T')[0].replace(/-/g, '');
+        const d2 = nextMonth.toISOString().split('T')[0].replace(/-/g, '');
+        const dateRange = `${d1}-${d2}`;
 
-    Promise.all([
-      ...sports.map((sport) => getSportEvents(sport.id, controller.signal)),
-      getTournamentEvents('cr-apertura-2026', controller.signal),
-      getTournamentNews('cr-apertura-2026', controller.signal)
-    ]).then((results) => {
-      if (controller.signal.aborted) return;
-      
-      const newsResult = results.pop() as { headline: string; link?: string }[];
-      const crAgendaResult = results.pop() as SportsApiResult<NormalizedSportEvent[]>;
-      const sportsResults = results as SportsApiResult<NormalizedSportEvent[]>[];
-      
-      const events = sportsResults.flatMap((result) => result.data.slice(0, 2)).slice(0, 14);
-      const usingFallback = sportsResults.some((result) => result.fromFallback);
-      
-      setHomeEvents(events);
-      setHomeEventsStatus(usingFallback ? 'fallback' : 'ready');
-      setHomeAgendaEvents(crAgendaResult.data.slice(0, 4));
-      setHomeNewsEvents(newsResult.slice(0, 4));
-    }).catch(() => {
-      if (controller.signal.aborted) return;
-      setHomeEvents([]);
-      setHomeEventsStatus('fallback');
-      setHomeAgendaEvents([]);
-      setHomeNewsEvents([]);
-    });
+        Promise.all([
+          ...sports.map((sport) => getSportEvents(sport.id, controller.signal)),
+          getTournamentEvents('cr-apertura-2026', controller.signal, dateRange),
+          getTournamentNews('cr-apertura-2026', controller.signal)
+        ]).then((results) => {
+        if (controller.signal.aborted) return;
+        
+        const newsResult = results.pop() as { headline: string; link?: string }[];
+        const crAgendaResult = results.pop() as SportsApiResult<NormalizedSportEvent[]>;
+        const sportsResults = results as SportsApiResult<NormalizedSportEvent[]>[];
+        
+        const events = sportsResults.flatMap((result) => result.data.slice(0, 2)).slice(0, 14);
+        const usingFallback = sportsResults.some((result) => result.fromFallback);
+        
+        setHomeEvents(events);
+        setHomeEventsStatus(usingFallback ? 'fallback' : 'ready');
+        
+        // Merge Costa Rica agenda with other sports for a global agenda
+        const allAgendaRaw = [...crAgendaResult.data, ...sportsResults.flatMap(r => r.data)];
+        const futureEvents = allAgendaRaw.filter(e => {
+          const status = e.status?.toLowerCase() || '';
+          const isNotFinished = !status.includes('final') && !status.includes('ft');
+          const hasTeams = e.homeTeam && e.awayTeam;
+          return isNotFinished && hasTeams;
+        });
+        
+        const sortedAgenda = futureEvents.sort((a, b) => {
+          const timeA = a.startsAt ? new Date(a.startsAt).getTime() : Date.now() + 86400000;
+          const timeB = b.startsAt ? new Date(b.startsAt).getTime() : Date.now() + 86400000;
+          return timeA - timeB;
+        });
+        
+        // Deduplicate by ID
+        const uniqueAgenda = Array.from(new Map(sortedAgenda.map(item => [item.id, item])).values());
+        
+        setHomeAgendaEvents(uniqueAgenda.slice(0, 5));
+        setHomeNewsEvents(newsResult.slice(0, 4));
+      }).catch(() => {
+        if (controller.signal.aborted) return;
+        setHomeEvents([]);
+        setHomeEventsStatus('fallback');
+        setHomeAgendaEvents([]);
+        setHomeNewsEvents([]);
+      });
+    }
 
-    return () => controller.abort();
+    loadHomeData();
+    const intervalId = setInterval(loadHomeData, 60000); // Refresh every 60 seconds
+
+    return () => {
+      clearInterval(intervalId);
+      controller.abort();
+    };
   }, []);
 
   return (
@@ -1883,7 +1935,7 @@ function HomePage() {
             </div>
             <div className="flex flex-wrap gap-3">
               <Link to="/login" className="inline-flex items-center gap-2 rounded-xl bg-[#EA7301] px-5 py-3 font-heading font-bold text-black hover:bg-orange-400">
-                Iniciar sesion <ArrowRight className="w-4 h-4" />
+                Iniciar sesion <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </Link>
               <Link to="/register" className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-5 py-3 font-heading font-bold text-white hover:bg-white/10">
                 Crear cuenta KAS
@@ -1959,15 +2011,15 @@ function HomePage() {
             <div className="space-y-4">
               <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/92 p-4">
                 <div className="flex items-center gap-2 border-b border-[#3c313e]/60 pb-3">
-                  <BarChart3 className="h-4 w-4 text-[#EA7301]" />
+                  <BarChart3 className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />
                   <h2 className="font-heading text-xl font-black text-white">Titulares</h2>
                 </div>
                 <div className="divide-y divide-[#3c313e]/60">
                   {homeNewsEvents.length > 0 ? (
                     homeNewsEvents.map((item, index) => (
-                      <a key={index} href={item.link || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 py-3 text-sm leading-snug text-[#eeddee] hover:text-white transition-colors">
+                      <Link key={index} to={`/login?redirect=${encodeURIComponent(item.link || '#')}`} className="flex items-center gap-2 py-3 text-sm leading-snug text-[#eeddee] hover:text-white transition-colors">
                         <span>{item.headline}</span>
-                      </a>
+                      </Link>
                     ))
                   ) : (
                     headlines.map((headline, index) => (
@@ -1982,7 +2034,7 @@ function HomePage() {
 
               <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/92 p-4">
                 <div className="flex items-center gap-2">
-                  <CalendarDays className="h-4 w-4 text-[#EA7301]" />
+                  <CalendarDays className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />
                   <h2 className="font-heading text-xl font-black text-white">Agenda</h2>
                 </div>
                 <div className="mt-3 space-y-2">
@@ -1994,7 +2046,7 @@ function HomePage() {
                         <div key={match.id} className="block rounded-lg bg-black/25 px-3 py-2">
                           <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
                             <span>{match.status} {match.startsAt && `· ${new Date(match.startsAt).toLocaleDateString()}`}</span>
-                            {match.startsAt && <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {new Date(match.startsAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>}
+                            {match.startsAt && <span>{new Date(match.startsAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>}
                           </div>
                           <p className="mt-1 flex items-center gap-2 truncate text-sm font-heading font-bold text-white">
                             <span className="flex min-w-0 items-center gap-1.5">
@@ -2035,7 +2087,7 @@ function HomePage() {
             <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/92 p-4">
               <div className="flex flex-col gap-2 border-b border-[#3c313e]/60 pb-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-2">
-                  <Trophy className="h-4 w-4 text-[#EA7301]" />
+                  <Trophy className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />
                   <h2 className="font-heading text-xl font-black text-white">Noticias de torneos KAS</h2>
                 </div>
                 <span className={`w-fit rounded-full px-3 py-1 text-[11px] font-mono ${
@@ -2084,12 +2136,27 @@ function HomePage() {
                     </>
                   );
 
-                  return event.href ? (
-                    <a key={event.id} href={event.href} target="_blank" rel="noreferrer" className="rounded-xl border border-white/10 bg-black/25 p-4 hover:border-[#EA7301]/70 transition-colors">
-                      {content}
-                    </a>
-                  ) : (
-                    <Link key={event.id} to={event.path} className="rounded-xl border border-white/10 bg-black/25 p-4 hover:border-[#EA7301]/70 transition-colors">
+                  const getDashboardLink = (e: NormalizedSportEvent) => {
+                    const l = e.league?.toLowerCase() || '';
+                    const t = e.title?.toLowerCase() || '';
+                    if (l.includes('costa rica') || t.includes('apertura 2026')) return '/tournaments/cr-apertura-2026/membership';
+                    if (l.includes('champions league') || t.includes('champions league')) return '/tournaments/champions-league/membership';
+                    if (l.includes('premier league') || t.includes('premier league')) return '/tournaments/premier-league/membership';
+                    if (l.includes('nations league') || t.includes('nations league')) return '/tournaments/concacaf-nations-league/membership';
+                    
+                    if (e.sportId === 'basketball') return '/tournaments/nba-temporada-regular/membership';
+                    if (e.sportId === 'f1') return '/tournaments/f1-world-championship/membership';
+                    if (e.sportId === 'tennis') return '/tournaments/atp-masters/membership';
+                    if (e.sportId === 'mma') return '/tournaments/ufc-ppv/membership';
+                    if (e.sportId === 'boxing') return '/tournaments/wbc-title-fights/membership';
+                    if (e.sportId === 'baseball') return '/tournaments/mlb-temporada-regular/membership';
+                    if (e.sportId === 'football') return '/tournaments/cr-apertura-2026/membership';
+
+                    return '/login';
+                  };
+
+                  return (
+                    <Link key={event.id} to={getDashboardLink(event as NormalizedSportEvent)} className="rounded-xl border border-white/10 bg-black/25 p-4 hover:border-[#EA7301]/70 transition-colors">
                       {content}
                     </Link>
                   );
@@ -2098,7 +2165,7 @@ function HomePage() {
                 {homeEventsStatus !== 'loading' && (
                   <div className="sm:col-span-2 rounded-xl border border-[#EA7301]/30 bg-[#EA7301]/10 p-4">
                     <div className="flex items-center gap-2">
-                      <CalendarDays className="h-4 w-4 text-[#EA7301]" />
+                      <CalendarDays className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />
                       <h3 className="font-heading text-lg font-black text-white">Proximos torneos</h3>
                     </div>
                     <div className="mt-3 grid gap-3 sm:grid-cols-3">
@@ -2168,7 +2235,7 @@ function SportsCarousel({ compact = false }: { compact?: boolean }) {
           <p className="mt-3 text-base text-white/82">{slide.text}</p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link to="/login" className="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-black text-black hover:bg-[#EA7301] transition-colors">
-              Entrar para explorar <ArrowRight className="w-4 h-4" />
+              Entrar para explorar <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
             <span className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-xs font-mono text-white/75">
               {slide.tournaments} torneos · {slide.activeEvents} eventos
@@ -2275,7 +2342,7 @@ function TournamentCalendarModal({ isOpen, onClose, tournamentId, tournamentName
              </div>
           ) : (
              <div className="text-center py-12">
-               <CalendarDays className="w-12 h-12 text-white/20 mx-auto mb-4" />
+               <CalendarDays className="w-12 h-12 text-white/20 mx-auto mb-4" aria-hidden="true" />
                <p className="text-[#d5c0d7]">No se encontraron eventos para esta temporada.</p>
              </div>
           )}
@@ -2384,7 +2451,7 @@ function KasLoginPage({ onSuccess, isRegisterDefault = false }: { onSuccess: (us
             <label className="block space-y-1">
               <span className="text-[11px] font-mono uppercase text-[#d5c0d7]">Contrasena</span>
               <span className="flex items-center gap-2 rounded-xl bg-white px-3 py-3 text-black">
-                <Lock className="w-4 h-4 text-zinc-500" />
+                <Lock className="w-4 h-4 text-zinc-500" aria-hidden="true" />
                 <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" required className="w-full bg-transparent text-sm font-medium outline-none" />
               </span>
             </label>
@@ -2489,9 +2556,9 @@ function SportsDashboard() {
 
       <section className="border-y border-white/10 py-6">
         <div className="grid gap-6 md:grid-cols-3">
-          <div className="border-l-2 border-[#EA7301] pl-4"><Trophy className="h-5 w-5 text-[#EA7301]" /><h2 className="mt-3 font-heading text-2xl font-black text-white">Quinielas por torneo</h2><p className="mt-2 text-sm text-[#d5c0d7]">Acceso individual a competiciones, picks, jornadas y finales sin paquetes obligatorios.</p></div>
-          <div className="border-l-2 border-[#EA7301] pl-4"><BarChart3 className="h-5 w-5 text-[#EA7301]" /><h2 className="mt-3 font-heading text-2xl font-black text-white">Ranking y prestigio</h2><p className="mt-2 text-sm text-[#d5c0d7]">Tus resultados se convierten en puntos, posiciones y reconocimiento dentro de cada torneo.</p></div>
-          <div className="border-l-2 border-[#EA7301] pl-4"><Users className="h-5 w-5 text-[#EA7301]" /><h2 className="mt-3 font-heading text-2xl font-black text-white">Comunidad deportiva</h2><p className="mt-2 text-sm text-[#d5c0d7]">Foros, perfiles e historial de actividad para seguir cada competencia con contexto.</p></div>
+          <div className="border-l-2 border-[#EA7301] pl-4"><Trophy className="h-5 w-5 text-[#EA7301]" aria-hidden="true" /><h2 className="mt-3 font-heading text-2xl font-black text-white">Quinielas por torneo</h2><p className="mt-2 text-sm text-[#d5c0d7]">Acceso individual a competiciones, picks, jornadas y finales sin paquetes obligatorios.</p></div>
+          <div className="border-l-2 border-[#EA7301] pl-4"><BarChart3 className="h-5 w-5 text-[#EA7301]" aria-hidden="true" /><h2 className="mt-3 font-heading text-2xl font-black text-white">Ranking y prestigio</h2><p className="mt-2 text-sm text-[#d5c0d7]">Tus resultados se convierten en puntos, posiciones y reconocimiento dentro de cada torneo.</p></div>
+          <div className="border-l-2 border-[#EA7301] pl-4"><Users className="h-5 w-5 text-[#EA7301]" aria-hidden="true" /><h2 className="mt-3 font-heading text-2xl font-black text-white">Comunidad deportiva</h2><p className="mt-2 text-sm text-[#d5c0d7]">Foros, perfiles e historial de actividad para seguir cada competencia con contexto.</p></div>
         </div>
       </section>
 
@@ -2502,7 +2569,7 @@ function SportsDashboard() {
             <h2 className="text-3xl font-heading font-black text-white">Explora las categorias</h2>
           </div>
           <Link to="/sports/football" className="inline-flex items-center gap-2 text-sm font-bold text-[#EA7301] hover:text-orange-300">
-            Ver futbol <ArrowRight className="w-4 h-4" />
+            Ver futbol <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -2516,7 +2583,7 @@ function SportsDashboard() {
               </div>
               <h3 className="mt-5 font-heading text-2xl font-black text-white">{sport.name}</h3>
               <p className="mt-2 text-sm text-[#d5c0d7]">{sport.text}</p>
-              <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#EA7301]">Entrar <ArrowRight className="w-4 h-4" /></span>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#EA7301]">Entrar <ArrowRight className="w-4 h-4" aria-hidden="true" /></span>
             </Link>
           );
           })}
@@ -2555,7 +2622,7 @@ function SportsDashboard() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{tournament.price}</span>
-                  <ArrowRight className="w-4 h-4 text-white/60" />
+                  <ArrowRight className="w-4 h-4 text-white/60" aria-hidden="true" />
                 </div>
               </Link>
             ))}
@@ -2593,12 +2660,33 @@ function SportsDashboard() {
           {apiStatus !== 'loading' && apiEvents.map((event) => {
             const matchup = parseCostaRicaMatchup(event.title);
 
+            const getDashboardLink = (e: NormalizedSportEvent) => {
+              const l = e.league?.toLowerCase() || '';
+              const t = e.title?.toLowerCase() || '';
+              let tId = '';
+              
+              if (l.includes('costa rica') || t.includes('apertura 2026')) tId = 'cr-apertura-2026';
+              else if (l.includes('champions league') || t.includes('champions league')) tId = 'champions-league';
+              else if (l.includes('premier league') || t.includes('premier league')) tId = 'premier-league';
+              else if (l.includes('nations league') || t.includes('nations league')) tId = 'concacaf-nations-league';
+              else if (e.sportId === 'basketball') tId = 'nba-temporada-regular';
+              else if (e.sportId === 'f1') tId = 'f1-world-championship';
+              else if (e.sportId === 'tennis') tId = 'atp-masters';
+              else if (e.sportId === 'mma') tId = 'ufc-ppv';
+              else if (e.sportId === 'boxing') tId = 'wbc-title-fights';
+              else if (e.sportId === 'baseball') tId = 'mlb-temporada-regular';
+              else if (e.sportId === 'football') tId = 'cr-apertura-2026';
+
+              if (!tId) return '#';
+              
+              const hasMembership = currentUser?.memberships?.includes(tId) || currentUser?.role === 'admin' || currentUser?.isAdmin;
+              return hasMembership ? `/tournaments/${tId}` : `/tournaments/${tId}/membership`;
+            };
+
             return (
-              <a
+              <Link
                 key={event.id}
-                href={event.sourceUrl || '#'}
-                target={event.sourceUrl ? '_blank' : undefined}
-                rel={event.sourceUrl ? 'noreferrer' : undefined}
+                to={getDashboardLink(event)}
                 className="rounded-xl border border-white/10 bg-black/25 p-4 hover:border-[#EA7301]/70 transition-colors"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -2624,7 +2712,7 @@ function SportsDashboard() {
                   {event.score && <span className="text-white">{formatSportResult(event)}</span>}
                   {event.startsAt && <span>{new Date(event.startsAt).toLocaleDateString()}</span>}
                 </div>
-              </a>
+              </Link>
             );
           })}
           {apiStatus !== 'loading' && apiEvents.length === 0 && <div className="rounded-xl border border-white/10 bg-black/25 p-4 text-sm text-[#d5c0d7]">No hay eventos publicados por los proveedores en este momento. Vuelve a consultar mas tarde.</div>}
@@ -2772,7 +2860,7 @@ function FootballDashboard() {
               </div>
               <div className="flex items-center gap-3">
                 <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{tournament.price}</span>
-                <ArrowRight className="w-5 h-5 text-white/70" />
+                <ArrowRight className="w-5 h-5 text-white/70" aria-hidden="true" />
               </div>
             </div>
           </Link>
@@ -2922,7 +3010,7 @@ function GrandPrixDashboard() {
             ))}
           </div>
           <Link to={`/tournaments/${tournament.id}`} className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/15 px-5 py-3 font-heading font-bold text-white hover:border-[#EA7301]">
-            <ChevronLeft className="w-4 h-4" /> Volver al torneo
+            <ChevronLeft className="w-4 h-4" aria-hidden="true" /> Volver al torneo
           </Link>
         </div>
 
@@ -3069,7 +3157,7 @@ function TournamentDashboard() {
                   <span className="rounded-full border border-[#EA7301]/35 bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">Activo</span>
                   <span className="rounded-full border border-white/10 bg-black/25 px-3 py-1 text-xs font-mono text-[#d5c0d7]">18 jornadas + playoffs</span>
                   <Link to="/tournaments/cr-apertura-2026/login" className="inline-flex items-center gap-2 rounded-full bg-[#EA7301] px-4 py-1 text-xs font-heading font-black text-black hover:bg-orange-400">
-                    Quiniela <ArrowRight className="w-3.5 h-3.5" />
+                    Quiniela <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                   </Link>
                 </div>
               </div>
@@ -3199,7 +3287,7 @@ function TournamentDashboard() {
                       const customBgImage = isFormulaOne && teamObj.teamLogo ? teamObj.teamLogo : null;
                       
                       return (
-                        <div key={teamName} onClick={() => setSelectedFavoriteTeam(isFavorite ? null : teamName)} className={`relative overflow-hidden rounded-xl border px-4 py-3 h-20 flex items-center cursor-pointer transition-all hover:bg-white/5 ${isFormulaOne ? 'select-none' : ''}`} style={customBgColor ? { backgroundColor: isFavorite ? `${customBgColor}30` : `${customBgColor}15`, borderColor: isFavorite ? customBgColor : `${customBgColor}50` } : isFavorite ? { borderColor: '#EA7301', backgroundColor: 'rgba(234, 115, 1, 0.1)' } : { borderColor: 'rgba(255,255,255,0.1)', backgroundColor: 'rgba(0,0,0,0.25)' }}>
+                        <div role="button" tabIndex={0} key={teamName} onClick={() => setSelectedFavoriteTeam(isFavorite ? null : teamName)} className={`relative overflow-hidden rounded-xl border px-4 py-3 h-20 flex items-center cursor-pointer transition-all hover:bg-white/5 ${isFormulaOne ? 'select-none' : ''}`} style={customBgColor ? { backgroundColor: isFavorite ? `${customBgColor}30` : `${customBgColor}15`, borderColor: isFavorite ? customBgColor : `${customBgColor}50` } : isFavorite ? { borderColor: '#EA7301', backgroundColor: 'rgba(234, 115, 1, 0.1)' } : { borderColor: 'rgba(255,255,255,0.1)', backgroundColor: 'rgba(0,0,0,0.25)' }}>
                           {customBgImage && (
                             <div 
                               className="absolute right-0 top-0 bottom-0 w-1/2 opacity-20 bg-no-repeat bg-right bg-contain transition-opacity"
@@ -3454,7 +3542,7 @@ function TournamentDashboard() {
             Este torneo tiene su propio espacio de picks, ranking, comunidad y control de membresia.
           </p>
           <Link to={primaryPath} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#EA7301] px-5 py-3 font-heading font-bold text-black hover:bg-orange-400">
-            {isCostaRica ? 'Quiniela' : 'Gestionar membresia'} <ArrowRight className="w-4 h-4" />
+            {isCostaRica ? 'Quiniela' : 'Gestionar membresia'} <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
 
@@ -3538,7 +3626,7 @@ function TournamentDashboard() {
         <InfoCard icon={<Shield />} title="Membresia" text={tournament.enabled ? 'Acceso activo de prototipo.' : 'Pay-per-tournament preparado.'} />
       </div>
       <Link to={enabledPath} className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 font-heading font-bold ${tournament.enabled ? 'bg-[#EA7301] text-black' : 'bg-white/10 text-white'}`}>
-        {tournament.enabled ? 'Acceder con login de quiniela' : 'Comprar membresia'} <ArrowRight className="w-4 h-4" />
+        {tournament.enabled ? 'Acceder con login de quiniela' : 'Comprar membresia'} <ArrowRight className="w-4 h-4" aria-hidden="true" />
       </Link>
     </div>
   );
@@ -3627,7 +3715,7 @@ function SportPlaceholder() {
                   <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{tournament.price}</span>
                 </div>
                 <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#EA7301]">
-                  Acceder con membresia <ArrowRight className="w-4 h-4" />
+                  Acceder con membresia <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </span>
               </Link>
             );

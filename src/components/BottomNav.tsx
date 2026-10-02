@@ -21,8 +21,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab, i
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#140b16]/95 backdrop-blur-lg border-t border-[#3c313e]/70 px-2 py-2 safe-area-inset-bottom">
-      <div className="max-w-md mx-auto flex items-center justify-around">
+    <nav role="navigation" aria-label="Navegación principal inferior" className="fixed bottom-0 left-0 right-0 z-40 bg-[#140b16]/95 backdrop-blur-lg border-t border-[#3c313e]/70 px-2 py-2 safe-area-inset-bottom">
+      <div role="tablist" aria-label="Menú de secciones" className="max-w-md mx-auto flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -30,6 +30,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab, i
           return (
             <button
               key={item.id}
+              role="tab"
+              aria-selected={isActive}
+              aria-label={`Ir a la sección ${item.label}`}
               onClick={() => setActiveTab(item.id)}
               className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all duration-200 ${
                 isActive
@@ -37,7 +40,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab, i
                   : 'text-[#d5c0d7]/70 hover:text-white hover:bg-[#261c28]'
               }`}
             >
-              <Icon className={`w-5 h-5 ${isActive ? 'text-white' : ''}`} />
+              <Icon className={`w-5 h-5 ${isActive ? 'text-white' : ''}`} aria-hidden="true" />
               <span className={`text-[10px] font-mono tracking-tight mt-0.5 ${isActive ? 'font-bold text-white' : 'font-medium'}`}>
                 {item.label}
               </span>

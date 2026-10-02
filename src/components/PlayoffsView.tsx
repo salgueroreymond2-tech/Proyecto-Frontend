@@ -67,7 +67,7 @@ export const PlayoffsView: React.FC<PlayoffsViewProps> = ({ onOpenScorerModal })
             <span className="font-heading font-bold text-base text-white">
               1. Líder General
             </span>
-            <Trophy className="w-5 h-5 text-[#bf00ff]" />
+            <Trophy className="w-5 h-5 text-[#bf00ff]" aria-hidden="true" />
           </div>
           <p className="text-sm text-[#eeddee]/90 mb-4 leading-relaxed">
             El equipo en el 1er lugar asegura directamente su pase a la <strong className="text-white">Gran Final</strong>.
@@ -238,7 +238,7 @@ export const PlayoffsView: React.FC<PlayoffsViewProps> = ({ onOpenScorerModal })
             {/* PREDICCIÓN DE CAMPEÓN (Matching Screenshot 5) */}
             <div className="p-4 rounded-xl bg-[#19101c] border border-[#bf00ff]/40 space-y-3">
               <div className="text-center">
-                <Trophy className="w-6 h-6 text-[#bf00ff] mx-auto mb-1 animate-bounce" />
+                <Trophy className="w-6 h-6 text-[#bf00ff] mx-auto mb-1 animate-bounce" aria-hidden="true" />
                 <h4 className="font-heading font-bold text-white text-base">
                   Predicción de Campeón
                 </h4>

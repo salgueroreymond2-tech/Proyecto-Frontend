@@ -32,7 +32,7 @@ export const RankingView: React.FC = () => {
               : 'text-[#d5c0d7] hover:text-white hover:bg-[#261c28]'
           }`}
         >
-          <Users className="w-4 h-4" />
+          <Users className="w-4 h-4" aria-hidden="true" />
           <span>Ranking Quiniela</span>
         </button>
       </div>
@@ -147,7 +147,7 @@ export const RankingView: React.FC = () => {
                 className="text-[#bf00ff] hover:underline flex items-center gap-1 text-[11px]"
               >
                 <span>Ver reglas completas</span>
-                <ChevronRight className="w-3 h-3" />
+                <ChevronRight className="w-3 h-3" aria-hidden="true" />
               </button>
             </div>
 

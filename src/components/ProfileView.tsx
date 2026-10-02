@@ -192,7 +192,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onOpenLogin }) => {
           {/* Badge 2: Experto Promerica */}
           <div className="p-3.5 rounded-xl bg-[#221824] border border-[#3c313e] flex flex-col items-center text-center space-y-1.5 shadow-md hover:border-[#bf00ff]/50 transition-all">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-[#bf00ff] to-[#ecb1ff] flex items-center justify-center glow-purple-sm text-black">
-              <Trophy className="w-6 h-6 text-black" />
+              <Trophy className="w-6 h-6 text-black" aria-hidden="true" />
             </div>
             <span className="font-heading font-bold text-white text-xs block leading-tight">
               Experto Promérica
@@ -219,7 +219,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onOpenLogin }) => {
           {/* Badge 4: Leyenda (Locked) */}
           <div className="p-3.5 rounded-xl bg-[#19101c] border border-[#3c313e]/60 opacity-60 flex flex-col items-center text-center space-y-1.5 shadow-md">
             <div className="w-12 h-12 rounded-xl bg-[#261c28] border border-[#3c313e] flex items-center justify-center text-zinc-500">
-              <Lock className="w-5 h-5 text-zinc-500" />
+              <Lock className="w-5 h-5 text-zinc-500" aria-hidden="true" />
             </div>
             <span className="font-heading font-bold text-zinc-400 text-xs block leading-tight">
               Leyenda
@@ -237,7 +237,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onOpenLogin }) => {
           onClick={() => setShowAuthModal(true)}
           className="w-full py-3 px-4 rounded-xl bg-[#261c28] hover:bg-[#312733] border border-[#bf00ff]/40 text-white font-heading font-bold text-sm flex items-center justify-center gap-2 transition-all"
         >
-          <Edit3 className="w-4 h-4" />
+          <Edit3 className="w-4 h-4" aria-hidden="true" />
           <span>Editar Perfil & Equipo Favorito</span>
         </button>
 
@@ -256,7 +256,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onOpenLogin }) => {
           }}
           className="w-full py-3 px-4 rounded-xl bg-[#1e1015] hover:bg-[#2c131d] border border-red-500/40 text-red-400 font-heading font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all mt-3 cursor-pointer"
         >
-          <LogOut className="w-4 h-4 text-red-400" />
+          <LogOut className="w-4 h-4 text-red-400" aria-hidden="true" />
           <span>Cerrar Sesión</span>
         </button>
       </div>

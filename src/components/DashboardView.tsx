@@ -63,9 +63,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           return;
         }
 
+        const today = new Date();
+        const nextMonth = new Date();
+        nextMonth.setDate(today.getDate() + 30);
+        const d1 = today.toISOString().split('T')[0].replace(/-/g, '');
+        const d2 = nextMonth.toISOString().split('T')[0].replace(/-/g, '');
+        const dateRange = `${d1}-${d2}`;
+
         const { getTournamentEvents, getTournamentNews } = await import('../services/sportsApi');
         const [result, news] = await Promise.all([
-          getTournamentEvents(tournamentId, controller.signal),
+          getTournamentEvents(tournamentId, controller.signal, dateRange),
           getTournamentNews(tournamentId, controller.signal),
         ]);
         if (!controller.signal.aborted) {
@@ -83,7 +90,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       }
     }
     loadAgenda();
-    return () => controller.abort();
+    const intervalId = setInterval(loadAgenda, 60000); // Refresh every minute
+    return () => {
+      clearInterval(intervalId);
+      controller.abort();
+    };
   }, [tournamentId]);
 
   // Filter matches for the selected round
@@ -179,7 +190,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   };
 
   return (
-    <div className="space-y-5 pb-24 max-w-6xl mx-auto px-4 pt-2">
+    <main role="main" aria-label="Dashboard del torneo" tabIndex={-1} id="main-content" className="space-y-5 pb-24 max-w-6xl mx-auto px-4 pt-2">
       <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/90 overflow-hidden">
         <div className="flex items-center gap-3 border-b border-[#3c313e]/60 px-3 py-2">
           <span className="rounded-md bg-[#EA7301] px-2 py-1 text-[10px] font-heading font-black uppercase tracking-wide text-black">
@@ -215,7 +226,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
       <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/92 p-4 mb-5">
         <div className="flex items-center gap-2 border-b border-[#3c313e]/60 pb-3">
-          <Newspaper className="h-5 w-5 text-[#EA7301]" />
+          <Newspaper className="h-5 w-5 text-[#EA7301]" aria-hidden="true" />
           <h2 className="font-heading text-xl font-black text-white">
             Noticias Para Ti {currentUser?.favoriteTeamId && currentUser.favoriteTeamId !== 'sap' && <span className="text-[#EA7301]">({currentUser.favoriteTeamId})</span>}
           </h2>
@@ -269,7 +280,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           disabled={selectedRound <= 1}
           className="p-1.5 rounded-lg bg-[#221824] hover:bg-[#312733] disabled:opacity-30 text-[#eeddee] transition-colors"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="w-4 h-4" aria-hidden="true" />
         </button>
 
         <div className="flex items-center gap-1.5 overflow-x-auto py-1 scrollbar-none max-w-[260px] sm:max-w-xs">
@@ -324,7 +335,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           disabled={selectedRound >= 24}
           className="p-1.5 rounded-lg bg-[#221824] hover:bg-[#312733] disabled:opacity-30 text-[#eeddee] transition-colors"
         >
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-4 h-4" aria-hidden="true" />
         </button>
       </div>
 
@@ -351,7 +362,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#261c28] hover:bg-[#3c313e] text-white text-xs font-mono border border-[#bf00ff]/40 transition-all"
             title="Autollenar pronósticos de esta jornada"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#bf00ff]" />
+            <Sparkles className="w-3.5 h-3.5 text-[#bf00ff]" aria-hidden="true" />
             <span>Autollenar</span>
           </button>
 
@@ -360,7 +371,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#bf00ff]/20 hover:bg-[#bf00ff]/40 text-white text-xs font-mono border border-[#bf00ff] transition-all glow-purple-sm"
             title="Simular resultados reales de esta jornada"
           >
-            <Play className="w-3.5 h-3.5 text-[#00f0ff]" />
+            <Play className="w-3.5 h-3.5 text-[#00f0ff]" aria-hidden="true" />
             <span>Simular J{selectedRound}</span>
           </button>
         </div>
@@ -531,12 +542,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   >
                     {pred.isLocked ? (
                       <>
-                        <Lock className="w-3.5 h-3.5 text-amber-400" />
+                        <Lock className="w-3.5 h-3.5 text-amber-400" aria-hidden="true" />
                         <span className="text-amber-300">Bloqueado</span>
                       </>
                     ) : (
                       <>
-                        <Unlock className="w-3.5 h-3.5 text-zinc-400" />
+                        <Unlock className="w-3.5 h-3.5 text-zinc-400" aria-hidden="true" />
                         <span>Bloquear</span>
                       </>
                     )}
@@ -549,8 +560,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       )}
 
       {/* RESTO DE LA JORNADA (Matching Screenshot 9 & 15) */}
-      <div className="space-y-3 pt-2">
-        <h2 className="text-xl font-heading font-bold text-white tracking-tight flex items-center gap-2">
+      <section aria-labelledby="resto-jornada-heading" role="region" className="space-y-3 pt-2">
+        <h2 id="resto-jornada-heading" className="text-xl font-heading font-bold text-white tracking-tight flex items-center gap-2">
           <span>Resto de la Jornada</span>
           <span className="text-xs font-mono font-normal text-[#d5c0d7]">
             ({restOfMatches.length} partidos)
@@ -572,7 +583,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             return (
               <div
                 key={match.id}
-                className="rounded-xl bg-[#221824] border border-[#3c313e]/80 hover:border-[#bf00ff]/60 p-4 transition-all duration-200 shadow-md"
+                className="rounded-xl bg-[#221824] border border-[#3c313e]/80 hover:border-[#bf00ff]/60 p-4 transition-all duration-200 shadow-md" role="article" tabIndex={0} aria-label={`Partido: ${homeTeam.name} contra ${awayTeam.name}, a las ${match.time}`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="text-[11px] font-mono text-[#d5c0d7]">
@@ -693,12 +704,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   >
                     {pred.isLocked ? (
                       <>
-                        <Lock className="w-3 h-3 text-amber-400" />
+                        <Lock className="w-3 h-3 text-amber-400" aria-hidden="true" />
                         <span>BLOQUEADO</span>
                       </>
                     ) : (
                       <>
-                        <Unlock className="w-3 h-3 text-[#bf00ff]" />
+                        <Unlock className="w-3 h-3 text-[#bf00ff]" aria-hidden="true" />
                         <span>BLOQUEAR</span>
                       </>
                     )}
@@ -708,14 +719,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             );
           })}
         </div>
-      </div>
+      </section>
 
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
           <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-4">
             <div className="flex items-center gap-2 border-b border-[#3c313e]/60 pb-3">
-              <Newspaper className="h-4 w-4 text-[#EA7301]" />
+              <Newspaper className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />
               <h2 className="font-heading text-xl font-black text-white">Titulares</h2>
             </div>
             <div className="divide-y divide-[#3c313e]/60">
@@ -738,7 +749,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
           <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-4">
             <div className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-[#EA7301]" />
+              <BarChart3 className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />
               <h2 className="font-heading text-xl font-black text-white">Tabla UNAFUT</h2>
             </div>
             <div className="mt-3 space-y-2">
@@ -761,7 +772,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
           <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-4">
             <div className="flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-[#EA7301]" />
+              <Trophy className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />
               <h2 className="font-heading text-xl font-black text-white">Ranking KAS</h2>
             </div>
             <div className="mt-3 space-y-2">
@@ -779,7 +790,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
           <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-4">
             <div className="flex items-center gap-2">
-              <CalendarDays className="h-4 w-4 text-[#EA7301]" />
+              <CalendarDays className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />
               <h2 className="font-heading text-xl font-black text-white">Agenda</h2>
             </div>
             <div className="mt-3 space-y-2">
@@ -794,7 +805,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     >
                       <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
                         <span>{match.status} {match.startsAt && `· ${new Date(match.startsAt).toLocaleDateString()}`}</span>
-                        {match.startsAt && <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {new Date(match.startsAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>}
+                        {match.startsAt && <span>{new Date(match.startsAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>}
                       </div>
                       <div className="mt-1 flex items-center justify-between">
                         <p className="flex min-w-0 items-center gap-2 text-sm font-heading font-bold text-white">
@@ -846,6 +857,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </section>
         </aside>
       </div>
-    </div>
+    </main>
   );
 };

@@ -190,7 +190,7 @@ export const AuthModal: React.FC = () => {
           <div className="space-y-1">
             <label className="text-[11px] font-mono text-[#d5c0d7] uppercase">Contraseña</label>
               <div className="flex items-center gap-2 bg-white rounded-xl px-3 py-2 text-black">
-              <Lock className="w-4 h-4 text-zinc-500" />
+              <Lock className="w-4 h-4 text-zinc-500" aria-hidden="true" />
               <input
                   type={showPassword ? 'text' : 'password'}
                 defaultValue="••••••••"
@@ -241,7 +241,7 @@ export const AuthModal: React.FC = () => {
             className="w-full py-3 rounded-xl bg-[#261c28] hover:bg-[#3c313e] border border-[#bf00ff] text-white font-heading font-bold text-sm flex items-center justify-center gap-2 glow-purple-sm transition-all"
           >
             <span>{isRegister ? 'Registrarse' : 'Iniciar Sesión'}</span>
-            <ArrowRight className="w-4 h-4 text-[#bf00ff]" />
+            <ArrowRight className="w-4 h-4 text-[#bf00ff]" aria-hidden="true" />
           </button>
 
           {/* Google Button (Matching screenshot 9) */}

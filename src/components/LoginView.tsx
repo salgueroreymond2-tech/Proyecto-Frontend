@@ -89,7 +89,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onFavorite
 
           {isSubmitted ? (
             <div className="py-12 flex flex-col items-center justify-center text-center space-y-3">
-              <CheckCircle2 className="w-16 h-16 text-[#00f0ff] animate-bounce" />
+              <CheckCircle2 className="w-16 h-16 text-[#00f0ff] animate-bounce" aria-hidden="true" />
               <h3 className="text-xl font-heading font-bold text-white">
                 ¡Bienvenido a la Pasión!
               </h3>
@@ -188,7 +188,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onFavorite
                   )}
                 </div>
                 <div className="flex items-center gap-2 bg-white rounded-xl px-3 py-2.5 text-black">
-                  <Lock className="w-4 h-4 text-zinc-500 shrink-0" />
+                  <Lock className="w-4 h-4 text-zinc-500 shrink-0" aria-hidden="true" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
@@ -246,7 +246,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onFavorite
                 className="w-full py-3.5 rounded-xl bg-[#261c28] hover:bg-[#3c313e] border border-[#bf00ff] text-white font-heading font-bold text-base uppercase tracking-wider flex items-center justify-center gap-2 glow-purple-sm transition-all mt-2 cursor-pointer team-themed-button"
               >
                 <span>{isRegister ? 'Crear Cuenta' : 'Iniciar Sesión'}</span>
-                <ArrowRight className="w-5 h-5 text-[#bf00ff]" />
+                <ArrowRight className="w-5 h-5 text-[#bf00ff]" aria-hidden="true" />
               </button>
 
               {/* Google Social Button */}

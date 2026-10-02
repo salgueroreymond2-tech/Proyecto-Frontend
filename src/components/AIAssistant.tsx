@@ -48,6 +48,10 @@ const N8N_WEBHOOK_URL = 'http://localhost:5678/webhook-test/arthur-chat';
         body: JSON.stringify({
           message: userText,
           sessionId: sessionId,
+          context: {
+            pathname: window.location.pathname,
+            url: window.location.href
+          }
         }),
       });
 

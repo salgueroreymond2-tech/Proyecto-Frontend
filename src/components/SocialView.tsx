@@ -147,7 +147,7 @@ export const SocialView: React.FC = () => {
               {post.streakInfo && (
                 <div className="p-4 rounded-xl bg-gradient-to-b from-[#2a1333] to-[#19101c] border border-[#bf00ff]/50 space-y-3 text-center">
                   <div className="flex items-center justify-center gap-1.5 text-lg font-heading font-black text-[#bf00ff] italic text-glow-purple uppercase">
-                    <Flame className="w-5 h-5 text-[#bf00ff] animate-bounce" />
+                    <Flame className="w-5 h-5 text-[#bf00ff] animate-bounce" aria-hidden="true" />
                     <span>¡EN RACHA!</span>
                   </div>
 

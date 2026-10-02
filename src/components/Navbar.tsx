@@ -146,7 +146,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               aria-label="Volver atras"
               title="Atras"
             >
-              <ChevronLeft className="h-5 w-5 text-[#EA7301]" />
+              <ChevronLeft className="h-5 w-5 text-[#EA7301]" aria-hidden="true" />
             </button>
           )}
           {isHomePage ? (
@@ -207,7 +207,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {publicNavigation.services.map((service) => {
                       const Icon = serviceIcons[service.icon];
                       return <div key={service.id} className="flex w-full items-start gap-3 rounded-lg px-3 py-3 text-left cursor-default">
-                        <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#EA7301]" />
+                        <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#EA7301]" aria-hidden="true" />
                         <span><span className="block text-sm font-bold text-white">{service.label}</span><span className="mt-0.5 block text-xs text-white/60">{service.detail}</span></span>
                       </div>;
                     })}
@@ -216,7 +216,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
               <div className="relative">
                 <button type="button" onClick={() => setPublicMenuOpen((value) => value === 'sports' ? null : 'sports')} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-sm font-heading font-bold text-white hover:border-[#EA7301]/60 hover:bg-white/10">
-                  <Dumbbell className="h-4 w-4 text-[#EA7301]" /> Deportes <ChevronDown className="h-4 w-4" />
+                  <Dumbbell className="h-4 w-4 text-[#EA7301]" aria-hidden="true" /> Deportes <ChevronDown className="h-4 w-4" />
                 </button>
                 {publicMenuOpen === 'sports' && publicNavigation && (
                   <div className="absolute right-0 mt-2 grid w-80 grid-cols-2 gap-1 rounded-xl border border-[#3c313e] bg-[#19101c] p-2 shadow-2xl">
@@ -229,7 +229,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <div className="relative md:hidden">
               <button type="button" onClick={() => setPublicMenuOpen((value) => value === 'services' ? null : 'services')} className="rounded-xl border border-white/15 bg-white/5 p-2.5 text-white" aria-label="Abrir navegacion">
-                <Menu className="h-4 w-4 text-[#EA7301]" />
+                <Menu className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />
               </button>
               {publicMenuOpen === 'services' && publicNavigation && (
                 <div className="absolute right-0 mt-2 w-72 rounded-xl border border-[#3c313e] bg-[#19101c] p-2 shadow-2xl">
@@ -247,7 +247,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               aria-label={colorMode === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro'}
               title={colorMode === 'dark' ? 'Modo claro' : 'Modo oscuro'}
             >
-              {colorMode === 'dark' ? <Sun className="w-4 h-4 text-[#EA7301]" /> : <Moon className="w-4 h-4 text-[#EA7301]" />}
+              {colorMode === 'dark' ? <Sun className="w-4 h-4 text-[#EA7301]" aria-hidden="true" /> : <Moon className="w-4 h-4 text-[#EA7301]" aria-hidden="true" />}
             </button>
 
             {showPublicLogin && <button
@@ -267,7 +267,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             aria-label={colorMode === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro'}
             title={colorMode === 'dark' ? 'Modo claro' : 'Modo oscuro'}
           >
-            {colorMode === 'dark' ? <Sun className="w-4 h-4 text-[#EA7301]" /> : <Moon className="w-4 h-4 text-[#EA7301]" />}
+            {colorMode === 'dark' ? <Sun className="w-4 h-4 text-[#EA7301]" aria-hidden="true" /> : <Moon className="w-4 h-4 text-[#EA7301]" aria-hidden="true" />}
           </button>
 
           {/* Quiniela Specific Tools */}
@@ -289,9 +289,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             title={isMuted ? 'Activar sonido' : 'Silenciar sonido'}
           >
             {isMuted ? (
-              <VolumeX className="w-4 h-4 text-gray-500" />
+              <VolumeX className="w-4 h-4 text-gray-500" aria-hidden="true" />
             ) : (
-              <Volume2 className="w-4 h-4 text-[#00f0ff]" />
+              <Volume2 className="w-4 h-4 text-[#00f0ff]" aria-hidden="true" />
             )}
           </button>
 
@@ -302,7 +302,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="p-2 rounded-full hover:bg-[#312733] text-[#eeddee]/80 hover:text-white transition-colors relative"
               title="Notificaciones"
             >
-              <Bell className="w-4 h-4" />
+              <Bell className="w-4 h-4" aria-hidden="true" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#bf00ff] ring-2 ring-[#140b16] animate-pulse"></span>
             </button>
 
@@ -351,7 +351,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 text-red-400 hover:text-red-300 hover:border-red-500/50 hover:bg-red-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                 title="Cerrar sesión"
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-4 w-4" aria-hidden="true" />
                 <span className="hidden sm:inline text-sm font-bold font-heading">Salir</span>
               </button>
 
@@ -392,7 +392,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     }}
                     className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-mono text-left rounded-lg hover:bg-[#3c313e] text-white transition-colors cursor-pointer"
                   >
-                    <Edit3 className="w-4 h-4 text-[#bf00ff]" />
+                    <Edit3 className="w-4 h-4 text-[#bf00ff]" aria-hidden="true" />
                     <span>Editar Perfil</span>
                   </button>
 
@@ -404,7 +404,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       }}
                       className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-mono text-left rounded-lg hover:bg-[#3c313e] text-amber-300 transition-colors cursor-pointer"
                     >
-                      <SlidersHorizontal className="w-4 h-4 text-amber-300" />
+                      <SlidersHorizontal className="w-4 h-4 text-amber-300" aria-hidden="true" />
                       <span>Panel de Administrador</span>
                     </button>
                   )}
@@ -419,7 +419,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     }}
                     className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-mono text-left rounded-lg hover:bg-red-950/60 text-red-400 transition-colors cursor-pointer border-t border-[#3c313e] mt-1 pt-2"
                   >
-                    <LogOut className="w-4 h-4 text-red-400" />
+                    <LogOut className="w-4 h-4 text-red-400" aria-hidden="true" />
                     <span>Cerrar Sesión</span>
                   </button>
                 </div>

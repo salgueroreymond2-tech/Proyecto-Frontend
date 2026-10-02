@@ -111,7 +111,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({ isOpen, onClos
             onClick={() => simulateRound(selectedRound)}
             className="px-3 py-2 rounded-xl bg-[#bf00ff]/20 text-white border border-[#bf00ff] text-xs font-mono flex items-center gap-1.5"
           >
-            <Play className="w-3.5 h-3.5" />
+            <Play className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Simular J{selectedRound}</span>
           </button>
 

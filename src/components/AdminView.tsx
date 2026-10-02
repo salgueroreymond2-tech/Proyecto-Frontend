@@ -39,12 +39,12 @@ const adminSections: Array<{
 }> = [
   { id: 'overview', label: 'Resumen', detail: 'Operacion diaria', icon: <LayoutDashboard className="h-4 w-4" /> },
   { id: 'analytics', label: 'Analitica', detail: 'Ingresos y demanda', icon: <Activity className="h-4 w-4" /> },
-  { id: 'users', label: 'Usuarios', detail: 'Roles y cuentas', icon: <Users className="h-4 w-4" /> },
-  { id: 'memberships', label: 'Torneos', detail: 'Inventario PPT', icon: <Trophy className="h-4 w-4" /> },
-  { id: 'payments', label: 'Pagos', detail: 'Capturas y cobros', icon: <BadgeDollarSign className="h-4 w-4" /> },
-  { id: 'matches', label: 'Marcadores', detail: 'Resultados oficiales', icon: <CalendarDays className="h-4 w-4" /> },
+  { id: 'users', label: 'Usuarios', detail: 'Roles y cuentas', icon: <Users className="h-4 w-4" aria-hidden="true" /> },
+  { id: 'memberships', label: 'Torneos', detail: 'Inventario PPT', icon: <Trophy className="h-4 w-4" aria-hidden="true" /> },
+  { id: 'payments', label: 'Pagos', detail: 'Capturas y cobros', icon: <BadgeDollarSign className="h-4 w-4" aria-hidden="true" /> },
+  { id: 'matches', label: 'Marcadores', detail: 'Resultados oficiales', icon: <CalendarDays className="h-4 w-4" aria-hidden="true" /> },
   { id: 'system', label: 'Sistema', detail: 'Seguridad y DB', icon: <Server className="h-4 w-4" /> },
-  { id: 'roadmap', label: 'Roadmap Admin', detail: 'Secciones recomendadas', icon: <SlidersHorizontal className="h-4 w-4" /> },
+  { id: 'roadmap', label: 'Roadmap Admin', detail: 'Secciones recomendadas', icon: <SlidersHorizontal className="h-4 w-4" aria-hidden="true" /> },
 ];
 
 const recommendedAdminAreas = [
@@ -571,7 +571,7 @@ export const AdminView: React.FC<{ tournaments?: AdminTournament[] }> = ({ tourn
                 <article key={area.title} className="rounded-xl border border-white/10 bg-black/25 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2">
-                      {area.title.includes('Seguridad') ? <LockKeyhole className="h-4 w-4 text-[#EA7301]" /> : area.title.includes('Contenido') ? <MessageSquare className="h-4 w-4 text-[#EA7301]" /> : <SlidersHorizontal className="h-4 w-4 text-[#EA7301]" />}
+                      {area.title.includes('Seguridad') ? <LockKeyhole className="h-4 w-4 text-[#EA7301]" /> : area.title.includes('Contenido') ? <MessageSquare className="h-4 w-4 text-[#EA7301]" /> : <SlidersHorizontal className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />}
                       <h3 className="font-heading text-lg font-black text-white">{area.title}</h3>
                     </div>
                     <StatusPill value={area.priority} tone={area.priority === 'Alta' ? 'green' : area.priority === 'Media' ? 'amber' : 'blue'} />

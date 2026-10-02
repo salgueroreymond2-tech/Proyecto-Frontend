@@ -710,7 +710,7 @@ function getTournamentAccessPath(id: string) {
   return `/tournaments/${id}/membership`;
 }
 
-function findTournamentSummary(tournamentId: string) {
+export function findTournamentSummary(tournamentId: string) {
   const football = [...footballTournaments, ...upcomingFootballTournaments].find((item) => item.id === tournamentId);
   if (football) return { ...football, sportId: 'football', sportName: 'Futbol' };
 
@@ -923,28 +923,70 @@ function getDateKey(date: Date) {
 }
 
 function MembershipCalendarDashboard() {
-  const [memberships, setMemberships] = useState<UserMembership[]>([]);
+  const [items, setItems] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [visibleMonth, setVisibleMonth] = useState(() => new Date());
 
   useEffect(() => {
     let mounted = true;
-    getMyMemberships()
-      .then((data) => {
-        if (mounted) setMemberships(data.memberships);
-      })
-      .catch(() => {
-        if (mounted) setMemberships([]);
-      })
-      .finally(() => {
-        if (mounted) setIsLoading(false);
-      });
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    async function loadAllEvents() {
+      setIsLoading(true);
+      try {
+        const { getTournamentEvents } = await import('../services/sportsApi');
+        // Build a wide date range: 3 months before to 3 months after visible month
+        const rangeStart = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 2, 1);
+        const rangeEnd = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 3, 0);
+        const fmt = (d: Date) => d.toISOString().slice(0, 10).replace(/-/g, '');
+        const dateRange = `${fmt(rangeStart)}-${fmt(rangeEnd)}`;
 
-  const items = getMembershipCalendarItems(memberships);
+        const tournamentIds = [
+          'champions-league', 'cr-apertura-2026', 'concacaf-nations-league',
+          'nba-temporada-regular', 'mlb-temporada-regular',
+          'ufc-fight-night', 'ufc-ppv-series',
+          'f1-world-championship',
+          'the-masters', 'ryder-cup',
+          'australian-open', 'roland-garros', 'wimbledon', 'us-open',
+          'tour-de-france', 'giro-d-italia',
+          'wbc-world-boxing-council', 'wba-world-boxing-association',
+        ];
+
+        // Fetch with date range first, then fallback to no-range for sports that don't support it
+        const results = await Promise.all(
+          tournamentIds.map(async (id) => {
+            try {
+              const withRange = await getTournamentEvents(id, undefined, dateRange);
+              if (withRange.data && withRange.data.length > 0) return withRange;
+              // Fallback: try without date range
+              return await getTournamentEvents(id);
+            } catch {
+              return { data: [] };
+            }
+          })
+        );
+
+        const allEvents = results.flatMap((r, i) => {
+          const tId = tournamentIds[i];
+          const summary = findTournamentSummary(tId);
+          return (r.data || []).map((e: any) => ({
+            id: e.id || `${tId}-${Math.random()}`,
+            tournament: summary || { id: tId, name: e.league || tId, sportName: tId, accentColor: '#EA7301' },
+            label: e.title || `${e.homeTeam} vs ${e.awayTeam}`,
+            date: new Date(e.startsAt || new Date()),
+            status: e.status,
+          }));
+        });
+
+        if (mounted) setItems(allEvents);
+      } catch (err) {
+        console.error('Error fetching calendar events', err);
+      } finally {
+        if (mounted) setIsLoading(false);
+      }
+    }
+    loadAllEvents();
+    return () => { mounted = false; };
+  }, [visibleMonth]);
+
   const paidTournaments = [...new Map(items.map((item) => [item.tournament.id, item.tournament])).values()];
   const paidSports = [...new Set(paidTournaments.map((item) => item.sportName))];
   const calendarDays = getCalendarGridDays(visibleMonth);
@@ -959,9 +1001,9 @@ function MembershipCalendarDashboard() {
     <div className="mx-auto max-w-6xl space-y-5 px-4 py-4 pb-24">
       <section className="rounded-2xl border border-[#EA7301]/35 bg-[#19101c]/90 p-5 sm:p-7">
         <p className="text-sm font-mono text-[#EA7301]">AGENDA</p>
-        <h1 className="mt-1 font-heading text-4xl font-black text-white">Calendario de tus membresias</h1>
+        <h1 className="mt-1 font-heading text-4xl font-black text-white">Calendario Global</h1>
         <p className="mt-3 max-w-2xl text-sm text-[#d5c0d7]">
-          Solo se muestran deportes y torneos donde tu cuenta tiene membresia activa.
+          Eventos reales de todos los deportes y torneos activos, extraidos de la API de ESPN.
         </p>
       </section>
       <section className="grid gap-3 sm:grid-cols-3">
@@ -972,7 +1014,7 @@ function MembershipCalendarDashboard() {
       <section className="grid gap-4 lg:grid-cols-[0.8fr_1.4fr]">
         <div className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
           <p className="text-xs font-mono text-[#EA7301]">DEPORTES ACTIVOS</p>
-          <h2 className="mt-1 font-heading text-2xl font-black text-white">Tus accesos</h2>
+          <h2 className="mt-1 font-heading text-2xl font-black text-white">Deportes disponibles</h2>
           <div className="mt-4 space-y-3">
             {paidSports.map((sportName) => (
               <div key={sportName} className="rounded-lg border border-white/10 bg-black/25 px-4 py-3">

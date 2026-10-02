@@ -186,35 +186,53 @@ const ESPN_TOURNAMENT_MAP: Record<string, string> = {
 };
 
 const CUSTOM_LEAGUE_LOGOS: Record<string, string> = {
-  'cr-apertura-2026': '/assets/logos/leagues/costa-rica-primera-division.png',
-  'concacaf-nations-league': 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Concacaf_Nations_League_logo.svg',
-  'australian-open': 'https://en.wikipedia.org/wiki/Special:FilePath/Australian_Open_Logo_2017.svg',
-  'roland-garros': 'https://en.wikipedia.org/wiki/Special:FilePath/Logo_Roland-Garros.svg',
-  'wimbledon': 'https://en.wikipedia.org/wiki/Special:FilePath/Wimbledon.svg',
-  'us-open': 'https://en.wikipedia.org/wiki/Special:FilePath/Usopen-horizontal-logo.svg',
-  'atp-masters': 'https://en.wikipedia.org/wiki/Special:FilePath/ATP_Tour_logo.svg',
-  'wta-masters': 'https://en.wikipedia.org/wiki/Special:FilePath/WTA_2025.svg',
-  'the-masters': 'https://en.wikipedia.org/wiki/Special:FilePath/Augusta_National_Golf_Club_logo.png',
-  'ryder-cup': 'https://en.wikipedia.org/wiki/Special:FilePath/RyderCupLogo.svg',
-  'tour-de-france': 'https://en.wikipedia.org/wiki/Special:FilePath/Tour_de_France_logo.svg',
-  'giro-d-italia': 'https://en.wikipedia.org/wiki/Special:FilePath/Giro_d%E2%80%99Italia_logo.svg',
-  'la-vuelta': 'https://en.wikipedia.org/wiki/Special:FilePath/La_Vuelta_(Spain)_logo.svg',
-  'uci-world-championships': 'https://en.wikipedia.org/wiki/Special:FilePath/Union_Cycliste_Internationale_logo.svg',
-  'ufc-fight-night': 'https://upload.wikimedia.org/wikipedia/commons/0/0d/UFC_logo.svg',
-  'ufc-ppv-series': 'https://upload.wikimedia.org/wikipedia/commons/0/0d/UFC_logo.svg',
-  'ufc-championship-events': 'https://upload.wikimedia.org/wikipedia/commons/0/0d/UFC_logo.svg',
-  'wbc-world-boxing-council': 'https://commons.wikimedia.org/wiki/Special:FilePath/WBC_logo.svg',
-  'wba-world-boxing-association': 'https://en.wikipedia.org/wiki/Special:FilePath/World_Boxing_Association_logo.png',
-  'ibf-international-boxing-federation': 'https://en.wikipedia.org/wiki/Special:FilePath/International_Boxing_Federation_logo.png',
-  'wbo-world-boxing-organization': 'https://en.wikipedia.org/wiki/Special:FilePath/World_Boxing_Organization_logo.png',
+  // Football - from ESPN league logos
+  'cr-apertura-2026': 'https://a.espncdn.com/i/leaguelogos/soccer/500/2245.png',
+  'champions-league': 'https://a.espncdn.com/i/leaguelogos/soccer/500/2.png',
+  'concacaf-nations-league': 'https://a.espncdn.com/i/leaguelogos/soccer/500/2406.png',
+  'copa-oro': 'https://a.espncdn.com/i/leaguelogos/soccer/500/59.png',
+  'copa-america': 'https://a.espncdn.com/i/leaguelogos/soccer/500/83.png',
+  'eurocopa': 'https://a.espncdn.com/i/leaguelogos/soccer/500/74.png',
+  // Basketball
+  'nba-temporada-regular': 'https://a.espncdn.com/i/teamlogos/leagues/500/nba.png',
+  // Baseball
+  'mlb-temporada-regular': 'https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png',
+  // Tennis - ESPN sport icon
+  'australian-open': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-tennis.png&w=80&h=80',
+  'roland-garros': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-tennis.png&w=80&h=80',
+  'wimbledon': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-tennis.png&w=80&h=80',
+  'us-open': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-tennis.png&w=80&h=80',
+  'atp-masters': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-tennis.png&w=80&h=80',
+  'wta-masters': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-tennis.png&w=80&h=80',
+  // Golf - ESPN PGA Tour
+  'the-masters': 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/pgatour.png',
+  'ryder-cup': 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/pgatour.png',
+  // Cycling - ESPN sport icon
+  'tour-de-france': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-cycling.png&w=80&h=80',
+  'giro-d-italia': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-cycling.png&w=80&h=80',
+  'la-vuelta': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-cycling.png&w=80&h=80',
+  'uci-world-championships': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-cycling.png&w=80&h=80',
+  // MMA - ESPN UFC
+  'ufc-fight-night': 'https://a.espncdn.com/i/teamlogos/leagues/500/ufc.png',
+  'ufc-ppv-series': 'https://a.espncdn.com/i/teamlogos/leagues/500/ufc.png',
+  'ufc-championship-events': 'https://a.espncdn.com/i/teamlogos/leagues/500/ufc.png',
+  // Boxing - ESPN sport icon
+  'wbc-world-boxing-council': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-boxing.png&w=80&h=80',
+  'wba-world-boxing-association': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-boxing.png&w=80&h=80',
+  'ibf-international-boxing-federation': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-boxing.png&w=80&h=80',
+  'wbo-world-boxing-organization': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-boxing.png&w=80&h=80',
+  // F1
+  'f1-world-championship': 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/f1.png',
 };
 
-export async function getTournamentEvents(tournamentId: string, signal?: AbortSignal): Promise<SportsApiResult<NormalizedSportEvent[]>> {
+export async function getTournamentEvents(tournamentId: string, signal?: AbortSignal, dateRange?: string): Promise<SportsApiResult<NormalizedSportEvent[]>> {
   const espnEndpoint = ESPN_TOURNAMENT_MAP[tournamentId];
   
   if (espnEndpoint) {
     try {
-      const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/${espnEndpoint}/scoreboard`, { signal });
+      let url = `https://site.api.espn.com/apis/site/v2/sports/${espnEndpoint}/scoreboard`;
+      if (dateRange) url += `?dates=${dateRange}`;
+      const response = await fetch(url, { signal });
       const data = await response.json();
       
       const events: NormalizedSportEvent[] = (data.events || []).map((event: any) => {

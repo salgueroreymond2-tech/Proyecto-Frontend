@@ -565,6 +565,16 @@
       "token": "4460c3756bc0322ce56df01f89468e1dc9898922862a4401cbb0d04e74c2c7c3",
       "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
       "expiresAt": "2026-10-08T21:37:35.920Z"
+    },
+    {
+      "token": "29e114291b8b32b6228c3a9999838127c4c49ce7d82d06f920891724a23898ad",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-08T22:17:22.886Z"
+    },
+    {
+      "token": "60a23d5a05f79b0e07e342c4d8b89fe3f69feae58b9ed1e908382447f026fab2",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-09T00:09:36.282Z"
     }
   ],
   "memberships": [
@@ -3069,6 +3079,16 @@
       "status": "captured",
       "createdAt": "2026-10-01T22:04:30.951Z",
       "capturedAt": "2026-10-01T22:04:31.145Z"
+    },
+    {
+      "id": "SIM-7d3f4679-d9ba-40c9-99b6-ed7ee544fbc4",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "premier-league",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-02T00:10:17.354Z",
+      "capturedAt": "2026-10-02T00:10:17.385Z"
     }
   ]
 }

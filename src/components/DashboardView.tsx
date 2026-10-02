@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useTournament } from '../context/TournamentContext';
 import { TeamBadge } from './TeamBadge';
 import { getTeamById } from '../data/teams';
@@ -45,17 +46,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   const [activeEditingMatchId, setActiveEditingMatchId] = useState<string | null>(null);
 
-  const [newsEvents, setNewsEvents] = React.useState<any[]>([]);
-  const [isLoadingNews, setIsLoadingNews] = React.useState(true);
+  const { tournamentId } = useParams<{ tournamentId: string }>();
+  const [agendaEvents, setAgendaEvents] = React.useState<any[]>([]);
+  const [isLoadingAgenda, setIsLoadingAgenda] = React.useState(true);
 
   React.useEffect(() => {
-    async function loadNews() {
-      setIsLoadingNews(true);
+    async function loadAgenda() {
+      setIsLoadingAgenda(true);
       try {
         const { getSportEvents } = await import('../services/sportsApi');
-        const sportsIds = ['football', 'basketball', 'baseball'];
-        const results = await Promise.all(sportsIds.map((id) => getSportEvents(id)));
-        let allEvents = results.flatMap(r => r.data || []);
+        const { findTournamentSummary } = await import('../app/App');
+        
+        const tournament = tournamentId ? findTournamentSummary(tournamentId) : null;
+        const sportId = tournament?.sportId || 'football';
+        
+        const result = await getSportEvents(sportId);
+        let allEvents = result.data || [];
         
         if (currentUser?.favoriteTeamId && currentUser.favoriteTeamId !== 'sap') {
           const keyword = currentUser.favoriteTeamId.toLowerCase();
@@ -70,15 +76,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           allEvents = [...favoriteEvents, ...otherEvents];
         }
 
-        setNewsEvents(allEvents.slice(0, 5));
+        setAgendaEvents(allEvents.slice(0, 5));
       } catch (err) {
-        console.error('Error fetching dashboard news', err);
+        console.error('Error fetching dashboard agenda', err);
       } finally {
-        setIsLoadingNews(false);
+        setIsLoadingAgenda(false);
       }
     }
-    loadNews();
-  }, [currentUser]);
+    loadAgenda();
+  }, [currentUser, tournamentId]);
 
   // Filter matches for the selected round
   const roundMatches = matches.filter((m) => m.round === selectedRound);
@@ -215,12 +221,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </h2>
         </div>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {isLoadingNews ? (
+          {isLoadingAgenda ? (
             [1, 2, 3].map((item) => (
               <div key={item} className="h-28 animate-pulse rounded-xl border border-white/10 bg-black/25" />
             ))
-          ) : newsEvents.length > 0 ? (
-            newsEvents.map((event) => (
+          ) : agendaEvents.length > 0 ? (
+            agendaEvents.map((event) => (
               <a
                 key={event.id}
                 href={event.sourceUrl}
@@ -769,27 +775,31 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <h2 className="font-heading text-xl font-black text-white">Agenda</h2>
             </div>
             <div className="mt-3 space-y-2">
-              {nextMatches.map((match) => {
-                const home = getTeamById(match.homeTeamId);
-                const away = getTeamById(match.awayTeamId);
-                return (
+              {isLoadingAgenda ? (
+                <div className="h-16 animate-pulse rounded-lg bg-black/25 w-full" />
+              ) : agendaEvents.length > 0 ? (
+                agendaEvents.slice(0, 5).map((match) => (
                   <button
                     key={match.id}
-                    onClick={() => setSelectedRound(match.round)}
                     className="w-full rounded-lg bg-black/25 px-3 py-2 text-left hover:bg-black/40 transition-colors"
                   >
                     <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
-                      <span>J{match.round} · {match.date}</span>
-                      <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {match.time}</span>
+                      <span>{new Date(match.startsAt).toLocaleDateString()}</span>
+                      <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {new Date(match.startsAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                     </div>
-                    <p className="mt-1 flex items-center gap-2 truncate text-sm font-heading font-bold text-white">
-                      <TeamBadge team={home} size="xs" /> {home.shortName}
-                      <span className="text-[#d5c0d7]">vs</span>
-                      <TeamBadge team={away} size="xs" /> {away.shortName}
-                    </p>
+                    <div className="mt-1 flex items-center justify-between">
+                      <p className="flex items-center gap-2 truncate text-sm font-heading font-bold text-white">
+                        {match.homeTeam}
+                        <span className="text-[#d5c0d7]">vs</span>
+                        {match.awayTeam}
+                      </p>
+                      {match.score && <span className="font-mono text-xs text-[#EA7301]">{match.score}</span>}
+                    </div>
                   </button>
-                );
-              })}
+                ))
+              ) : (
+                <p className="text-sm text-[#d5c0d7]">No hay eventos proximos</p>
+              )}
             </div>
           </section>
         </aside>

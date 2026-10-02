@@ -156,6 +156,9 @@ const ESPN_TOURNAMENT_MAP: Record<string, string> = {
   'europa-league': 'soccer/uefa.europa',
   'nations-league': 'soccer/uefa.nations',
   'concacaf-nations-league': 'soccer/concacaf.nations.league',
+  'copa-oro': 'soccer/concacaf.gold',
+  'copa-america': 'soccer/conmebol.america',
+  'eurocopa': 'soccer/uefa.euro',
   'cr-apertura-2026': 'soccer/crc.1',
   'f1-world-championship': 'racing/f1',
   'nba-temporada-regular': 'basketball/nba',
@@ -182,6 +185,7 @@ const ESPN_TOURNAMENT_MAP: Record<string, string> = {
   'ryder-cup': 'golf/pga',
   'tour-de-france': 'cycling/tour',
   'giro-d-italia': 'cycling/giro',
+  'la-vuelta': 'cycling/vuelta',
   'vuelta-a-espana': 'cycling/vuelta',
 };
 

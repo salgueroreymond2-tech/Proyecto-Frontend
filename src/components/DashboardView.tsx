@@ -51,40 +51,33 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [isLoadingAgenda, setIsLoadingAgenda] = React.useState(true);
 
   React.useEffect(() => {
+    const controller = new AbortController();
+
     async function loadAgenda() {
       setIsLoadingAgenda(true);
       try {
-        const { getSportEvents } = await import('../services/sportsApi');
-        const { findTournamentSummary } = await import('../app/App');
-        
-        const tournament = tournamentId ? findTournamentSummary(tournamentId) : null;
-        const sportId = tournament?.sportId || 'football';
-        
-        const result = await getSportEvents(sportId);
-        let allEvents = result.data || [];
-        
-        if (currentUser?.favoriteTeamId && currentUser.favoriteTeamId !== 'sap') {
-          const keyword = currentUser.favoriteTeamId.toLowerCase();
-          const favoriteEvents = allEvents.filter(e => 
-            e.title.toLowerCase().includes(keyword) || 
-            e.league.toLowerCase().includes(keyword)
-          );
-          const otherEvents = allEvents.filter(e => 
-            !e.title.toLowerCase().includes(keyword) && 
-            !e.league.toLowerCase().includes(keyword)
-          );
-          allEvents = [...favoriteEvents, ...otherEvents];
+        if (!tournamentId) {
+          setAgendaEvents([]);
+          return;
         }
 
-        setAgendaEvents(allEvents.slice(0, 5));
+        const { getTournamentEvents } = await import('../services/sportsApi');
+        const result = await getTournamentEvents(tournamentId, controller.signal);
+        if (!controller.signal.aborted) {
+          setAgendaEvents(result.provider === 'espn' ? result.data.slice(0, 5) : []);
+        }
       } catch (err) {
-        console.error('Error fetching dashboard agenda', err);
+        if (!controller.signal.aborted) {
+          console.error('Error fetching dashboard agenda', err);
+          setAgendaEvents([]);
+        }
       } finally {
-        setIsLoadingAgenda(false);
+        if (!controller.signal.aborted) setIsLoadingAgenda(false);
       }
     }
     loadAgenda();
-  }, [currentUser, tournamentId]);
+    return () => controller.abort();
+  }, [tournamentId]);
 
   // Filter matches for the selected round
   const roundMatches = matches.filter((m) => m.round === selectedRound);
@@ -788,10 +781,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {new Date(match.startsAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                     </div>
                     <div className="mt-1 flex items-center justify-between">
-                      <p className="flex items-center gap-2 truncate text-sm font-heading font-bold text-white">
-                        {match.homeTeam}
-                        <span className="text-[#d5c0d7]">vs</span>
-                        {match.awayTeam}
+                      <p className="flex min-w-0 items-center gap-2 text-sm font-heading font-bold text-white">
+                        <span className="flex min-w-0 items-center gap-1.5">
+                          {match.homeLogo && <img src={match.homeLogo} alt="" className="h-5 w-5 shrink-0 object-contain" />}
+                          <span className="truncate">{match.homeTeam}</span>
+                        </span>
+                        <span className="shrink-0 text-[#d5c0d7]">vs</span>
+                        <span className="flex min-w-0 items-center gap-1.5">
+                          {match.awayLogo && <img src={match.awayLogo} alt="" className="h-5 w-5 shrink-0 object-contain" />}
+                          <span className="truncate">{match.awayTeam}</span>
+                        </span>
                       </p>
                       {match.score && <span className="font-mono text-xs text-[#EA7301]">{match.score}</span>}
                     </div>

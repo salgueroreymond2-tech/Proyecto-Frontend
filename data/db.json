@@ -575,6 +575,21 @@
       "token": "60a23d5a05f79b0e07e342c4d8b89fe3f69feae58b9ed1e908382447f026fab2",
       "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
       "expiresAt": "2026-10-09T00:09:36.282Z"
+    },
+    {
+      "token": "b35236124bf47e08bf81a2bda35eca74dc3fd63847fd6132468b86c7b9bcfcbe",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-09T00:46:48.548Z"
+    },
+    {
+      "token": "c6ad47f9fdc725f2a6420548e1f6e41b0510a9bce1af16e0af5297f56d1e365a",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-09T00:47:46.177Z"
+    },
+    {
+      "token": "685074a6afc9e9a985f09c74c5a1efe5d3f17a94d734cc6fa1f95276be124606",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-09T14:13:39.965Z"
     }
   ],
   "memberships": [
@@ -3089,6 +3104,46 @@
       "status": "captured",
       "createdAt": "2026-10-02T00:10:17.354Z",
       "capturedAt": "2026-10-02T00:10:17.385Z"
+    },
+    {
+      "id": "SIM-f7b85ea9-ecf0-4b35-9cec-54ad4b879503",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "premier-league",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-02T00:48:17.331Z",
+      "capturedAt": "2026-10-02T00:48:17.371Z"
+    },
+    {
+      "id": "SIM-4f5cc136-e58b-45de-9fc7-4e89ddbc3ad0",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "laliga",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-02T14:21:27.098Z",
+      "capturedAt": "2026-10-02T14:21:27.155Z"
+    },
+    {
+      "id": "SIM-db1a493c-35e7-41bd-9c32-f8ac3e4720db",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "serie-a",
+      "amount": "$2.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-02T14:33:33.325Z",
+      "capturedAt": "2026-10-02T14:33:33.386Z"
+    },
+    {
+      "id": "SIM-ff3a4063-c2c6-4a98-9f4d-00fcadbb4bf7",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "pga-tour",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-02T14:34:14.363Z",
+      "capturedAt": "2026-10-02T14:34:14.406Z"
     }
   ]
 }

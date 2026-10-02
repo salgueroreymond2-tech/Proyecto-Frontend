@@ -926,6 +926,7 @@ function MembershipCalendarDashboard() {
   const [items, setItems] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [visibleMonth, setVisibleMonth] = useState(() => new Date());
+  const [selectedSport, setSelectedSport] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -992,6 +993,7 @@ function MembershipCalendarDashboard() {
   const calendarDays = getCalendarGridDays(visibleMonth);
   const currentMonth = visibleMonth.getMonth();
   const eventsByDate = items.reduce<Record<string, typeof items>>((map, item) => {
+    if (selectedSport && item.tournament.sportName !== selectedSport) return map;
     const key = getDateKey(item.date);
     map[key] = [...(map[key] || []), item];
     return map;
@@ -1016,14 +1018,21 @@ function MembershipCalendarDashboard() {
           <p className="text-xs font-mono text-[#EA7301]">DEPORTES ACTIVOS</p>
           <h2 className="mt-1 font-heading text-2xl font-black text-white">Deportes disponibles</h2>
           <div className="mt-4 space-y-3">
-            {paidSports.map((sportName) => (
-              <div key={sportName} className="rounded-lg border border-white/10 bg-black/25 px-4 py-3">
-                <p className="font-heading font-bold text-white">{sportName}</p>
-                <p className="text-xs text-[#d5c0d7]">
-                  {paidTournaments.filter((item) => item.sportName === sportName).length} torneo(s) con membresia
-                </p>
-              </div>
-            ))}
+            {paidSports.map((sportName) => {
+              const isSelected = selectedSport === sportName;
+              return (
+                <button
+                  key={sportName}
+                  onClick={() => setSelectedSport(isSelected ? null : sportName)}
+                  className={`w-full text-left transition-colors rounded-lg border px-4 py-3 ${isSelected ? 'border-[#EA7301] bg-[#EA7301]/10' : 'border-white/10 bg-black/25 hover:border-white/30'}`}
+                >
+                  <p className={`font-heading font-bold ${isSelected ? 'text-[#EA7301]' : 'text-white'}`}>{sportName}</p>
+                  <p className={`text-xs ${isSelected ? 'text-[#EA7301]/70' : 'text-[#d5c0d7]'}`}>
+                    {paidTournaments.filter((item) => item.sportName === sportName).length} torneo(s) con membresia
+                  </p>
+                </button>
+              );
+            })}
           </div>
         </div>
         <div className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
@@ -2129,6 +2138,99 @@ function SportsCarousel({ compact = false }: { compact?: boolean }) {
   );
 }
 
+function TournamentCalendarModal({ isOpen, onClose, tournamentId, tournamentName }: { isOpen: boolean, onClose: () => void, tournamentId: string, tournamentName: string }) {
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    let mounted = true;
+    async function fetchCalendar() {
+      try {
+        setLoading(true);
+        const { getTournamentEvents } = await import('../services/sportsApi');
+        const year = new Date().getFullYear();
+        const result = await getTournamentEvents(tournamentId, undefined, year.toString());
+        if (mounted) {
+           setEvents(result.data || []);
+        }
+      } catch (err) {
+        if (mounted) setEvents([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+    fetchCalendar();
+    return () => { mounted = false; };
+  }, [tournamentId, isOpen]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in">
+      <div className="relative w-full max-w-3xl overflow-hidden rounded-2xl border border-[#EA7301]/30 bg-[#19101c] shadow-2xl flex flex-col max-h-[85vh]">
+        <div className="flex items-center justify-between border-b border-white/10 p-5 bg-black/20">
+          <div>
+            <p className="text-xs font-mono text-[#EA7301]">CALENDARIO OFICIAL</p>
+            <h2 className="font-heading text-2xl font-black text-white">{tournamentName}</h2>
+          </div>
+          <button onClick={onClose} className="rounded-full p-2 text-[#d5c0d7] hover:bg-white/10 hover:text-white transition-colors">
+            <span className="material-symbols-rounded block text-2xl">close</span>
+          </button>
+        </div>
+        
+        <div className="p-5 overflow-y-auto flex-1 custom-scrollbar space-y-3">
+          {loading ? (
+             <div className="flex flex-col items-center justify-center py-12">
+               <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#EA7301] border-t-transparent"></div>
+               <p className="mt-4 font-mono text-sm text-[#d5c0d7]">Cargando calendario...</p>
+             </div>
+          ) : events.length > 0 ? (
+             <div className="grid gap-3 sm:grid-cols-2">
+               {events.map((event, idx) => {
+                 const isF1 = !event.homeTeam;
+                 return (
+                   <div key={event.id || idx} className="flex flex-col p-4 rounded-xl bg-[#221824] border border-white/10 hover:border-[#EA7301]/50 transition-colors">
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-xs text-[#EA7301] font-mono">{event.startsAt ? new Date(event.startsAt).toLocaleDateString() : 'Pendiente'}</span>
+                        <span className="text-[10px] uppercase font-bold text-white/40 bg-white/5 px-2 py-1 rounded">{event.status || 'Programado'}</span>
+                      </div>
+                      
+                      {isF1 ? (
+                        <span className="text-lg font-bold text-white truncate">{event.title}</span>
+                      ) : (
+                        <div className="flex flex-col gap-3 mt-1">
+                          <div className="flex items-center gap-3">
+                            {event.homeLogo ? <img src={event.homeLogo} alt="" className="w-8 h-8 object-contain bg-white/10 rounded-full p-1 shrink-0" /> : <div className="w-8 h-8 rounded-full bg-white/10 shrink-0" />}
+                            <span className="text-sm font-bold text-white truncate flex-1">{event.homeTeam}</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            {event.awayLogo ? <img src={event.awayLogo} alt="" className="w-8 h-8 object-contain bg-white/10 rounded-full p-1 shrink-0" /> : <div className="w-8 h-8 rounded-full bg-white/10 shrink-0" />}
+                            <span className="text-sm font-bold text-white truncate flex-1">{event.awayTeam}</span>
+                          </div>
+                        </div>
+                      )}
+                      {event.score && (
+                        <div className="mt-3 pt-3 border-t border-white/5 flex justify-center">
+                          <span className="text-sm font-mono font-black text-[#00f0ff] tracking-widest">{formatSportResult(event)}</span>
+                        </div>
+                      )}
+                   </div>
+                 );
+               })}
+             </div>
+          ) : (
+             <div className="text-center py-12">
+               <CalendarDays className="w-12 h-12 text-white/20 mx-auto mb-4" />
+               <p className="text-[#d5c0d7]">No se encontraron eventos para esta temporada.</p>
+             </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function InfoCard({ icon, title, text, className = '' }: { icon: React.ReactNode; title: string; text: string; className?: string }) {
   return (
     <div className={`rounded-xl border border-white/10 bg-[#19101c] p-5 ${className}`}>
@@ -2811,6 +2913,7 @@ function TournamentDashboard() {
   const [isCompetitorsExpanded, setIsCompetitorsExpanded] = useState(false);
   const [isTableExpanded, setIsTableExpanded] = useState(false);
   const [selectedFavoriteTeam, setSelectedFavoriteTeam] = useState<string | null>(null);
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
 
   useEffect(() => {
     setActiveGroupIndex(0);
@@ -3270,10 +3373,24 @@ function TournamentDashboard() {
       )}
 
       <section className="grid md:grid-cols-3 gap-4">
-        <InfoCard className="kas-dark-card" icon={<CalendarDays />} title="Calendario" text={isCostaRica ? 'Jornada activa disponible.' : 'Fixture conectado al deporte y listo para carga.'} />
+        <button 
+          onClick={() => setIsCalendarModalOpen(true)}
+          className="rounded-xl border border-white/10 bg-[#19101c] p-5 kas-dark-card hover:border-[#EA7301] transition-colors text-left flex flex-col group"
+        >
+          <div className="text-[#EA7301] group-hover:scale-110 transition-transform"><CalendarDays /></div>
+          <h3 className="mt-4 font-heading text-xl font-black text-white">Calendario Oficial</h3>
+          <p className="text-sm text-white/65 mt-1">Ver fixture completo y fechas.</p>
+        </button>
         <InfoCard className="kas-dark-card" icon={<BarChart3 />} title="Ranking KAS" text={`Prestigio y posiciones exclusivas para ${tournament.name}.`} />
         <InfoCard className="kas-dark-card" icon={<Shield />} title="Membresia activa" text="Acceso pay-per-tournament para competir dentro de este torneo." />
       </section>
+
+      <TournamentCalendarModal 
+         isOpen={isCalendarModalOpen} 
+         onClose={() => setIsCalendarModalOpen(false)} 
+         tournamentId={tournament.id} 
+         tournamentName={tournament.name} 
+      />
 
       <section className="grid lg:grid-cols-[0.85fr_1.15fr] gap-4">
         <div className="rounded-2xl border border-[#3c313e] bg-[#19101c] p-5">

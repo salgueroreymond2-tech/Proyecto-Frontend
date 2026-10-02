@@ -788,9 +788,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               ) : (
                 <>
                   {agendaEvents.slice(0, 5).map((match) => (
-                    <button
+                    <div
                       key={match.id}
-                      className="w-full rounded-lg bg-black/25 px-3 py-2 text-left hover:bg-black/40 transition-colors"
+                      className="w-full rounded-lg bg-black/25 px-3 py-2 text-left"
                     >
                       <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
                         <span>{match.status} {match.startsAt && `· ${new Date(match.startsAt).toLocaleDateString()}`}</span>
@@ -810,15 +810,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         </p>
                         {match.score && <span className="font-mono text-xs text-[#EA7301]">{match.score}</span>}
                       </div>
-                    </button>
+                    </div>
                   ))}
                   {nextMatches.slice(0, Math.max(0, 5 - agendaEvents.length)).map((match) => {
                     const home = getTeamById(match.homeTeamId);
                     const away = getTeamById(match.awayTeamId);
                     return (
-                      <button
+                      <div
                         key={match.id}
-                        className="w-full rounded-lg bg-black/25 px-3 py-2 text-left hover:bg-black/40 transition-colors"
+                        className="w-full rounded-lg bg-black/25 px-3 py-2 text-left"
                       >
                         <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#d5c0d7]">
                           <span>J{match.round} · {match.date}</span>
@@ -837,7 +837,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             </span>
                           </p>
                         </div>
-                      </button>
+                      </div>
                     );
                   })}
                 </>

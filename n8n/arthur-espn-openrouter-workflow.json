@@ -1,0 +1,196 @@
+{
+  "name": "Arthur AI Agent - ESPN & OpenRouter",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "arthur-chat",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "id": "09e7a71b-7240-43dc-b9cf-f66e8caf9e6a",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ],
+      "webhookId": "arthur-chat-webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.message }}",
+        "options": {
+          "systemMessage": "Eres Sir Arthur, asesor experto de la Quiniela KAS. Responde SIEMPRE en español, BREVE y DIRECTO. Maximo 5-6 lineas. Sin introducciones largas. Ve directo al dato.\n\nFORMATO DE RESPUESTA:\n- 1 linea por partido: [emoji] **Local vs Visitante** | Marcador | Estado\n- Estado: NS=Por jugar, 1H/2H=En vivo, FT=Finalizado, HT=Medio tiempo\n- Si te piden noticias, resume los titulares principales.\n- 1 frase corta de motivacion al final si aplica.\n- NUNCA inventes resultados ni noticias.\n\nPara consultar datos, usa la herramienta 'consultar_espn_api' y pasale la URL correcta. Estas son las rutas EXACTAS (slugs) de ESPN que funcionan en nuestro marcador:\n\n**Fútbol:**\n- cr-apertura-2026 -> soccer/crc.1\n- champions-league -> soccer/uefa.champions\n- premier-league -> soccer/eng.1\n- laliga -> soccer/esp.1\n- serie-a -> soccer/ita.1\n- bundesliga -> soccer/ger.1\n- ligue-1 -> soccer/fra.1\n- europa-league -> soccer/uefa.europa\n- concacaf-nations-league -> soccer/concacaf.nations.league\n- copa-oro -> soccer/concacaf.gold\n- copa-america -> soccer/conmebol.america\n- eurocopa -> soccer/uefa.euro\n\n**Otros Deportes:**\n- f1-world-championship -> racing/f1\n- nba -> basketball/nba\n- mlb -> baseball/mlb\n- nfl -> football/nfl\n- atp / wimbledon / us-open / roland-garros -> tennis/atp\n- wta -> tennis/wta\n- ufc -> mma/ufc\n- boxing -> boxing/boxing\n- pga-tour / masters -> golf/pga\n- tour-de-france / giro / vuelta -> cycling/tour\n\nLas URLs COMPLETAS de ESPN para la herramienta son:\n- Marcadores (Partidos/Agenda): https://site.api.espn.com/apis/site/v2/sports/[LIGA]/scoreboard\n- Si el usuario te pregunta por fechas específicas (como 'ayer', 'mañana', o 'hace dos días'), DEBES agregarle el parámetro ?dates=YYYYMMDD. Ej: si hoy es 2 de octubre de 2026 y te preguntan por ayer: https://site.api.espn.com/apis/site/v2/sports/[LIGA]/scoreboard?dates=20261001\n- Noticias: https://site.api.espn.com/apis/site/v2/sports/[LIGA]/news?lang=es\n\nSi un usuario te pregunta por un equipo específico (ej. \"Saprissa ayer\"), debes inferir la liga (Costa Rica = soccer/crc.1), calcular la fecha (ayer), descargar el scoreboard de esa liga en esa fecha, y buscar manualmente en el JSON los eventos que mencionen a ese equipo para darle la respuesta correcta."
+        }
+      },
+      "id": "b2f7cb9d-4a2c-4291-8b2d-653803df88ed",
+      "name": "AI Agent Arthur",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        380,
+        520
+      ],
+      "id": "8fcd3683-2964-411b-bf60-f2ada117f6b5",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "TlcpSIKl9RWMhhY8",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').item.json.body.sessionId || 'session_default' }}",
+        "contextWindowLength": 10
+      },
+      "id": "1c517f56-d125-4c60-9a27-235ffbae0b67",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        580,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "USA ESTA HERRAMIENTA para consultar partidos, marcadores o noticias en la API oficial de ESPN. Pasale la URL completa (ej. https://site.api.espn.com/apis/site/v2/sports/soccer/crc.1/scoreboard o con ?dates=YYYYMMDD). SIEMPRE DEVUELVE JSON.",
+        "url": "={{ $fromAI('url', 'URL completa de la API de ESPN (ej. https://site.api.espn.com/apis/site/v2/sports/soccer/crc.1/scoreboard)', 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        496,
+        540
+      ],
+      "id": "428354ee-e26f-46ff-8333-de535bea4ef2",
+      "name": "consultar_espn_api"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  reply: $json.output,\n  sessionId: $('Webhook').item.json.body.sessionId || 'session_default',\n  status: 'success'\n}) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "b3ae4df3-178d-4e3d-86a5-509203faff13",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        820,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Arthur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Arthur": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Arthur",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent Arthur",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "consultar_espn_api": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent Arthur",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1,
+    "availableInMCP": false
+  },
+  "versionId": "0ed96273-fb85-44da-b398-928c1d667b4c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "35d97650703e2a576ace3967bc9b6ffc1b1369cad53c058fb954541742fd5f3a"
+  },
+  "id": "W92foJ51SEMhkJ4d",
+  "tags": []
+}

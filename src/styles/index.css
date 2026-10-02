@@ -76,290 +76,195 @@
   }
 }
 
+/* --- PREMIUM LIGHT MODE REDESIGN --- */
 [data-color-mode="light"] {
-  color: #341439;
-  background: #f9f9f9;
-}
-
-[data-color-mode="light"] header,
-[data-color-mode="light"] footer,
-[data-color-mode="light"] nav {
-  background-color: #19001f !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
-  color: #ffffff !important;
-  box-shadow: 0 12px 32px -8px rgba(52, 20, 57, 0.28);
-  backdrop-filter: blur(12px);
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(234, 115, 1, 0.08), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(52, 20, 57, 0.08), transparent 25%),
+    #f4f6f8;
+  color: #1e293b;
 }
 
 [data-color-mode="light"] main {
-  color: #341439;
-  background: #f9f9f9;
+  background: transparent;
+  color: #1e293b;
 }
 
-[data-color-mode="light"] .kas-sport-hero {
-  background:
-    linear-gradient(90deg, rgba(25, 0, 31, 0.98) 0%, rgba(52, 20, 57, 0.96) 48%, rgba(10, 34, 63, 0.84) 100%),
-    radial-gradient(circle at 74% 22%, rgba(234, 115, 1, 0.16), transparent 30%),
-    #341439 !important;
-  color: #ffffff;
+/* Glassmorphism for Header & Nav */
+[data-color-mode="light"] header,
+[data-color-mode="light"] nav,
+[data-color-mode="light"] footer,
+[data-color-mode="light"] aside {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(24px) saturate(1.5) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03) !important;
+  color: #0f172a !important;
+}
+[data-color-mode="light"] header svg,
+[data-color-mode="light"] nav svg {
+  color: #475569;
+}
+[data-color-mode="light"] header [class*="text-[#EA7301]"],
+[data-color-mode="light"] nav [class*="text-[#EA7301]"] {
+  color: #ea7301 !important;
+}
+[data-color-mode="light"] header button:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
 }
 
-[data-color-mode="light"] .kas-sport-hero h1,
-[data-color-mode="light"] .kas-sport-hero p {
-  color: #ffffff !important;
-  text-shadow: none;
-}
-
-[data-color-mode="light"] .kas-sport-hero [class*="text-[#F7F7F7]"] {
-  color: rgba(255, 255, 255, 0.78) !important;
-}
-
-[data-color-mode="light"] .kas-sport-hero > div > div:first-child p:first-child,
-[data-color-mode="light"] [class*="text-[#EA7301]"] {
-  color: #EA7301 !important;
-}
-
+/* Premium Cards */
 [data-color-mode="light"] [class*="bg-[#050505]"],
 [data-color-mode="light"] [class*="bg-[#140b16]"],
 [data-color-mode="light"] [class*="bg-[#19101c]"],
-[data-color-mode="light"] [class*="bg-[#1e1321]"],
 [data-color-mode="light"] [class*="bg-[#221824]"],
 [data-color-mode="light"] [class*="bg-[#261c28]"],
-[data-color-mode="light"] [class*="bg-[#2a1b2d]"] {
-  background-color: #ffffff !important;
-  box-shadow: 0 12px 32px -8px rgba(52, 20, 57, 0.16);
+[data-color-mode="light"] [class*="bg-[#2a1b2d]"],
+[data-color-mode="light"] .kas-dark-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.02) !important;
+  color: #0f172a !important;
 }
 
+/* Sub-cards / Internal items */
 [data-color-mode="light"] [class*="bg-black/25"],
 [data-color-mode="light"] [class*="bg-black/30"],
+[data-color-mode="light"] [class*="bg-black/40"],
 [data-color-mode="light"] [class*="bg-white/5"],
 [data-color-mode="light"] [class*="bg-white/10"] {
-  background-color: #f3f3f3 !important;
-  border-color: #d0c3cc !important;
+  background: #f8fafc !important;
+  border: 1px solid rgba(15, 23, 42, 0.1) !important;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.01) !important;
+}
+[data-color-mode="light"] [class*="hover:bg-black/40"]:hover {
+  background: #f1f5f9 !important;
 }
 
-[data-color-mode="light"] [class*="bg-[#EA7301]"],
-[data-color-mode="light"] [class*="bg-[#bf00ff]"],
-[data-color-mode="light"] [class*="bg-[#00f0ff]"] {
-  box-shadow: none;
+/* Inputs & Forms */
+[data-color-mode="light"] input, 
+[data-color-mode="light"] textarea,
+[data-color-mode="light"] select {
+  background: #f8fafc !important;
+  border: 1px solid rgba(15, 23, 42, 0.2) !important;
+  border-radius: 10px !important;
+  color: #1e293b !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+}
+[data-color-mode="light"] input:focus,
+[data-color-mode="light"] textarea:focus {
+  background: #ffffff !important;
+  border-color: rgba(234, 115, 1, 0.4) !important;
+  box-shadow: 0 0 0 4px rgba(234, 115, 1, 0.1), inset 0 2px 4px rgba(0,0,0,0.01) !important;
+  outline: none !important;
+}
+[data-color-mode="light"] input::placeholder {
+  color: #94a3b8 !important;
 }
 
-[data-color-mode="light"] .kas-dark-card {
-  background-color: #19101c !important;
-  border-color: rgba(255, 255, 255, 0.14) !important;
+/* Primary Buttons */
+[data-color-mode="light"] [class*="bg-[#EA7301]"] {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
   color: #ffffff !important;
-  box-shadow: 0 18px 38px rgba(20, 11, 22, 0.16);
+  border: none !important;
+  box-shadow: 0 6px 16px -4px rgba(234, 115, 1, 0.4), inset 0 1px 1px rgba(255,255,255,0.2) !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+[data-color-mode="light"] [class*="bg-[#EA7301]"]:hover {
+  box-shadow: 0 8px 20px -4px rgba(234, 115, 1, 0.5), inset 0 1px 1px rgba(255,255,255,0.3) !important;
+  transform: translateY(-1px);
 }
 
-[data-color-mode="light"] .kas-dark-card h3,
-[data-color-mode="light"] .kas-dark-card p,
-[data-color-mode="light"] .kas-dark-card span {
-  color: #ffffff !important;
+/* Secondary Buttons */
+[data-color-mode="light"] button[class*="bg-white"],
+[data-color-mode="light"] a[class*="bg-white"] {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(15, 23, 42, 0.15) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
+}
+[data-color-mode="light"] button[class*="bg-white"]:hover {
+  background: #f8fafc !important;
 }
 
-[data-color-mode="light"] .kas-dark-card p,
-[data-color-mode="light"] .kas-dark-card span {
-  color: rgba(255, 255, 255, 0.78) !important;
-}
-
+/* Text Colors */
 [data-color-mode="light"] [class*="text-white"],
 [data-color-mode="light"] [class*="text-[#eeddee]"],
 [data-color-mode="light"] [class*="text-[#d5c0d7]"] {
-  color: #341439 !important;
+  color: #334155 !important;
 }
-
+[data-color-mode="light"] h1, 
+[data-color-mode="light"] h2, 
+[data-color-mode="light"] h3,
+[data-color-mode="light"] h4,
+[data-color-mode="light"] .font-black {
+  color: #0f172a !important;
+}
 [data-color-mode="light"] [class*="text-white/"],
 [data-color-mode="light"] [class*="text-[#F7F7F7]"] {
-  color: #6b5e70 !important;
+  color: #64748b !important;
+}
+[data-color-mode="light"] [class*="text-[#EA7301]"] {
+  color: #ea580c !important;
 }
 
+/* Borders */
 [data-color-mode="light"] [class*="border-[#3c313e]"],
-[data-color-mode="light"] [class*="border-white/10"],
-[data-color-mode="light"] [class*="border-white/15"],
-[data-color-mode="light"] [class*="border-white/20"] {
-  border-color: #d0c3cc !important;
+[data-color-mode="light"] [class*="border-white/"] {
+  border-color: rgba(0, 0, 0, 0.08) !important;
 }
 
-[data-color-mode="light"] .kas-login-bg::before {
-  background:
-    linear-gradient(90deg, rgba(251, 250, 248, 0.94), rgba(241, 238, 242, 0.72)),
-    radial-gradient(circle at 76% 28%, rgba(234, 115, 1, 0.12), transparent 28%),
-    radial-gradient(circle at 36% 60%, rgba(52, 20, 57, 0.14), transparent 34%);
-}
-
+/* Hero Section / Special Sections */
+[data-color-mode="light"] .kas-sport-hero,
 [data-color-mode="light"] .kas-slide-visual {
-  color: white;
-  box-shadow: none;
+  background: 
+    linear-gradient(90deg, rgba(255,255,255, 1) 0%, rgba(255,255,255, 0.85) 35%, transparent 75%),
+    linear-gradient(0deg, rgba(255,255,255, 0.9) 0%, rgba(255,255,255, 0) 35%),
+    var(--sport-image, none),
+    #ffffff !important;
+  background-position: center !important;
+  background-size: cover !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05) !important;
 }
-
-[data-color-mode="light"] .kas-slide-visual [class*="text-white"] {
-  color: white !important;
-}
-
-[data-color-mode="light"] .kas-slide-visual p,
-[data-color-mode="light"] .kas-slide-visual h2,
-[data-color-mode="light"] .kas-slide-visual span {
-  color: white !important;
-}
-
-[data-color-mode="light"] .kas-slide-visual a,
-[data-color-mode="light"] .kas-slide-visual button {
-  box-shadow: 0 4px 16px rgba(234, 115, 1, 0.22);
-}
-
-[data-color-mode="light"] .kas-slide-visual + div button {
-  background-color: #e2e2e2 !important;
-  color: #341439 !important;
-}
-
-[data-color-mode="light"] a[class*="bg-white"],
-[data-color-mode="light"] button[class*="bg-white"] {
-  background-color: #ffffff !important;
-  color: #19001f !important;
-  border-color: #d0c3cc !important;
-}
-
-[data-color-mode="light"] a[class*="bg-[#EA7301]"],
-[data-color-mode="light"] button[class*="bg-[#EA7301]"] {
-  background-color: #EA7301 !important;
-  color: #111111 !important;
-}
-
-[data-color-mode="light"] header button,
-[data-color-mode="light"] header span {
-  color: #ffffff !important;
-}
-
-[data-color-mode="light"] header [class*="text-[#EA7301]"],
-[data-color-mode="light"] header svg {
-  color: #EA7301 !important;
-}
-
-[data-color-mode="light"] header [class*="bg-white/5"] {
-  background-color: rgba(255, 255, 255, 0.08) !important;
-}
-
-[data-color-mode="light"] header [class*="border-white/15"] {
-  border-color: rgba(255, 255, 255, 0.16) !important;
-}
-
-[data-color-mode="light"] section[class*="bg-[#050505]"],
-[data-color-mode="light"] section[class*="bg-[#050505]/55"] {
-  background-color: #f9f9f9 !important;
-}
-
 [data-color-mode="light"] .kas-sport-hero [class*="bg-[#140b16]"],
-[data-color-mode="light"] .kas-sport-hero [class*="bg-[#19101c]"],
-[data-color-mode="light"] .kas-sport-hero [class*="bg-[#221824]"] {
-  background-color: rgba(25, 0, 31, 0.82) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  color: #ffffff !important;
+[data-color-mode="light"] .kas-sport-hero [class*="bg-[#19101c]"] {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.04) !important;
 }
 
-[data-color-mode="light"] .kas-sport-hero [class*="bg-[#140b16]"] span,
-[data-color-mode="light"] .kas-sport-hero [class*="bg-[#19101c]"] span,
-[data-color-mode="light"] .kas-sport-hero [class*="bg-[#221824]"] span {
-  color: #ffffff !important;
-}
-
-[data-color-mode="light"] input {
-  border: 0 !important;
-  outline: 0 !important;
-  background-color: transparent !important;
-  color: #140b16 !important;
-  box-shadow: none !important;
-}
-
-[data-color-mode="light"] input:focus {
-  outline: 0 !important;
-  box-shadow: none !important;
-}
-
-[data-color-mode="light"] input::placeholder {
-  color: rgba(52, 20, 57, 0.45);
-}
-
+/* Selection / Toggles */
 [data-color-mode="light"] label span[class*="bg-white"] {
-  background-color: #f7f4f7 !important;
-  border: 1px solid rgba(52, 20, 57, 0.16) !important;
-  color: #140b16 !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.72),
-    0 10px 24px rgba(20, 11, 22, 0.12);
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+  color: #334155 !important;
+}
+[data-color-mode="light"] label:focus-within span[class*="bg-white"],
+[data-color-mode="light"] label:hover span[class*="bg-white"] {
+  border-color: rgba(234, 115, 1, 0.4) !important;
+  box-shadow: 0 0 0 4px rgba(234, 115, 1, 0.08), 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
 }
 
-[data-color-mode="light"] label:focus-within span[class*="bg-white"] {
-  border-color: rgba(234, 115, 1, 0.62) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.78),
-    0 0 0 4px rgba(234, 115, 1, 0.14),
-    0 12px 28px rgba(20, 11, 22, 0.16);
+/* Badges / Pills */
+[data-color-mode="light"] [class*="bg-amber-400/15"] {
+  background: #fef3c7 !important;
+  color: #d97706 !important;
+  border: 1px solid rgba(217, 119, 6, 0.2) !important;
 }
-
-[data-color-mode="light"] main [class*="rounded"][class*="bg-white"] {
-  background-color: #ffffff !important;
-  border-color: #d8dbe0 !important;
+[data-color-mode="light"] [class*="bg-emerald-400/15"] {
+  background: #d1fae5 !important;
+  color: #059669 !important;
+  border: 1px solid rgba(5, 150, 105, 0.2) !important;
 }
-
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"],
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#1e1321]"],
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"],
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"],
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#2a1b2d]"] {
-  background-color: #ffffff !important;
-  border-color: #d8dbe0 !important;
-  color: #17191f !important;
-  box-shadow: 0 10px 26px rgba(25, 31, 40, 0.08);
-}
-
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] {
-  background-color: #ffffff !important;
-}
-
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"],
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#2a1b2d]"] {
-  background-color: #f7f8fa !important;
-}
-
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] h1,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] h2,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] h3,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] p,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] span,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] h1,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] h2,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] h3,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] p,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] span,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] h1,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] h2,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] h3,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] p,
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] span {
-  color: #17191f !important;
-}
-
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] [class*="text-[#d5c0d7]"],
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#19101c]"] [class*="text-white/"],
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] [class*="text-[#d5c0d7]"],
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#221824]"] [class*="text-white/"],
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] [class*="text-[#d5c0d7]"],
-[data-color-mode="light"] main [class*="rounded"][class*="bg-[#261c28]"] [class*="text-white/"] {
-  color: #5a6270 !important;
-}
-
-[data-color-mode="light"] main .kas-sport-hero [class*="rounded"][class*="bg-[#140b16]"],
-[data-color-mode="light"] main .kas-sport-hero [class*="rounded"][class*="bg-[#19101c]"],
-[data-color-mode="light"] main .kas-sport-hero [class*="rounded"][class*="bg-[#221824]"] {
-  background-color: rgba(25, 0, 31, 0.82) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  color: #ffffff !important;
-}
-
-[data-color-mode="light"] main .kas-sport-hero [class*="rounded"][class*="bg-[#140b16]"] span,
-[data-color-mode="light"] main .kas-sport-hero [class*="rounded"][class*="bg-[#19101c]"] span,
-[data-color-mode="light"] main .kas-sport-hero [class*="rounded"][class*="bg-[#221824]"] span {
-  color: #ffffff !important;
+[data-color-mode="light"] [class*="bg-[#EA7301]/15"] {
+  background: #ffedd5 !important;
+  color: #ea580c !important;
+  border: 1px solid rgba(234, 88, 12, 0.2) !important;
 }
 
 .kas-login-bg {

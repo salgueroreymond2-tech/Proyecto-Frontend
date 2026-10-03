@@ -690,6 +690,16 @@
       "token": "c56bec64e07372eb10d9f1b271ffacd535fc813a0bb8d2b0b93e9ea8a6ef3d69",
       "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
       "expiresAt": "2026-10-09T23:20:39.248Z"
+    },
+    {
+      "token": "cc5c1790a9552638413a4c7356f6cd4d989baac8126826e2a93f13500f9b06b8",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-10T01:23:12.155Z"
+    },
+    {
+      "token": "8627010b60c28c8f57c9c6772d28fd5d30a6e6c3f266c5536f7545b3221fdd36",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-10T01:45:55.645Z"
     }
   ],
   "memberships": [
@@ -3502,6 +3512,66 @@
       "status": "captured",
       "createdAt": "2026-10-03T01:11:08.539Z",
       "capturedAt": "2026-10-03T01:11:08.604Z"
+    },
+    {
+      "id": "SIM-822e22d8-6700-4a95-b2a3-4f3d1a13a754",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "australian-open",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-03T01:23:01.799Z",
+      "capturedAt": "2026-10-03T01:23:01.903Z"
+    },
+    {
+      "id": "SIM-ac1389e4-53b4-4b6a-a01f-b8486cd73770",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "nba-temporada-regular",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-03T01:23:19.288Z",
+      "capturedAt": "2026-10-03T01:23:19.330Z"
+    },
+    {
+      "id": "SIM-41a1202a-143d-4529-a9e9-2efb3bcb00fa",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "mlb-temporada-regular",
+      "amount": "$2.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-03T01:23:41.515Z",
+      "capturedAt": "2026-10-03T01:23:41.552Z"
+    },
+    {
+      "id": "SIM-e0b5a9ec-e4f6-41cb-911f-2ee28c2d89fb",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "mlb-temporada-regular",
+      "amount": "$2.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-03T01:24:40.372Z",
+      "capturedAt": "2026-10-03T01:24:40.396Z"
+    },
+    {
+      "id": "SIM-f4c6d9af-6d30-4c59-b593-6cab9bb1f00b",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "f1-world-championship",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-03T01:25:10.151Z",
+      "capturedAt": "2026-10-03T01:25:10.181Z"
+    },
+    {
+      "id": "SIM-8bf56fe0-f6f0-462f-8d6c-02d2811a0f58",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "f1-world-championship",
+      "amount": "$3.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-03T01:47:03.390Z",
+      "capturedAt": "2026-10-03T01:47:03.417Z"
     }
   ]
 }

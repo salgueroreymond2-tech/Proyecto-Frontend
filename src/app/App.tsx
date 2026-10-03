@@ -165,7 +165,7 @@ const sportDashboards = {
   },
   basketball: {
     eyebrow: 'BALONCESTO',
-    title: 'Dashboard NBA',
+    title: 'Temporada NBA',
     description: 'Quinielas de temporada regular, playoffs y finales con marcador y diferencia.',
     prediction: 'Ganador, marcador y diferencia',
     featured: 'NBA 2026-2027',
@@ -178,7 +178,7 @@ const sportDashboards = {
   },
   baseball: {
     eyebrow: 'BEISBOL',
-    title: 'Dashboard MLB',
+    title: 'Temporada MLB',
     description: 'Pronostica carreras, ganador y series completas de MLB.',
     prediction: 'Carreras y ganador',
     featured: 'MLB 2027',
@@ -191,7 +191,7 @@ const sportDashboards = {
   },
   'american-football': {
     eyebrow: 'FUTBOL AMERICANO',
-    title: 'Dashboard NFL',
+    title: 'Temporada NFL',
     description: 'Picks por semana, marcadores proyectados, playoffs y Super Bowl.',
     prediction: 'Puntuacion y ganador',
     featured: 'NFL 2026-2027',
@@ -204,7 +204,7 @@ const sportDashboards = {
   },
   f1: {
     eyebrow: 'FORMULA 1',
-    title: 'Dashboard F1',
+    title: 'Campeonato F1',
     description: 'Quinielas de Grand Prix con pole position, podio, vuelta rapida y campeonato.',
     prediction: 'Pole, podio, ganador y vuelta rapida',
     featured: 'Formula 1 World Championship 2027',
@@ -215,7 +215,7 @@ const sportDashboards = {
   },
   cycling: {
     eyebrow: 'CICLISMO',
-    title: 'Dashboard Ciclismo',
+    title: 'Grandes Vueltas',
     description: 'Pronostica ganadores de etapa, clasificacion general, maillots y equipos.',
     prediction: 'Ganador de etapa, general y maillots',
     featured: 'Grand Tours 2027',
@@ -229,7 +229,7 @@ const sportDashboards = {
   },
   golf: {
     eyebrow: 'GOLF',
-    title: 'Dashboard Golf',
+    title: 'Torneos de Golf',
     description: 'Pronostica lideres por ronda, ganador final, top 10 y matchups de golfistas.',
     prediction: 'Ganador, top 10 y lider por ronda',
     featured: 'PGA Tour 2027',
@@ -242,7 +242,7 @@ const sportDashboards = {
   },
   mma: {
     eyebrow: 'UFC / MMA',
-    title: 'Dashboard UFC',
+    title: 'Eventos de UFC',
     description: 'Carteleras por evento con ganador, metodo de victoria y round.',
     prediction: 'Ganador, metodo y round',
     featured: 'UFC Fight Night',
@@ -255,7 +255,7 @@ const sportDashboards = {
   },
   boxing: {
     eyebrow: 'BOXEO',
-    title: 'Dashboard Boxeo',
+    title: 'Carteleras de Boxeo',
     description: 'Quinielas de carteleras profesionales con campeones, estrellas P4P, metodo de victoria y round.',
     prediction: 'Ganador, metodo, round y decision',
     featured: 'Campeonatos mundiales 2027',
@@ -3672,12 +3672,38 @@ function SportPlaceholder() {
         <div className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
           <p className="text-xs font-mono text-[#EA7301]">{sport.id === 'f1' ? 'ESTRUCTURA' : 'PROXIMOS EVENTOS'}</p>
           {sport.id === 'f1' ? (
-            <div className="mt-4 rounded-xl bg-black/25 border border-white/10 px-4 py-4">
+            <details className="mt-4 rounded-xl bg-black/25 border border-white/10 group cursor-pointer overflow-hidden transition-all">
+              <summary className="px-4 py-4 list-none outline-none relative select-none flex flex-col justify-center [&::-webkit-details-marker]:hidden">
+                <div className="pr-10">
               <p className="font-heading text-xl font-black text-white">Los 24 Grand Prix viven dentro del torneo.</p>
               <p className="mt-2 text-sm text-[#d5c0d7]">
                 Entra a F1 World Championship para ver Bahrain, Monaco, Las Vegas, Abu Dhabi y el resto del calendario como dashboards internos.
               </p>
-            </div>
+                </div>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
+                  <ChevronDown className="w-5 h-5 text-white/50 group-open:rotate-180 transition-transform" aria-hidden="true" />
+                </div>
+              </summary>
+              <div className="px-2 pb-2 border-t border-white/10 max-h-64 overflow-y-auto">
+                <ul className="space-y-1 mt-2">
+                  {[
+                    'Bahrain Grand Prix', 'Saudi Arabian Grand Prix', 'Australian Grand Prix',
+                    'Japanese Grand Prix', 'Chinese Grand Prix', 'Miami Grand Prix',
+                    'Emilia Romagna Grand Prix', 'Monaco Grand Prix', 'Canadian Grand Prix',
+                    'Spanish Grand Prix', 'Austrian Grand Prix', 'British Grand Prix',
+                    'Hungarian Grand Prix', 'Belgian Grand Prix', 'Dutch Grand Prix',
+                    'Italian Grand Prix', 'Azerbaijan Grand Prix', 'Singapore Grand Prix',
+                    'United States Grand Prix', 'Mexico City Grand Prix', 'São Paulo Grand Prix',
+                    'Las Vegas Grand Prix', 'Qatar Grand Prix', 'Abu Dhabi Grand Prix'
+                  ].map((gp, i) => (
+                    <li key={gp} className="flex items-center gap-3 text-sm text-white/80 hover:text-white hover:bg-white/10 px-3 py-2.5 rounded-lg transition-colors">
+                      <span className="text-[#EA7301] font-mono text-xs w-5 text-right opacity-80">{i + 1}</span>
+                      <span className="font-medium">{gp}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </details>
           ) : (
             <div className="mt-4 space-y-3">
               {dashboard.events.map((event) => (

@@ -214,8 +214,8 @@ const CUSTOM_LEAGUE_LOGOS: Record<string, string> = {
   // Cycling
   'tour-de-france': 'https://upload.wikimedia.org/wikipedia/commons/e/eb/Tour_de_France_logo.svg',
   'giro-d-italia': 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Giro_d%27Italia_-_Logo_2018.svg',
-  'la-vuelta': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-cycling.png&w=80&h=80',
-  'uci-world-championships': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-cycling.png&w=80&h=80',
+  'la-vuelta': 'https://upload.wikimedia.org/wikipedia/commons/4/4b/La_Vuelta_%28Spain%29_logo.svg',
+  'uci-world-championships': 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Union_Cycliste_Internationale_logo.svg',
   // MMA - ESPN UFC
   'ufc-fight-night': 'https://a.espncdn.com/i/teamlogos/leagues/500/ufc.png',
   'ufc-ppv-series': 'https://a.espncdn.com/i/teamlogos/leagues/500/ufc.png',

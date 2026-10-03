@@ -14,6 +14,7 @@ import {
   LogOut,
   Sun,
   Moon,
+  Eye,
   ChevronDown,
   ChevronLeft,
   Menu,
@@ -75,6 +76,17 @@ export const Navbar: React.FC<NavbarProps> = ({
   } = useTournament();
 
   const [showSimMenu, setShowSimMenu] = useState(false);
+  const [daltonismoMode, setDaltonismoMode] = useState(() => typeof document !== 'undefined' && document.documentElement.style.filter.includes('grayscale'));
+  
+  const toggleDaltonismo = () => {
+    if (daltonismoMode) {
+      document.documentElement.style.filter = '';
+      setDaltonismoMode(false);
+    } else {
+      document.documentElement.style.filter = 'grayscale(100%) contrast(1.2)';
+      setDaltonismoMode(true);
+    }
+  };
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [publicMenuOpen, setPublicMenuOpen] = useState<'sports' | 'services' | null>(null);
@@ -242,8 +254,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <button
               type="button"
+              onClick={toggleDaltonismo}
+              className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/5 p-2.5 text-white hover:border-[#EA7301]/60 hover:bg-white/10 transition-colors"
+              aria-label="Alternar modo daltonismo"
+              title="Modo daltonismo (Alto Contraste)"
+            >
+              <Eye className={`w-4 h-4 ${daltonismoMode ? 'text-[#00f0ff]' : 'text-zinc-400'}`} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
               onClick={onToggleTheme}
-              className="rounded-xl border border-white/15 bg-white/5 p-2.5 text-white hover:border-[#EA7301]/60 hover:bg-white/10 transition-colors"
+              className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/5 p-2.5 text-white hover:border-[#EA7301]/60 hover:bg-white/10 transition-colors"
               aria-label={colorMode === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro'}
               title={colorMode === 'dark' ? 'Modo claro' : 'Modo oscuro'}
             >
@@ -260,6 +281,15 @@ export const Navbar: React.FC<NavbarProps> = ({
         ) : (
         /* Right Actions */
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleDaltonismo}
+            className="p-2 rounded-full hover:bg-[#312733] text-[#eeddee]/80 hover:text-white transition-colors"
+            aria-label="Alternar modo daltonismo"
+            title="Modo daltonismo (Alto Contraste)"
+          >
+            <Eye className={`w-4 h-4 ${daltonismoMode ? 'text-[#00f0ff]' : 'text-[#EA7301]'}`} aria-hidden="true" />
+          </button>
           <button
             type="button"
             onClick={onToggleTheme}

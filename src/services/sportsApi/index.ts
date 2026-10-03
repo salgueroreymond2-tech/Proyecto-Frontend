@@ -201,30 +201,30 @@ const CUSTOM_LEAGUE_LOGOS: Record<string, string> = {
   'nba-temporada-regular': 'https://a.espncdn.com/i/teamlogos/leagues/500/nba.png',
   // Baseball
   'mlb-temporada-regular': 'https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png',
-  // Tennis - ESPN sport icon
-  'australian-open': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-tennis.png&w=80&h=80',
-  'roland-garros': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-tennis.png&w=80&h=80',
-  'wimbledon': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-tennis.png&w=80&h=80',
-  'us-open': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-tennis.png&w=80&h=80',
-  'atp-masters': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-tennis.png&w=80&h=80',
-  'wta-masters': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-tennis.png&w=80&h=80',
-  // Golf - ESPN PGA Tour
+  // Tennis
+  'australian-open': 'https://upload.wikimedia.org/wikipedia/commons/8/80/Australian_Open_Logo.png',
+  'roland-garros': 'https://upload.wikimedia.org/wikipedia/fr/1/1d/Logo_Roland-Garros.svg',
+  'wimbledon': 'https://upload.wikimedia.org/wikipedia/en/b/b9/Wimbledon.svg',
+  'us-open': 'https://upload.wikimedia.org/wikipedia/commons/c/cd/Usopen-horizontal-logo.svg',
+  'atp-masters': 'https://upload.wikimedia.org/wikipedia/commons/3/3f/ATP_Tour_logo.svg',
+  'wta-masters': 'https://cdn.freebiesupply.com/logos/large/2x/wta-logo-png-transparent.png',
+  // Golf
   'the-masters': 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/pgatour.png',
   'ryder-cup': 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/pgatour.png',
-  // Cycling - ESPN sport icon
-  'tour-de-france': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-cycling.png&w=80&h=80',
-  'giro-d-italia': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-cycling.png&w=80&h=80',
+  // Cycling
+  'tour-de-france': 'https://upload.wikimedia.org/wikipedia/commons/e/eb/Tour_de_France_logo.svg',
+  'giro-d-italia': 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Giro_d%27Italia_-_Logo_2018.svg',
   'la-vuelta': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-cycling.png&w=80&h=80',
   'uci-world-championships': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-cycling.png&w=80&h=80',
   // MMA - ESPN UFC
   'ufc-fight-night': 'https://a.espncdn.com/i/teamlogos/leagues/500/ufc.png',
   'ufc-ppv-series': 'https://a.espncdn.com/i/teamlogos/leagues/500/ufc.png',
   'ufc-championship-events': 'https://a.espncdn.com/i/teamlogos/leagues/500/ufc.png',
-  // Boxing - ESPN sport icon
-  'wbc-world-boxing-council': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-boxing.png&w=80&h=80',
-  'wba-world-boxing-association': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-boxing.png&w=80&h=80',
-  'ibf-international-boxing-federation': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-boxing.png&w=80&h=80',
-  'wbo-world-boxing-organization': 'https://a.espncdn.com/combiner/i?img=/redesign/assets/img/icons/ESPN-icon-boxing.png&w=80&h=80',
+  // Boxing
+  'wbc-world-boxing-council': 'https://upload.wikimedia.org/wikipedia/en/e/e3/World_Boxing_Council_full_logo.png',
+  'wba-world-boxing-association': 'https://upload.wikimedia.org/wikipedia/en/5/5b/World_Boxing_Association_logo.png',
+  'ibf-international-boxing-federation': 'https://upload.wikimedia.org/wikipedia/en/8/8d/International_Boxing_Federation_logo.png',
+  'wbo-world-boxing-organization': 'https://upload.wikimedia.org/wikipedia/en/b/b0/World_Boxing_Organization_logo.png',
   // F1
   'f1-world-championship': 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/f1.png',
 };

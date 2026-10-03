@@ -675,6 +675,21 @@
       "token": "a54f0ff49d681ce99b40ae6f83e2df7723166345bdb811d95b943fe80781b789",
       "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
       "expiresAt": "2026-10-09T22:08:15.339Z"
+    },
+    {
+      "token": "8412de79e3a5d8eccd44151deabadf184e40d8e2c4f3cf6d5751216d99212f75",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-09T22:49:39.023Z"
+    },
+    {
+      "token": "4afc585320ec636b7b1cbbe1213b22089f08ba0f176b8ddf158873fff2efab6c",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-09T22:56:36.712Z"
+    },
+    {
+      "token": "c56bec64e07372eb10d9f1b271ffacd535fc813a0bb8d2b0b93e9ea8a6ef3d69",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-09T23:20:39.248Z"
     }
   ],
   "memberships": [
@@ -3437,6 +3452,56 @@
       "status": "captured",
       "createdAt": "2026-10-02T22:14:48.298Z",
       "capturedAt": "2026-10-02T22:14:48.346Z"
+    },
+    {
+      "id": "SIM-60ab0131-42b1-4a06-8c3b-c802ea3cd6e1",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "wbc-world-boxing-council",
+      "amount": "$2.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-02T22:55:03.121Z",
+      "capturedAt": "2026-10-02T22:55:03.203Z"
+    },
+    {
+      "id": "SIM-02f5164c-0fa2-415d-b782-5efb9b3a1896",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "australian-open",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-02T22:56:54.172Z",
+      "capturedAt": "2026-10-02T22:56:54.198Z"
+    },
+    {
+      "id": "SIM-ded11fc8-417b-48dc-ab38-035ecddd85db",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "australian-open",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-02T22:57:11.590Z",
+      "capturedAt": "2026-10-02T22:57:11.629Z"
+    },
+    {
+      "id": "SIM-dc911db2-b96a-4a7e-a1b2-2222fdbb0b2e",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "pga-tour",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-02T22:57:36.354Z",
+      "capturedAt": "2026-10-02T22:57:36.387Z"
+    },
+    {
+      "id": "SIM-bd1d3af7-c8f6-49a0-af9d-399cca28fc2c",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "champions-league",
+      "amount": "$4.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-03T01:11:08.539Z",
+      "capturedAt": "2026-10-03T01:11:08.604Z"
     }
   ]
 }

@@ -31,7 +31,7 @@ export const TEAMS: Team[] = [
     titles: 40,
     starPlayers: ['Mariano Torres', 'Javon East', 'Ariel Rodríguez', 'David Guzmán', 'Kendall Waston'],
     logoType: 'saprissa',
-    logoUrl: UNAFUT_LOGOS['Deportivo Saprissa'],
+    logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/858.png',
   },
   {
     id: 'lda',
@@ -47,7 +47,7 @@ export const TEAMS: Team[] = [
     titles: 30,
     starPlayers: ['Jonathan Moya', 'Celso Borges', 'Anderson Canhoto', 'Alexis Gamboa', 'Carlos Martínez'],
     logoType: 'alajuelense',
-    logoUrl: UNAFUT_LOGOS['L.D. Alajuelense'],
+    logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/2057.png',
   },
   {
     id: 'csh',
@@ -63,7 +63,7 @@ export const TEAMS: Team[] = [
     titles: 29,
     starPlayers: ['Marcel Hernández', 'Elías Aguilar', 'Allan Cruz', 'Gerson Torres', 'Fernán Faerron'],
     logoType: 'herediano',
-    logoUrl: UNAFUT_LOGOS['C.S. Herediano'],
+    logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/862.png',
   },
   {
     id: 'csc',
@@ -79,7 +79,7 @@ export const TEAMS: Team[] = [
     titles: 4,
     starPlayers: ['Marco Ureña', 'Allen Guevara', 'Diego González', 'Christian Martínez', 'Kevin Briceño'],
     logoType: 'cartagines',
-    logoUrl: UNAFUT_LOGOS['C.S. Cartaginés'],
+    logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/7239.png',
   },
   {
     id: 'sca',
@@ -95,7 +95,7 @@ export const TEAMS: Team[] = [
     titles: 1,
     starPlayers: ['Jonathan McDonald', 'Wilmer Azofeifa', 'Reggy Rivera', 'César Yanis', 'Gabriel Leiva'],
     logoType: 'sancarlos',
-    logoUrl: UNAFUT_LOGOS['A.D. San Carlos'],
+    logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/859.png',
   },
   {
     id: 'pfc',
@@ -111,7 +111,7 @@ export const TEAMS: Team[] = [
     titles: 0,
     starPlayers: ['Anthony Hernández', 'Jossimar Pemberton', 'Amferny Arias', 'Kliver Gómez', 'Guillermo Villalobos'],
     logoType: 'puntarenas',
-    logoUrl: UNAFUT_LOGOS['Puntarenas F.C.'],
+    logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/7237.png',
   },
   {
     id: 'spo',
@@ -127,7 +127,7 @@ export const TEAMS: Team[] = [
     titles: 0,
     starPlayers: ['Steven Cárdenas', 'Giancarlo González', 'Víctor Medina', 'Harry Rojas', 'Adonis Pineda'],
     logoType: 'sporting',
-    logoUrl: UNAFUT_LOGOS['Sporting F.C.'],
+    logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/20705.png',
   },
   {
     id: 'mpz',
@@ -143,7 +143,7 @@ export const TEAMS: Team[] = [
     titles: 1,
     starPlayers: ['Cardel Benbow', 'Joaquín Aguirre', 'Axel Amador', 'Bryan Félix', 'Bryan Segura'],
     logoType: 'perezzeledon',
-    logoUrl: UNAFUT_LOGOS['Municipal Pérez Zeledón'],
+    logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/7234.png',
   },
   {
     id: 'esc',
@@ -159,7 +159,7 @@ export const TEAMS: Team[] = [
     titles: 0,
     starPlayers: ['Josué Martínez', 'Verny Scott', 'Keylor Soto', 'Randy Chirino', 'Erick Scott'],
     logoType: 'escorpiones',
-    logoUrl: UNAFUT_LOGOS['Escorpiones F.C.'],
+    logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/132447.png',
   },
   {
     id: 'isc',
@@ -175,7 +175,7 @@ export const TEAMS: Team[] = [
     titles: 0,
     starPlayers: ['Keral Ríos', 'Armando Gómez', 'Fabián Pérez', 'Daniel Vargas', 'Jean Carlo Sánchez'],
     logoType: 'intersancarlos',
-    logoUrl: UNAFUT_LOGOS['Inter San Carlos'],
+    logoUrl: 'https://a.espncdn.com/i/teamlogos/soccer/500/131790.png',
   }
 ];
 

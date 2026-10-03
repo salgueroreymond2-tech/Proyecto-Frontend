@@ -191,12 +191,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   return (
     <main role="main" aria-label="Dashboard del torneo" tabIndex={-1} id="main-content" className="space-y-5 pb-24 max-w-6xl mx-auto px-4 pt-2">
-      <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/90 overflow-hidden">
-        <div className="flex items-center gap-3 border-b border-[#3c313e]/60 px-3 py-2">
-          <span className="rounded-md bg-[#EA7301] px-2 py-1 text-[10px] font-heading font-black uppercase tracking-wide text-black">
-            KAS Live
-          </span>
-          <div className="flex gap-2 overflow-x-auto scrollbar-none">
+      <div className="rounded-xl border border-[#EA7301]/30 bg-[#140b16]/80 kas-dark-card overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md relative">
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#EA7301]/10 to-transparent pointer-events-none" />
+        <div className="flex items-center gap-4 px-4 py-3 relative z-10">
+          <div className="flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-[#EA7301] px-3 py-1.5 shadow-[0_0_15px_rgba(234,115,1,0.4)]">
+            <div className="h-1.5 w-1.5 rounded-full bg-black animate-pulse" />
+            <span className="text-[10px] sm:text-xs font-heading font-black uppercase tracking-widest text-black">
+              KAS Live
+            </span>
+          </div>
+          <div className="flex gap-3 overflow-x-auto scrollbar-none flex-1 scroll-smooth">
             {liveTickerMatches.map((match) => {
               const home = getTeamById(match.homeTeamId);
               const away = getTeamById(match.awayTeamId);
@@ -204,18 +208,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <button
                   key={match.id}
                   onClick={() => setSelectedRound(match.round)}
-                  className="min-w-[178px] rounded-lg border border-white/10 bg-black/25 px-3 py-2 text-left hover:border-[#EA7301]/70 transition-colors"
+                  className="group min-w-[220px] shrink-0 rounded-xl border border-white/5 bg-white/[0.03] px-3 py-2 text-left hover:border-[#EA7301]/50 hover:bg-white/[0.06] transition-all duration-300"
                 >
-                  <div className="flex items-center justify-between text-[10px] font-mono text-[#d5c0d7]">
-                    <span>J{match.round}</span>
-                    <span className={match.status === 'live' ? 'text-[#00f0ff]' : 'text-emerald-300'}>
+                  <div className="flex items-center justify-between text-[9px] font-mono uppercase tracking-wider text-[#d5c0d7]/70 mb-2">
+                    <span className="bg-white/10 px-1.5 py-0.5 rounded text-[#eeddee]">Jornada {match.round}</span>
+                    <span className={match.status === 'live' ? 'text-[#00f0ff] animate-pulse font-bold' : 'text-emerald-400 font-medium'}>
                       {match.status === 'live' ? `${match.minute}'` : 'Final'}
                     </span>
                   </div>
-                  <div className="mt-1 grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-sm font-heading font-bold text-white">
-                    <span className="flex min-w-0 items-center gap-1.5 truncate"><TeamBadge team={home} size="xs" />{home.code}</span>
-                    <span className="font-black">{match.homeScore ?? 0} - {match.awayScore ?? 0}</span>
-                    <span className="flex min-w-0 items-center justify-end gap-1.5 truncate text-right">{away.code}<TeamBadge team={away} size="xs" /></span>
+                  <div className="flex items-center justify-between gap-2 text-sm font-heading font-bold text-white">
+                    <div className="flex items-center gap-2">
+                      <TeamBadge team={home} size="sm" />
+                      <span className="text-[#eeddee] group-hover:text-white transition-colors text-xs">{home.code}</span>
+                    </div>
+                    
+                    <div className="flex items-center justify-center bg-black/60 px-2 py-1 rounded-md border border-white/10 shadow-inner">
+                      <span className="font-black text-[#EA7301]">{match.homeScore ?? 0}</span>
+                      <span className="mx-1 text-white/30 text-xs">-</span>
+                      <span className="font-black text-[#EA7301]">{match.awayScore ?? 0}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 flex-row-reverse">
+                      <TeamBadge team={away} size="sm" />
+                      <span className="text-[#eeddee] group-hover:text-white transition-colors text-xs">{away.code}</span>
+                    </div>
                   </div>
                 </button>
               );
@@ -224,7 +240,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
       </div>
 
-      <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c]/92 p-4 mb-5">
+      <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] kas-dark-card p-4 mb-5">
         <div className="flex items-center gap-2 border-b border-[#3c313e]/60 pb-3">
           <Newspaper className="h-5 w-5 text-[#EA7301]" aria-hidden="true" />
           <h2 className="font-heading text-xl font-black text-white">
@@ -274,16 +290,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.55fr)_minmax(300px,0.85fr)]">
         <div className="space-y-5 min-w-0">
       {/* Horizontal Round Selector Carousel */}
-      <div className="flex items-center justify-between gap-2 bg-[#19101c]/80 p-1.5 rounded-xl border border-[#3c313e]/60">
+      <div className="flex items-center gap-2 bg-[#19101c] kas-dark-card p-2 rounded-xl border border-[#3c313e]/60 w-full">
         <button
           onClick={() => setSelectedRound(Math.max(1, selectedRound - 1))}
           disabled={selectedRound <= 1}
-          className="p-1.5 rounded-lg bg-[#221824] hover:bg-[#312733] disabled:opacity-30 text-[#eeddee] transition-colors"
+          className="p-1.5 rounded-lg bg-[#221824] hover:bg-[#312733] disabled:opacity-30 text-[#eeddee] transition-colors shrink-0"
         >
-          <ChevronLeft className="w-4 h-4" aria-hidden="true" />
+          <ChevronLeft className="w-5 h-5" aria-hidden="true" />
         </button>
 
-        <div className="flex items-center gap-1.5 overflow-x-auto py-1 scrollbar-none max-w-[260px] sm:max-w-xs">
+        <div className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none flex-1 scroll-smooth px-1">
           {Array.from({ length: 18 }, (_, i) => i + 1).map((r) => (
             <button
               key={r}
@@ -333,9 +349,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <button
           onClick={() => setSelectedRound(Math.min(24, selectedRound + 1))}
           disabled={selectedRound >= 24}
-          className="p-1.5 rounded-lg bg-[#221824] hover:bg-[#312733] disabled:opacity-30 text-[#eeddee] transition-colors"
+          className="p-1.5 rounded-lg bg-[#221824] hover:bg-[#312733] disabled:opacity-30 text-[#eeddee] transition-colors shrink-0"
         >
-          <ChevronRight className="w-4 h-4" aria-hidden="true" />
+          <ChevronRight className="w-5 h-5" aria-hidden="true" />
         </button>
       </div>
 
@@ -359,7 +375,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => fillRandomPredictionsForRound(selectedRound)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#261c28] hover:bg-[#3c313e] text-white text-xs font-mono border border-[#bf00ff]/40 transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#261c28] kas-dark-card hover:bg-[#3c313e] text-white text-xs font-mono border border-[#bf00ff]/40 transition-all"
             title="Autollenar pronósticos de esta jornada"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#bf00ff]" aria-hidden="true" />
@@ -378,19 +394,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-3">
+        <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] kas-dark-card p-3">
           <p className="text-[10px] font-mono uppercase text-[#d5c0d7]">Partidos</p>
           <p className="mt-1 text-2xl font-heading font-black text-white">{roundMatches.length}</p>
         </div>
-        <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-3">
+        <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] kas-dark-card p-3">
           <p className="text-[10px] font-mono uppercase text-[#d5c0d7]">En vivo</p>
           <p className="mt-1 text-2xl font-heading font-black text-[#00f0ff]">{liveRoundMatches}</p>
         </div>
-        <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-3">
+        <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] kas-dark-card p-3">
           <p className="text-[10px] font-mono uppercase text-[#d5c0d7]">Pronosticos</p>
           <p className="mt-1 text-2xl font-heading font-black text-white">{predictedRoundMatches}/{roundMatches.length}</p>
         </div>
-        <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-3">
+        <div className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] kas-dark-card p-3">
           <p className="text-[10px] font-mono uppercase text-[#d5c0d7]">Bloqueados</p>
           <p className="mt-1 text-2xl font-heading font-black text-[#EA7301]">{lockedRoundMatches}</p>
         </div>
@@ -398,7 +414,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
       {/* PARTIDO ESTELAR (Featured Match - Matching Screenshot 9) */}
       {featuredMatch && (
-        <div className="relative rounded-2xl bg-[#19101c] border-2 border-[#bf00ff]/80 p-5 glow-purple shadow-2xl overflow-hidden">
+        <div className="relative rounded-2xl bg-[#19101c] kas-dark-card border-2 border-[#bf00ff]/80 p-5 glow-purple shadow-2xl overflow-hidden">
           {/* Top badge */}
           <div className="flex items-center justify-between mb-4">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#bf00ff]/25 border border-[#bf00ff]/60 text-[11px] font-mono font-bold text-[#ecb1ff]">
@@ -689,7 +705,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         setActiveEditingMatchId(match.id);
                       }
                     }}
-                    className="py-1.5 px-3 rounded-lg bg-[#261c28] hover:bg-[#312733] text-xs font-mono font-semibold text-[#eeddee] uppercase tracking-wider transition-colors text-center border border-[#3c313e]"
+                    className="py-1.5 px-3 rounded-lg bg-[#261c28] kas-dark-card hover:bg-[#312733] text-xs font-mono font-semibold text-[#eeddee] uppercase tracking-wider transition-colors text-center border border-[#3c313e]"
                   >
                     {isEditing ? 'GUARDAR' : 'EDITAR'}
                   </button>
@@ -724,7 +740,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-          <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-4">
+          <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] kas-dark-card p-4">
             <div className="flex items-center gap-2 border-b border-[#3c313e]/60 pb-3">
               <Newspaper className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />
               <h2 className="font-heading text-xl font-black text-white">Titulares</h2>
@@ -747,7 +763,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </section>
 
-          <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-4">
+          <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] kas-dark-card p-4">
             <div className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />
               <h2 className="font-heading text-xl font-black text-white">Tabla UNAFUT</h2>
@@ -770,7 +786,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </section>
 
-          <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-4">
+          <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] kas-dark-card p-4">
             <div className="flex items-center gap-2">
               <Trophy className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />
               <h2 className="font-heading text-xl font-black text-white">Ranking KAS</h2>
@@ -788,7 +804,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </section>
 
-          <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] p-4">
+          <section className="rounded-xl border border-[#3c313e]/70 bg-[#19101c] kas-dark-card p-4">
             <div className="flex items-center gap-2">
               <CalendarDays className="h-4 w-4 text-[#EA7301]" aria-hidden="true" />
               <h2 className="font-heading text-xl font-black text-white">Agenda</h2>

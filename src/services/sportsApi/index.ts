@@ -191,7 +191,7 @@ const ESPN_TOURNAMENT_MAP: Record<string, string> = {
 
 const CUSTOM_LEAGUE_LOGOS: Record<string, string> = {
   // Football - from ESPN league logos
-  'cr-apertura-2026': 'https://a.espncdn.com/i/leaguelogos/soccer/500/2245.png',
+  'cr-apertura-2026': 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Liga_Promerica.svg',
   'champions-league': 'https://a.espncdn.com/i/leaguelogos/soccer/500/2.png',
   'concacaf-nations-league': 'https://a.espncdn.com/i/leaguelogos/soccer/500/2406.png',
   'copa-oro': 'https://a.espncdn.com/i/leaguelogos/soccer/500/59.png',
@@ -235,7 +235,7 @@ export async function getTournamentEvents(tournamentId: string, signal?: AbortSi
   if (espnEndpoint) {
     try {
       let url = `https://site.api.espn.com/apis/site/v2/sports/${espnEndpoint}/scoreboard`;
-      if (dateRange) url += `?dates=${dateRange}`;
+      if (dateRange) url += `?dates=${dateRange}&limit=1000`;
       const response = await fetch(url, { signal });
       const data = await response.json();
       

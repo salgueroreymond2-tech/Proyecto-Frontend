@@ -102,13 +102,24 @@ export const TournamentProvider: React.FC<{ children: ReactNode }> = ({ children
   });
 
   // Sync Costa Rica matches with ESPN API
+  const [espnStandings, setEspnStandings] = useState<any[]>([]);
   useEffect(() => {
     let mounted = true;
     const fetchLiveScores = async () => {
       try {
-        const { getTournamentEvents } = await import('../services/sportsApi');
-        const res = await getTournamentEvents('cr-apertura-2026');
-        if (!mounted || res.fromFallback || !res.data) return;
+        const { getTournamentEvents, getTournamentStandings } = await import('../services/sportsApi');
+        const [res, standingsRes] = await Promise.all([
+          getTournamentEvents('cr-apertura-2026', undefined, '2026'),
+          getTournamentStandings('cr-apertura-2026')
+        ]);
+        
+        if (!mounted) return;
+        
+        if (standingsRes && standingsRes.length > 0 && standingsRes[0].entries) {
+          setEspnStandings(standingsRes[0].entries);
+        }
+
+        if (res.fromFallback || !res.data) return;
 
         setMatches(prevMatches => {
           let updated = false;
@@ -212,7 +223,25 @@ export const TournamentProvider: React.FC<{ children: ReactNode }> = ({ children
   });
 
   // Active round view aligned with the current UNAFUT calendar date.
-  const [selectedRound, setSelectedRound] = useState<number>(5);
+  const [selectedRound, setSelectedRound] = useState<number>(() => {
+    let latest = 1;
+    for (const m of matches) {
+      if (m.status === 'finished' || m.status === 'live') {
+        if (m.round > latest && m.round <= 24) latest = m.round;
+      }
+    }
+    return latest;
+  });
+
+  useEffect(() => {
+    let latest = 1;
+    for (const m of matches) {
+      if (m.status === 'finished' || m.status === 'live') {
+        if (m.round > latest && m.round <= 24) latest = m.round;
+      }
+    }
+    setSelectedRound(prev => (latest > prev ? latest : prev));
+  }, [matches]);
   const [currentStageTab, setCurrentStageTab] = useState<'regular' | 'playoffs'>('regular');
   
   // User profile & leaderboard
@@ -326,6 +355,30 @@ export const TournamentProvider: React.FC<{ children: ReactNode }> = ({ children
 
   // Dynamic Standings calculation from regular season matches (18 rounds)
   const standings: TeamStanding[] = useMemo(() => {
+    if (espnStandings.length > 0) {
+      const getStat = (stats: any[], name: string) => stats?.find((s: any) => s.name === name)?.value || 0;
+      return espnStandings.map((entry: any) => {
+        const teamObj = entry.team || entry.athlete || entry;
+        const espnName = teamObj?.displayName || teamObj?.name || teamObj?.fullName;
+        const localTeam = findTeamByEspnName(espnName);
+        const teamId = localTeam?.id || 'sap';
+        
+        const played = getStat(entry.stats, 'gamesPlayed');
+        const won = getStat(entry.stats, 'wins');
+        const drawn = getStat(entry.stats, 'ties');
+        const lost = getStat(entry.stats, 'losses');
+        const goalsFor = getStat(entry.stats, 'pointsFor');
+        const goalsAgainst = getStat(entry.stats, 'pointsAgainst');
+        const goalDifference = getStat(entry.stats, 'pointDifferential');
+        const points = getStat(entry.stats, 'points');
+        
+        const formStr = entry.form || '';
+        const form = formStr.split('').slice(0, 5);
+
+        return { teamId, played, won, drawn, lost, goalsFor, goalsAgainst, goalDifference, points, form };
+      });
+    }
+
     const table: Record<string, TeamStanding> = {};
 
     TEAMS.forEach((t) => {
@@ -394,7 +447,7 @@ export const TournamentProvider: React.FC<{ children: ReactNode }> = ({ children
         if (b.goalsFor !== a.goalsFor) return b.goalsFor - a.goalsFor;
         return a.teamId.localeCompare(b.teamId);
       });
-  }, [matches]);
+  }, [matches, espnStandings]);
 
   // Top 4 classification
   const top4TeamIds = useMemo(() => {

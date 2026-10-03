@@ -43,6 +43,7 @@ import { Navbar } from '../components/Navbar';
 import { BottomNav, NavTab } from '../components/BottomNav';
 import { DashboardView } from '../components/DashboardView';
 import { AIAssistant } from '../components/AIAssistant';
+import { F1StructureCard } from '../components/F1StructureCard';
 import { GlobalTalkback } from '../components/GlobalTalkback';
 import { RankingView } from '../components/RankingView';
 import { PlayoffsView } from '../components/PlayoffsView';
@@ -2938,9 +2939,9 @@ function TournamentMembershipLogin() {
             {paymentError && <p className="rounded-xl border border-red-400/40 bg-red-400/10 px-3 py-2 text-xs text-red-100">{paymentError}</p>}
           </div>
 
-          <Link to={`/tournaments/${tournamentId}`} className="mt-4 block text-center text-xs font-mono text-[#d5c0d7] hover:text-[#EA7301]">
-            Ver resumen publico del torneo
-          </Link>
+
+
+
         </section>
       </div>
     </div>
@@ -3672,38 +3673,7 @@ function SportPlaceholder() {
         <div className="rounded-xl border border-white/10 bg-[#221824]/90 p-5">
           <p className="text-xs font-mono text-[#EA7301]">{sport.id === 'f1' ? 'ESTRUCTURA' : 'PROXIMOS EVENTOS'}</p>
           {sport.id === 'f1' ? (
-            <details className="mt-4 rounded-xl bg-black/25 border border-white/10 group cursor-pointer overflow-hidden transition-all">
-              <summary className="px-4 py-4 list-none outline-none relative select-none flex flex-col justify-center [&::-webkit-details-marker]:hidden">
-                <div className="pr-10">
-              <p className="font-heading text-xl font-black text-white">Los 24 Grand Prix viven dentro del torneo.</p>
-              <p className="mt-2 text-sm text-[#d5c0d7]">
-                Entra a F1 World Championship para ver Bahrain, Monaco, Las Vegas, Abu Dhabi y el resto del calendario como dashboards internos.
-              </p>
-                </div>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
-                  <ChevronDown className="w-5 h-5 text-white/50 group-open:rotate-180 transition-transform" aria-hidden="true" />
-                </div>
-              </summary>
-              <div className="px-2 pb-2 border-t border-white/10 max-h-64 overflow-y-auto">
-                <ul className="space-y-1 mt-2">
-                  {[
-                    'Bahrain Grand Prix', 'Saudi Arabian Grand Prix', 'Australian Grand Prix',
-                    'Japanese Grand Prix', 'Chinese Grand Prix', 'Miami Grand Prix',
-                    'Emilia Romagna Grand Prix', 'Monaco Grand Prix', 'Canadian Grand Prix',
-                    'Spanish Grand Prix', 'Austrian Grand Prix', 'British Grand Prix',
-                    'Hungarian Grand Prix', 'Belgian Grand Prix', 'Dutch Grand Prix',
-                    'Italian Grand Prix', 'Azerbaijan Grand Prix', 'Singapore Grand Prix',
-                    'United States Grand Prix', 'Mexico City Grand Prix', 'São Paulo Grand Prix',
-                    'Las Vegas Grand Prix', 'Qatar Grand Prix', 'Abu Dhabi Grand Prix'
-                  ].map((gp, i) => (
-                    <li key={gp} className="flex items-center gap-3 text-sm text-white/80 hover:text-white hover:bg-white/10 px-3 py-2.5 rounded-lg transition-colors">
-                      <span className="text-[#EA7301] font-mono text-xs w-5 text-right opacity-80">{i + 1}</span>
-                      <span className="font-medium">{gp}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </details>
+            <F1StructureCard />
           ) : (
             <div className="mt-4 space-y-3">
               {dashboard.events.map((event) => (
@@ -3724,28 +3694,35 @@ function SportPlaceholder() {
         <div>
           <p className="text-sm font-mono text-[#EA7301]">TORNEOS</p>
           <h2 className="text-3xl font-heading font-black text-white">Competiciones de {sport.name}</h2>
+          <p className="mt-1 text-[#d5c0d7]">Selecciona un torneo para ver sus pronosticos.</p>
         </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          {dashboard.tournaments.map((tournament) => {
-            const tournamentAccessId = toTournamentId(tournament.name);
-            return (
-              <Link key={tournament.name} to={getTournamentAccessPath(tournamentAccessId)} className="rounded-xl border border-[#3c313e] bg-[#221824]/90 p-5 hover:border-[#EA7301] transition-colors">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <LeagueLogo tournamentId={tournamentAccessId} name={tournament.name} />
-                    <div className="min-w-0">
-                      <h3 className="truncate font-heading text-2xl font-black text-white">{tournament.name}</h3>
-                      <p className="text-sm text-[#d5c0d7]">{tournament.season} - {tournament.status}</p>
-                    </div>
-                  </div>
-                  <span className="rounded-full bg-[#EA7301]/15 px-3 py-1 text-xs font-mono text-[#EA7301]">{tournament.price}</span>
+        <div className="space-y-3">
+          {dashboard.tournaments.map((tour) => (
+            <div key={tour.name} className="flex flex-col sm:flex-row sm:items-center justify-between rounded-2xl bg-[#221824]/90 border border-white/10 p-4 gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-white/5 rounded-xl flex items-center justify-center p-3">
+                  <LeagueLogo tournamentId={tour.name.toLowerCase().replace(/ /g, '-')} name={tour.name} className="w-full h-full object-contain" />
                 </div>
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#EA7301]">
-                  Acceder con membresia <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                </span>
-              </Link>
-            );
-          })}
+                <div>
+                  <h3 className="font-heading text-xl font-bold text-white">{tour.name}</h3>
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center rounded-md bg-[#EA7301]/10 px-2 py-1 text-xs font-medium text-[#EA7301] ring-1 ring-inset ring-[#EA7301]/20">
+                      Temporada {tour.season}
+                    </span>
+                    <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${tour.status === 'Activo' ? 'bg-green-400/10 text-green-400 ring-green-400/20' : tour.status === 'Premium' ? 'bg-purple-400/10 text-purple-400 ring-purple-400/20' : 'bg-gray-400/10 text-gray-400 ring-gray-400/20'}`}>
+                      {tour.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <span className="text-xl font-heading font-black text-white shrink-0">{tour.price}</span>
+                <button className="flex-1 sm:flex-none justify-center inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 px-4 py-2.5 text-sm font-heading font-bold text-white transition-colors">
+                  <Lock className="w-4 h-4" /> Entrar
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </div>

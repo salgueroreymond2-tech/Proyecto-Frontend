@@ -94,8 +94,11 @@ export function clearStoredSession() {
   localStorage.removeItem(SESSION_KEY);
 }
 
-export async function signIn(email: string, password: string) {
+export async function signIn(email: string, password: string, favoriteTeamId?: string) {
   const session = await request<Session>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+  if (favoriteTeamId) {
+    session.user.favoriteTeamId = favoriteTeamId;
+  }
   saveSession(session);
   return { token: session.token, user: toProfile(session.user) };
 }

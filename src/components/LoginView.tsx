@@ -39,7 +39,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLoginSuccess, onFavorite
     try {
       const session = isRegister
         ? await signUp({ email, password, name, username, favoriteTeamId })
-        : await signIn(email, password);
+        : await signIn(email, password, favoriteTeamId);
       loginUser(session.user);
       setIsSubmitted(true);
     } catch (requestError) {

@@ -700,6 +700,61 @@
       "token": "8627010b60c28c8f57c9c6772d28fd5d30a6e6c3f266c5536f7545b3221fdd36",
       "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
       "expiresAt": "2026-10-10T01:45:55.645Z"
+    },
+    {
+      "token": "025b19e9da580a21ae22689fb6a9285c06c1e8bc77d81a83ff5a6e1fb7fbccfe",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-10T02:00:27.667Z"
+    },
+    {
+      "token": "9d30495dfe4bf060a00a6e0a163429b2a0675fd49a1649c321fabe26aae41402",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-10T02:02:35.331Z"
+    },
+    {
+      "token": "ef9615e8c190a155298d141aadb996225bc2af15c99577dec51e9b3b9fd32a59",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-10T02:15:24.637Z"
+    },
+    {
+      "token": "cdca7e837acdef8ddad597102a18ea930a080bb246004488650c79e93786927e",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-10T02:15:27.713Z"
+    },
+    {
+      "token": "f41f4e7b358d3a5626c78d3398a06352f98722d71eb51757d8401b9e53968d00",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-10T02:16:17.297Z"
+    },
+    {
+      "token": "186452bce64576af1ae69f50bf6bb7ad5ca6b706fd793143afb80a9466a67833",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-10T02:16:53.643Z"
+    },
+    {
+      "token": "4fe1f1c3e39b66a92f0d3e8f0decc07b50d591f1ab94a2686507cc11638245b2",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-10T02:17:17.024Z"
+    },
+    {
+      "token": "481f49d59e20fdffb544832fe74276fe963f7d2b58938e2e82a2c7a431edc01a",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-10T03:02:26.918Z"
+    },
+    {
+      "token": "41dc8dd206ae2aa0d36e31385ced2518f55dcfee7ae823e24730b17d08798f64",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-10T03:14:03.403Z"
+    },
+    {
+      "token": "1188e1d6179da3cdbebc37e7cbc693819095d47a806f9521ba7fbab0413a11d0",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-10T03:34:48.614Z"
+    },
+    {
+      "token": "4641be0000dfed6a9f1360b2bf9a3cf69a4406423922863159c96595b1395024",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "expiresAt": "2026-10-10T03:34:51.677Z"
     }
   ],
   "memberships": [
@@ -3572,6 +3627,46 @@
       "status": "captured",
       "createdAt": "2026-10-03T01:47:03.390Z",
       "capturedAt": "2026-10-03T01:47:03.417Z"
+    },
+    {
+      "id": "SIM-77f362de-1e2e-4e84-844a-bcc9e13e2821",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "cr-apertura-2026",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-03T02:01:55.486Z",
+      "capturedAt": "2026-10-03T02:01:55.528Z"
+    },
+    {
+      "id": "SIM-9012bc86-40bf-4f1f-9d9a-c3ec9ca7d048",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "cr-apertura-2026",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-03T02:11:55.683Z",
+      "capturedAt": "2026-10-03T02:11:55.741Z"
+    },
+    {
+      "id": "SIM-0ee39499-7083-4a56-9006-aa4504192acf",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "cr-apertura-2026",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-03T02:12:06.179Z",
+      "capturedAt": "2026-10-03T02:12:06.205Z"
+    },
+    {
+      "id": "SIM-8dc1a6a8-bfa5-4ffd-9233-c141ffac0e01",
+      "userId": "4c24cbb5-3105-4db9-b6ab-6db727a25d90",
+      "tournamentId": "cr-apertura-2026",
+      "amount": "$1.99",
+      "provider": "paypal-sandbox",
+      "status": "captured",
+      "createdAt": "2026-10-03T03:02:33.656Z",
+      "capturedAt": "2026-10-03T03:02:33.695Z"
     }
   ]
 }
